@@ -1,0 +1,353 @@
+@import './base.css';
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+  padding: 3px;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+
+  #app {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 2rem;
+  }
+}
+
+/* Color Palette */
+:root {
+    --primary-orange: #E76F51; /* Burnt/Terracotta Orange */
+    --secondary-green: #8CB369; /* Earthy Green */
+    --accent-yellow: #F4D35E;   /* Buttery Yellow */
+    --neutral-cream: #FDF0D5;   /* Warm Off-White Background */
+    --dark-contrast: #3A170F;   /* Deep Brown for Text */
+}
+
+/* Global Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    color: var(--dark-contrast);
+    background-color: var(--neutral-cream);
+}
+
+a {
+    text-decoration: none;
+    color: var(--dark-contrast);
+}
+
+h1, h2, h3 {
+    font-family: 'Dancing Script', cursive;
+    color: var(--dark-contrast);
+}
+
+/* --- 1. Navbar --- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 50px;
+    background-color: transparent;
+    position: absolute;
+    width: 100%;
+    z-index: 100;
+}
+
+.navbar .logo {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.8rem;
+    color: var(--dark-contrast);
+}
+
+.navbar .nav-links a {
+    margin-left: 20px;
+    font-size: 1.1rem;
+    transition: color 0.3s;
+}
+
+.navbar .nav-links a:hover,
+.navbar .nav-links a.active {
+    color: var(--primary-orange);
+}
+
+.btn-signup {
+    padding: 8px 15px;
+    border: 2px solid var(--dark-contrast);
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-signup:hover {
+    background-color: var(--dark-contrast);
+    color: var(--neutral-cream);
+}
+
+/* --- Buttons --- */
+.btn-primary {
+    background-color: var(--primary-orange);
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #D65A3E; /* Slightly darker orange */
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: var(--neutral-cream);
+    color: var(--primary-orange);
+    padding: 12px 30px;
+    border: none;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+/* --- 2. Hero Section --- */
+.hero-section {
+    display: flex;
+    min-height: 80vh;
+    background-color: var(--neutral-cream);
+    padding-top: 80px; /* Space for fixed navbar */
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-content, .hero-image-placeholder {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 50px;
+    z-index: 10;
+}
+
+.hero-content {
+    align-items: flex-start;
+    padding-left: 100px;
+    background: url('pasta-pattern.png') repeat; /* Placeholder for ingredient pattern */
+    background-color: var(--neutral-cream);
+}
+
+/* Mimic the subtle, two-tone background split */
+.hero-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    background-color: rgba(253, 240, 213, 0.7); /* Lighter version of neutral-cream for pattern base */
+    z-index: 1;
+}
+
+.hero-image-placeholder {
+    background: var(--secondary-green);
+    background-image: url('pizza-placeholder.jpg'); /* Placeholder for pizza image */
+    background-size: cover;
+    background-position: center;
+    border-radius: 0 0 0 100px; /* Example curve from the visual */
+}
+
+.hero-section h1 {
+    font-size: 4rem;
+    margin-bottom: 15px;
+    color: var(--primary-orange);
+}
+
+.hero-section .sub-headline {
+    font-size: 1.4rem;
+    margin-bottom: 30px;
+}
+
+/* --- 3. How It Works Section --- */
+.how-it-works {
+    padding: 80px 100px;
+    text-align: center;
+    background-color: var(--neutral-cream);
+}
+
+.how-it-works h2 {
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+    color: var(--dark-contrast);
+}
+
+.steps-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 30px;
+}
+
+.step-card {
+    background-color: var(--neutral-cream);
+    border: 2px solid var(--accent-yellow);
+    border-radius: 10px;
+    padding: 40px 20px;
+    width: 30%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s;
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.step-card i {
+    font-size: 3rem;
+    color: var(--secondary-green);
+    margin-bottom: 15px;
+}
+
+.step-card h3 {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+}
+
+/* --- 4. Value Proposition/Testimonial Section --- */
+.value-prop {
+    background-color: var(--secondary-green);
+    color: white;
+    padding: 60px 100px;
+    text-align: center;
+}
+
+.value-prop .quote {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+}
+
+.testimonial-card {
+    display: inline-flex;
+    align-items: center;
+    background-color: white;
+    color: var(--dark-contrast);
+    padding: 15px 25px;
+    border-radius: 30px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.testimonial-card .avatar {
+    width: 40px;
+    height: 40px;
+    background-color: #ccc; /* Placeholder for image */
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+/* --- 5. Footer/Final CTA Section --- */
+.main-footer {
+    background-color: var(--primary-orange);
+    color: white;
+    padding: 50px 0 20px 0;
+    text-align: center;
+}
+
+.main-footer h2 {
+    color: white;
+    font-size: 2.2rem;
+    margin-bottom: 25px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+}
+
+.main-footer .btn-secondary {
+    margin-bottom: 30px;
+}
+
+.footer-links {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .hero-section {
+        flex-direction: column;
+        min-height: auto;
+    }
+
+    .hero-content, .hero-image-placeholder {
+        width: 100%;
+        padding: 50px;
+    }
+
+    .hero-content {
+        padding-left: 50px;
+    }
+
+    .hero-section::before {
+        width: 100%;
+        height: 50%;
+        /* Adjusted for vertical stack */
+    }
+
+    .steps-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .step-card {
+        width: 100%;
+    }
+
+    .how-it-works, .value-prop {
+        padding: 50px 30px;
+    }
+
+    .navbar {
+        padding: 15px 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+    }
+
+    .navbar .nav-links {
+        margin-top: 10px;
+    }
+
+    .hero-section h1 {
+        font-size: 3rem;
+    }
+}
