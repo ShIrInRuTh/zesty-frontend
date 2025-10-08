@@ -20,7 +20,7 @@
       <section class="hero">
         <h2>Cooking with Attitude</h2>
         <p>
-          Discover bold flavours, creative recipes, and a pinch of sass. Zesty is your ultimate
+          Discover bold, creative recipes, and a pinch of sass. Zesty is your ultimate
           cooking companion.
         </p>
         <RouterLink to="/recipes" class="explore-btn">Explore Recipes</RouterLink>
