@@ -51,7 +51,7 @@
 
               <!-- carousel-item is each slide -->
               <div class="carousel-item active">
-                <img src="./img/Autumn-lake-sunset-604132-1024x768.jpg" class="d-block w-100" alt="...">
+                <img src="../../public/logo.png" class="d-block w-100" alt="...">
                 <div class="carousel-caption d-none d-md-block">
                   <h5>First slide label</h5>
                   <p>Some representative placeholder content for the first slide.</p>
@@ -60,7 +60,7 @@
 
               <div class="carousel-item">
                 <img
-                  src="./img/Nature_landscapes_trees_park_garden_pond_lakes_water_winter_snow_seasons_cold_animals_birds_ducks_wildlife_feathers-2560x1600-1024x768.jpg"
+                  src="../../public/logo.png"
                   class="d-block w-100" alt="...">
                 <div class="carousel-caption d-none d-md-block">
                   <h5>Second slide label</h5>
@@ -69,7 +69,7 @@
               </div>
 
               <div class="carousel-item">
-                <img src="./img/Winter-landscape-mountain-river-stones-HD-wallpapers-23651-1024x768.jpg"
+                <img src="../../public/logo.png"
                   class="d-block w-100" alt="...">
                 <div class="carousel-caption d-none d-md-block">
                   <h5>Third slide label</h5>
