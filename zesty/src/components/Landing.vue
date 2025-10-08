@@ -7,9 +7,8 @@
         <h1>ZESTY</h1>
       </div>
 
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
       <nav>
         <RouterLink to="/" class="active" exact>Home</RouterLink>
@@ -29,6 +28,74 @@
         </p>
         <RouterLink to="/recipes" class="explore-btn">Explore Recipes</RouterLink>
       </section>
+
+      <body>
+        <div class="mx-auto box"><!-- put the carousel in a box and center it -->
+
+          <!-- set the carousel -->
+          <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+
+            <!-- small clickable dashes at the bottom of the carousel -->
+            <div class="carousel-indicators">
+              <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
+                aria-current="true" aria-label="Slide 1"></button>
+              <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
+                aria-label="Slide 2"></button>
+              <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
+                aria-label="Slide 3"></button>
+            </div>
+
+            <!-- Three carousel slides with the first carousel being active -->
+            <!-- carousel-inner is container for all slides -->
+            <div class="carousel-inner">
+
+              <!-- carousel-item is each slide -->
+              <div class="carousel-item active">
+                <img src="./img/Autumn-lake-sunset-604132-1024x768.jpg" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>First slide label</h5>
+                  <p>Some representative placeholder content for the first slide.</p>
+                </div>
+              </div>
+
+              <div class="carousel-item">
+                <img
+                  src="./img/Nature_landscapes_trees_park_garden_pond_lakes_water_winter_snow_seasons_cold_animals_birds_ducks_wildlife_feathers-2560x1600-1024x768.jpg"
+                  class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Second slide label</h5>
+                  <p>Some representative placeholder content for the second slide.</p>
+                </div>
+              </div>
+
+              <div class="carousel-item">
+                <img src="./img/Winter-landscape-mountain-river-stones-HD-wallpapers-23651-1024x768.jpg"
+                  class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Third slide label</h5>
+                  <p>Some representative placeholder content for the third slide.</p>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- buttons to navigate the slides manually -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
+              data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
+              data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+
+          </div>
+
+        </div>
+      </body>
     </main>
 
     <!-- FOOTER -->
@@ -41,6 +108,7 @@
       <p>© 2025 Zesty • Crafted with ❤️ for food lovers</p>
     </footer>
   </div>
+
 </template>
 
 <script setup>
@@ -55,7 +123,8 @@ import { RouterLink } from 'vue-router'
   display: flex;
   flex-direction: column;
   font-family: Arial, sans-serif;
-  color: black; /* all text black */
+  color: black;
+  /* all text black */
   background-color: white;
   margin: 0;
 }
