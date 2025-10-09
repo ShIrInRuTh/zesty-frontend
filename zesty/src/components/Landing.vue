@@ -7,8 +7,12 @@
         <h1>ZESTY</h1>
       </div>
 
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+      <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous"
+      />
 
       <nav>
         <RouterLink to="/" class="active" exact>Home</RouterLink>
@@ -23,36 +27,49 @@
       <section class="hero">
         <h2>Cooking with Attitude</h2>
         <p>
-          Discover bold flavours, creative recipes, and a pinch of sass. Zesty is your ultimate cooking
-          companion.
+          Discover bold flavours, creative recipes, and a pinch of sass. Zesty is your ultimate
+          cooking companion.
         </p>
         <RouterLink to="/recipes" class="explore-btn">Explore Recipes</RouterLink>
       </section>
 
       <!-- CAROUSEL SECTION -->
       <section class="carousel-section">
-        <div class="mx-auto box"><!-- put the carousel in a box and center it -->
+        <div class="mx-auto box">
+          <!-- put the carousel in a box and center it -->
 
           <!-- set the carousel -->
           <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
-
             <!-- small clickable dashes at the bottom of the carousel -->
             <div class="carousel-indicators">
-              <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
-                aria-current="true" aria-label="Slide 1"></button>
-              <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
-                aria-label="Slide 2"></button>
-              <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
-                aria-label="Slide 3"></button>
+              <button
+                type="button"
+                data-bs-target="#carouselExampleCaptions"
+                data-bs-slide-to="0"
+                class="active"
+                aria-current="true"
+                aria-label="Slide 1"
+              ></button>
+              <button
+                type="button"
+                data-bs-target="#carouselExampleCaptions"
+                data-bs-slide-to="1"
+                aria-label="Slide 2"
+              ></button>
+              <button
+                type="button"
+                data-bs-target="#carouselExampleCaptions"
+                data-bs-slide-to="2"
+                aria-label="Slide 3"
+              ></button>
             </div>
 
             <!-- Three carousel slides with the first carousel being active -->
             <!-- carousel-inner is container for all slides -->
             <div class="carousel-inner">
-
               <!-- carousel-item is each slide -->
               <div class="carousel-item active">
-                <img src="../../public/logo.png" class="d-block w-100" alt="...">
+                <img src="../../public/logo.png" class="d-block w-100" alt="..." />
                 <div class="carousel-caption d-none d-md-block">
                   <h5>First slide label</h5>
                   <p>Some representative placeholder content for the first slide.</p>
@@ -60,7 +77,7 @@
               </div>
 
               <div class="carousel-item">
-                <img src="../../public/Carrot Cake Image.jpg" class="d-block w-100" alt="...">
+                <img src="../../public/Carrot Cake Image.jpg" class="d-block w-100" alt="..." />
                 <div class="carousel-caption d-none d-md-block">
                   <h5>First slide label</h5>
                   <p>Some representative placeholder content for the first slide.</p>
@@ -68,9 +85,7 @@
               </div>
 
               <div class="carousel-item">
-                <img
-                  src="../../public/Egg and Bread Image.jpg"
-                  class="d-block w-100" alt="...">
+                <img src="../../public/Egg and Bread Image.jpg" class="d-block w-100" alt="..." />
                 <div class="carousel-caption d-none d-md-block">
                   <h5>Second slide label</h5>
                   <p>Some representative placeholder content for the second slide.</p>
@@ -78,8 +93,7 @@
               </div>
 
               <div class="carousel-item">
-                <img src="../../public/Egg Fried Rice Image.jpg"
-                  class="d-block w-100" alt="...">
+                <img src="../../public/Egg Fried Rice Image.jpg" class="d-block w-100" alt="..." />
                 <div class="carousel-caption d-none d-md-block">
                   <h5>Third slide label</h5>
                   <p>Some representative placeholder content for the third slide.</p>
@@ -87,8 +101,7 @@
               </div>
 
               <div class="carousel-item">
-                <img src="../../public/Pasta Image.jpg"
-                  class="d-block w-100" alt="...">
+                <img src="../../public/Pasta Image.jpg" class="d-block w-100" alt="..." />
                 <div class="carousel-caption d-none d-md-block">
                   <h5>Third slide label</h5>
                   <p>Some representative placeholder content for the third slide.</p>
@@ -96,25 +109,31 @@
               </div>
 
               <div class="carousel-item">
-                <img src="../../public/Shakshuka Image.jpg"
-                  class="d-block w-100" alt="...">
+                <img src="../../public/Shakshuka Image.jpg" class="d-block w-100" alt="..." />
                 <div class="carousel-caption d-none d-md-block">
                   <h5>Third slide label</h5>
                   <p>Some representative placeholder content for the third slide.</p>
                 </div>
               </div>
-
             </div>
 
             <!-- buttons to navigate the slides manually -->
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
-              data-bs-slide="prev">
+            <button
+              class="carousel-control-prev"
+              type="button"
+              data-bs-target="#carouselExampleCaptions"
+              data-bs-slide="prev"
+            >
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Previous</span>
             </button>
 
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
-              data-bs-slide="next">
+            <button
+              class="carousel-control-next"
+              type="button"
+              data-bs-target="#carouselExampleCaptions"
+              data-bs-slide="next"
+            >
               <span class="carousel-control-next-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Next</span>
             </button>
@@ -133,7 +152,6 @@
       <p>© 2025 Zesty • Crafted with ❤️ for food lovers</p>
     </footer>
   </div>
-
 </template>
 
 <script setup>
@@ -237,7 +255,7 @@ main {
   margin: 0 auto 60px;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .explore-btn {
