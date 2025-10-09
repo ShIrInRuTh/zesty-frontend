@@ -29,7 +29,8 @@
         <RouterLink to="/recipes" class="explore-btn">Explore Recipes</RouterLink>
       </section>
 
-      <body>
+      <!-- CAROUSEL SECTION -->
+      <section class="carousel-section">
         <div class="mx-auto box"><!-- put the carousel in a box and center it -->
 
           <!-- set the carousel -->
@@ -59,8 +60,16 @@
               </div>
 
               <div class="carousel-item">
+                <img src="../../public/Carrot Cake Image.jpg" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>First slide label</h5>
+                  <p>Some representative placeholder content for the first slide.</p>
+                </div>
+              </div>
+
+              <div class="carousel-item">
                 <img
-                  src="../../public/logo.png"
+                  src="../../public/Egg and Bread Image.jpg"
                   class="d-block w-100" alt="...">
                 <div class="carousel-caption d-none d-md-block">
                   <h5>Second slide label</h5>
@@ -69,7 +78,25 @@
               </div>
 
               <div class="carousel-item">
-                <img src="../../public/logo.png"
+                <img src="../../public/Egg Fried Rice Image.jpg"
+                  class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Third slide label</h5>
+                  <p>Some representative placeholder content for the third slide.</p>
+                </div>
+              </div>
+
+              <div class="carousel-item">
+                <img src="../../public/Pasta Image.jpg"
+                  class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Third slide label</h5>
+                  <p>Some representative placeholder content for the third slide.</p>
+                </div>
+              </div>
+
+              <div class="carousel-item">
+                <img src="../../public/Shakshuka Image.jpg"
                   class="d-block w-100" alt="...">
                 <div class="carousel-caption d-none d-md-block">
                   <h5>Third slide label</h5>
@@ -80,22 +107,20 @@
             </div>
 
             <!-- buttons to navigate the slides manually -->
-            <button class="carousel-control-prev btn-warning" type="button" data-bs-target="#carouselExampleCaptions"
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
               data-bs-slide="prev">
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Previous</span>
             </button>
 
-            <button class="carousel-control-next btn-warning" type="button" data-bs-target="#carouselExampleCaptions"
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
               data-bs-slide="next">
               <span class="carousel-control-next-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Next</span>
             </button>
-
           </div>
-
         </div>
-      </body>
+      </section>
     </main>
 
     <!-- FOOTER -->
@@ -206,6 +231,13 @@ main {
   font-size: 18px;
   max-width: 600px;
   margin: 0 auto 24px;
+}
+.carousel-section {
+  max-width: 900px;
+  margin: 0 auto 60px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
 .explore-btn {
