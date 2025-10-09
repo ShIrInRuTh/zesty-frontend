@@ -15,7 +15,7 @@
       />
 
       <nav>
-        <RouterLink to="/" class="active" exact>Home</RouterLink>
+        <RouterLink to="/userhome" class="active" exact>Home</RouterLink>
         <RouterLink to="#features">Features</RouterLink>
         <RouterLink to="#contact">Contact Us</RouterLink>
         <RouterLink to="/login" class="login-btn">Login</RouterLink>
