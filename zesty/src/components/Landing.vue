@@ -7,9 +7,6 @@
         <h1>ZESTY</h1>
       </div>
 
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
       <nav>
         <RouterLink to="/" class="active" exact>Home</RouterLink>
         <RouterLink to="#features">Features</RouterLink>
@@ -44,6 +41,12 @@
                 aria-label="Slide 2"></button>
               <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
                 aria-label="Slide 3"></button>
+              <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="3"
+                aria-label="Slide 4"></button>
+              <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="4"
+                aria-label="Slide 5"></button>
+              <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="5"
+                aria-label="Slide 6"></button>
             </div>
 
             <!-- Three carousel slides with the first carousel being active -->
@@ -54,8 +57,14 @@
               <div class="carousel-item active">
                 <img src="../../public/logo.png" class="d-block w-100" alt="...">
                 <div class="carousel-caption d-none d-md-block">
-                  <h5>First slide label</h5>
-                  <p>Some representative placeholder content for the first slide.</p>
+                  <section class="hero">
+                    <h2>Cooking with Attitude</h2>
+                    <p>
+                      Discover bold flavours, creative recipes, and a pinch of sass. Zesty is your ultimate cooking
+                      companion.
+                    </p>
+                    <RouterLink to="/recipes" class="explore-btn">Explore Recipes</RouterLink>
+                  </section>
                 </div>
               </div>
 
@@ -68,9 +77,7 @@
               </div>
 
               <div class="carousel-item">
-                <img
-                  src="../../public/Egg and Bread Image.jpg"
-                  class="d-block w-100" alt="...">
+                <img src="../../public/Egg and Bread Image.jpg" class="d-block w-100" alt="...">
                 <div class="carousel-caption d-none d-md-block">
                   <h5>Second slide label</h5>
                   <p>Some representative placeholder content for the second slide.</p>
@@ -78,8 +85,7 @@
               </div>
 
               <div class="carousel-item">
-                <img src="../../public/Egg Fried Rice Image.jpg"
-                  class="d-block w-100" alt="...">
+                <img src="../../public/Egg Fried Rice Image.jpg" class="d-block w-100" alt="...">
                 <div class="carousel-caption d-none d-md-block">
                   <h5>Third slide label</h5>
                   <p>Some representative placeholder content for the third slide.</p>
@@ -87,8 +93,7 @@
               </div>
 
               <div class="carousel-item">
-                <img src="../../public/Pasta Image.jpg"
-                  class="d-block w-100" alt="...">
+                <img src="../../public/Pasta Image.jpg" class="d-block w-100" alt="...">
                 <div class="carousel-caption d-none d-md-block">
                   <h5>Third slide label</h5>
                   <p>Some representative placeholder content for the third slide.</p>
@@ -96,8 +101,7 @@
               </div>
 
               <div class="carousel-item">
-                <img src="../../public/Shakshuka Image.jpg"
-                  class="d-block w-100" alt="...">
+                <img src="../../public/Shakshuka Image.jpg" class="d-block w-100" alt="...">
                 <div class="carousel-caption d-none d-md-block">
                   <h5>Third slide label</h5>
                   <p>Some representative placeholder content for the third slide.</p>
@@ -232,12 +236,13 @@ main {
   max-width: 600px;
   margin: 0 auto 24px;
 }
+
 .carousel-section {
   max-width: 900px;
   margin: 0 auto 60px;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .explore-btn {
