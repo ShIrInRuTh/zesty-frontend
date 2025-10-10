@@ -30,10 +30,9 @@
         <main>
           <!-- HERO OVERLAY -->
           <div class="hero-overlay">
-            <h2>Cooking with Attitude</h2>
+            <h2>{{ randomTagline }}</h2>
             <p>
-              Discover bold flavours, creative recipes, and a pinch of sass. Zesty is your ultimate cooking
-              companion.
+              Zesty is your ultimate cooking companion.
             </p>
             <RouterLink to="/recipes" class="explore-btn">Explore Recipes</RouterLink>
           </div>
@@ -62,46 +61,16 @@
                   <div class="carousel-item active">
                     <img src="../../public/delicious-healthy-asian-food-gray-textured-background-with-copy-space.jpg"
                       class="d-block w-100" alt="..." />
-                    <!-- <div class="carousel-caption d-none d-md-block">
-                      <section class="hero">
-                        <h2>Cooking with Attitude</h2>
-                        <p>
-                          Discover bold flavours, creative recipes, and a pinch of sass. Zesty is your ultimate cooking
-                          companion.
-                        </p>
-                        <RouterLink to="/recipes" class="explore-btn">Explore Recipes</RouterLink>
-                      </section>
-                    </div> -->
                   </div>
 
                   <div class="carousel-item">
                     <img src="../../public/noodles-spicy-frying-pans-with-ingredients-black-cement-surface-top-view.jpg"
                       class="d-block w-100" alt="..." />
-                    <!-- <div class="carousel-caption d-none d-md-block">
-                      <section class="hero">
-                        <h2>Cooking with Attitude</h2>
-                        <p>
-                          Discover bold flavours, creative recipes, and a pinch of sass. Zesty is your ultimate cooking
-                          companion.
-                        </p>
-                        <RouterLink to="/recipes" class="explore-btn">Explore Recipes</RouterLink>
-                      </section>
-                    </div> -->
                   </div>
 
                   <div class="carousel-item">
                     <img src="../../public/top-view-fresh-delicious-vietnamese-food-table.jpg" class="d-block w-100"
                       alt="..." />
-                    <!-- <div class="carousel-caption d-none d-md-block">
-                      <section class="hero">
-                        <h2>Cooking with Attitude</h2>
-                        <p>
-                          Discover bold flavours, creative recipes, and a pinch of sass. Zesty is your ultimate cooking
-                          companion.
-                        </p>
-                        <RouterLink to="/recipes" class="explore-btn">Explore Recipes</RouterLink>
-                      </section>
-                    </div> -->
                   </div>
 
                   <!-- buttons to navigate the slides manually -->
@@ -120,6 +89,9 @@
               </div>
             </div>
           </section>
+
+          <!-- EVENT CARDS -->
+
         </main>
 
         <!-- FOOTER -->
@@ -146,10 +118,27 @@ import { RouterLink } from 'vue-router'
 export default {
   data() {
     return {
-      showIntro: true
+      showIntro: true,
+      randomTagline: "",
+      taglines: [        // list of random taglines
+        "Cooking with Attitude 💅",
+        "Spice Up Your Kitchen Adventures 🌶️",
+        "Where Bold Flavours Begin",
+        "Flavour, Fun, and a Pinch of Sass 🤌",
+        "Your Ultimate Cooking Companion",
+        "Whisk, Stir, Taste, Repeat",
+        "Unleash Your Inner Chef 🧑‍🍳",
+        "Cooking like a Chef, I'm a 5-star Michelin ✨",
+        "I'm COOKED 💀",
+        "What's cooking, good-looking? 😏"
+      ]
     };
   },
+
   mounted() {
+    // pick a random tagline
+    this.randomTagline = this.taglines[Math.floor(Math.random() * this.taglines.length)];
+
     // Keep intro for ~2.5 seconds, then fade it out
     setTimeout(() => {
       this.showIntro = false;
@@ -318,6 +307,7 @@ nav a .active {
 /* HERO SECTION */
 main {
   flex-grow: 1;
+  position: relative;
 }
 
 .hero {
@@ -340,22 +330,22 @@ main {
 
 .hero-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
   color: white;
   text-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
-  /* background: rgba(0, 0, 0, 0.3); subtle dark overlay */
-  z-index: 2;
-  padding: 2rem;
+  background: rgba(0, 0, 0, 0.35);
+  /* optional readability */
+  padding: 2rem 3rem;
+  border-radius: 1rem;
+  z-index: 5;
+  max-width: 80%;
 }
 
 .carousel-section {
+  position: relative;
   max-width: 900px;
   margin: 0 auto 60px;
   border-radius: 16px;
