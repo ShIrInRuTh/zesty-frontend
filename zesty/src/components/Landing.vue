@@ -28,7 +28,7 @@
           </div>
 
           <!-- CAROUSEL SECTION -->
-          <section class="carousel-section">
+          <section class="carousel-section" id="feature">
             <div class="mx-auto box">
               <!-- set the carousel -->
               <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
