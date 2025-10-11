@@ -1,10 +1,9 @@
 <script setup>
-import Landing from '../components/Landing.vue'
+import Recipe from '@/components/Recipe.vue'
 </script>
 
 <template>
   <main>
-    <Landing />
+    <Recipe />
   </main>
 </template>
-  

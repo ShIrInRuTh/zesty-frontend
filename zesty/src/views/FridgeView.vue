@@ -1,10 +1,9 @@
 <script setup>
-import Landing from '../components/Landing.vue'
+import Fridge from '@/components/Fridge.vue'
 </script>
 
 <template>
   <main>
-    <Landing />
+    <Fridge />
   </main>
 </template>
-  
