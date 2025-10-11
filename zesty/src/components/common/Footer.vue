@@ -13,7 +13,7 @@
       </div>
 
       <!-- Column 2: Contact Us -->
-      <div class="footer-column">
+      <div class="footer-column" id="contact">
         <h4>Contact Us</h4>
         <!-- <img src="../../public/club penguin.jpg" alt="Ecohive Logo" class="lols" /> -->
         <p>support@yoursite.com</p>
@@ -77,6 +77,7 @@ footer {
 
 .footer-desc h3 {
   font-weight: 700;
+  font-size: 15px;
   margin-bottom: 12px;
   color: #0c291c;
   margin: 0.5rem auto;
@@ -92,6 +93,7 @@ footer {
 
 .footer-column h3,
 .footer-column h4 {
+  font-size: 15px;
   font-weight: 700;
   margin-bottom: 12px;
   color: #0c291c;

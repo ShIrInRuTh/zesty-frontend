@@ -1,12 +1,9 @@
 <script setup>
-import Fridge from '@/components/fridge.vue';
-import fridge from '@/components/fridge.vue';
+import Fridge from '@/components/Fridge.vue'
 </script>
 
 <template>
   <main>
-    <Fridge/>
+    <Fridge />
   </main>
 </template>
-
-
