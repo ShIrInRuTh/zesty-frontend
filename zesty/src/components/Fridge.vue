@@ -7,30 +7,13 @@
  Lastly Link ALL to backend and db
  Pray it works -->
 
-
 <template>
   <div class="app">
     <!-- HEADER -->
-    <header>
-        <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous"> 
-      <div class="logo-brand">
-        <img src="/logo.png" alt="Zesty Logo" />
-        <h1>ZESTY</h1>
-      </div>
-
-      <nav>
-        <RouterLink to="/" exact>Home</RouterLink>
-        <RouterLink to="#features">Features</RouterLink>
-        <RouterLink to="#contact">Contact Us</RouterLink>
-        <RouterLink to="/login" class="login-btn">Login</RouterLink>
-      </nav>
-    </header>
-
+    <Header />
     <!-- FRIDGE-->
     <main class="fridge-main">
       <h2>Your Fridge</h2>
-
 
       <!-- Add + Remove buttons -->
       <div class="container-fluid">
@@ -50,7 +33,7 @@
             <strong>Manual:</strong>
             <div class="mb-2">
               <label>Item Name:</label>
-              <input type="text" v-model="item.name" class="form-control d-inline-block w-auto"/>
+              <input type="text" v-model="item.name" class="form-control d-inline-block w-auto" />
             </div>
             <div class="mb-2">
               <label>Qty:</label>
@@ -60,15 +43,28 @@
             </div>
             <div class="mb-2">
               <label>Category:</label>
-              <input type="text" v-model="item.category" class="form-control d-inline-block w-auto"/>
+              <input
+                type="text"
+                v-model="item.category"
+                class="form-control d-inline-block w-auto"
+              />
             </div>
             <div class="mb-2">
               <label>Expiry Date:</label>
-              <input type="date" v-model="item.expiryDate" class="form-control d-inline-block w-auto"/>
+              <input
+                type="date"
+                v-model="item.expiryDate"
+                class="form-control d-inline-block w-auto"
+              />
             </div>
             <div class="mb-2">
               <label>Date Added:</label>
-              <input type="date" v-model="item.dateAdded" class="form-control d-inline-block w-auto" readonly/>
+              <input
+                type="date"
+                v-model="item.dateAdded"
+                class="form-control d-inline-block w-auto"
+                readonly
+              />
             </div>
           </div>
 
@@ -77,7 +73,11 @@
             <strong>Automatic:</strong>
             <div class="mb-2">
               <label>Image Input:</label>
-              <input type="file" @change="onImageChange($event, index)" class="form-control d-inline-block w-auto"/>
+              <input
+                type="file"
+                @change="onImageChange($event, index)"
+                class="form-control d-inline-block w-auto"
+              />
             </div>
             <div class="mb-2">
               <label>Qty:</label>
@@ -87,15 +87,28 @@
             </div>
             <div class="mb-2">
               <label>Category:</label>
-              <input type="text" v-model="item.category" class="form-control d-inline-block w-auto"/>
+              <input
+                type="text"
+                v-model="item.category"
+                class="form-control d-inline-block w-auto"
+              />
             </div>
             <div class="mb-2">
               <label>Expiry Date:</label>
-              <input type="date" v-model="item.expiryDate" class="form-control d-inline-block w-auto"/>
+              <input
+                type="date"
+                v-model="item.expiryDate"
+                class="form-control d-inline-block w-auto"
+              />
             </div>
             <div class="mb-2">
               <label>Date Added:</label>
-              <input type="date" v-model="item.dateAdded" class="form-control d-inline-block w-auto" readonly/>
+              <input
+                type="date"
+                v-model="item.dateAdded"
+                class="form-control d-inline-block w-auto"
+                readonly
+              />
             </div>
           </div>
         </div>
@@ -104,8 +117,8 @@
       <!-- END of HIDDEN FORMS-------------------------------------------------------------------------------------------- -->
 
       <!-- CAT TABS -->
-       <!-- None  <576px, sm  ≥576px, md  ≥768px, lg  ≥992px, xl  ≥1200px, xxl  ≥1400px -->       
-       <!-- CATEGORY TABS -->
+      <!-- None  <576px, sm  ≥576px, md  ≥768px, lg  ≥992px, xl  ≥1200px, xxl  ≥1400px -->
+      <!-- CATEGORY TABS -->
       <div class="container mt-4">
         <ul class="nav nav-tabs nav-fill" role="tablist">
           <li class="nav-item" v-for="category in categories" :key="category">
@@ -115,11 +128,9 @@
               @click="activeCategory = category"
               role="tab"
             >
-            <!-- THIS IS THE TABS -->
+              <!-- THIS IS THE TABS -->
               {{ category }}
-              <span class="badge bg-light text-dark ms-1">
-                ({{ getCount(category) }})
-              </span>
+              <span class="badge bg-light text-dark ms-1"> ({{ getCount(category) }}) </span>
             </button>
           </li>
         </ul>
@@ -137,15 +148,15 @@
 
           <!-- searchbar -->
           <div class="d-flex align-items-center">
-          <label for="searchQuery" class="me-2 fw-semibold">Search:</label>
-          <input
-            type="text"
-            id="searchQuery"
-            v-model="searchQuery"
-            class="form-control w-auto"
-            placeholder="Enter item name"
-          />
-        </div>
+            <label for="searchQuery" class="me-2 fw-semibold">Search:</label>
+            <input
+              type="text"
+              id="searchQuery"
+              v-model="searchQuery"
+              class="form-control w-auto"
+              placeholder="Enter item name"
+            />
+          </div>
         </div>
       </div>
 
@@ -157,22 +168,26 @@
             v-for="(item, index) in sortedFilteredItems"
             :key="index"
           >
-            <div class="card h-100 shadow-sm" style="border-radius: 20px;">
-
+            <div class="card h-100 shadow-sm" style="border-radius: 20px">
               <!-- IMAGE HANDLER incase no img -->
-            <img
-              :src="getImageSrc(item)"
-              class="card-img-top"
-              :alt="item.name"
-              @error="event => event.target.src = getImageSrc({ category: item.category })"
-             style="padding: 30px;"/>
-
+              <img
+                :src="getImageSrc(item)"
+                class="card-img-top"
+                :alt="item.name"
+                @error="(event) => (event.target.src = getImageSrc({ category: item.category }))"
+                style="padding: 30px"
+              />
 
               <div class="card-body text-center">
                 <h5 class="card-title item-name">{{ item.name }}</h5>
                 <p class="card-text item-qty">Qty: {{ item.qty }}</p>
                 <p class="card-text item-date-added">Date Added: {{ item.dateAdded }}</p>
-                <p class="card-text item-expiry" :style="{ color: getExpiryColor(item.expiryDate) }">Expiry: {{ item.expiryDate }}</p>
+                <p
+                  class="card-text item-expiry"
+                  :style="{ color: getExpiryColor(item.expiryDate) }"
+                >
+                  Expiry: {{ item.expiryDate }}
+                </p>
                 <span class="badge bg-secondary text-capitalize">
                   {{ item.category }}
                 </span>
@@ -184,22 +199,17 @@
     </main>
 
     <!-- FOOTER -->
-    <footer>
-      <div class="footer-links">
-        <RouterLink to="/privacy">Privacy</RouterLink>
-        <RouterLink to="/contact">Contact</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </div>
-      <p>© 2025 Zesty • Crafted with ❤️ for food lovers</p>
-    </footer>
+    <Footer />
   </div>
 </template>
 
 <script setup>
 // ==============================================================  <Imports nonsense> [[[Please adjust for real data]]]
-import { ref, computed } from 'vue' 
+import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import fridgeItems from '../../public/sample_data' // sample data path        [[[CHANGE TO ACTUAL BACKEND LATER]]]
+import Header from './common/Header.vue'
+import Footer from './common/Footer.vue'
 
 // ======================================================================================================   <Tabbing wif number count>
 // tabs
@@ -209,9 +219,7 @@ const activeCategory = ref('All')
 // get tab count
 function getCount(category) {
   if (category === 'All') return fridgeItems.length
-  return fridgeItems.filter(item =>
-    item.category.toLowerCase() === category.toLowerCase()
-  ).length
+  return fridgeItems.filter((item) => item.category.toLowerCase() === category.toLowerCase()).length
 }
 // ======================================================================================================
 
@@ -225,16 +233,14 @@ const searchQuery = ref('')
 
 // filter items based on category and search
 const filteredItems = computed(() => {
-  return fridgeItems.filter(item => {
+  return fridgeItems.filter((item) => {
     // category filter
     const matchesCategory =
       activeCategory.value === 'All' ||
       item.category.toLowerCase() === activeCategory.value.toLowerCase()
 
     // search filter (case-insensitive)
-    const matchesSearch = item.name
-      .toLowerCase()
-      .includes(searchQuery.value.toLowerCase())
+    const matchesSearch = item.name.toLowerCase().includes(searchQuery.value.toLowerCase())
 
     return matchesCategory && matchesSearch
   })
@@ -277,38 +283,39 @@ function getExpiryColor(expiryDate) {
 function getImageSrc(item) {
   // If the item has a valid img path, use it
   if (item.img && item.img.trim() !== '') {
-    return item.img;
+    return item.img
   }
 
   // Otherwise, return a category-based placeholder
-  const category = (item.category || '').toLowerCase();
+  const category = (item.category || '').toLowerCase()
   switch (category) {
     case 'protein':
-      return '/Cat_Icons/Protein.png';
+      return '/Cat_Icons/Protein.png'
     case 'dairy':
-      return '/Cat_Icons/Dairy.png';
+      return '/Cat_Icons/Dairy.png'
     case 'dry-ration':
     case 'dry':
-      return '/Cat_Icons/Dry.png';
+      return '/Cat_Icons/Dry.png'
     case 'fruit':
-      return '/Cat_Icons/Fruit.png';
+      return '/Cat_Icons/Fruit.png'
     case 'sauces':
     case 'sauce':
-      return '/Cat_Icons/Sauces.png';
+      return '/Cat_Icons/Sauces.png'
     case 'vegetable':
-      return '/Cat_Icons/Vegetable.png';
+      return '/Cat_Icons/Vegetable.png'
     default:
-      return '/Cat_Icons/Dry.png'; // generic fallback
-  }}
+      return '/Cat_Icons/Dry.png' // generic fallback
+  }
+}
 
 // ======================================================================================================
 
 // ======================================================================================================  <FORM>
 
-  // Track added items (manual or automatic)
+// Track added items (manual or automatic)
 const addedItems = ref([])
 
-// Qty dropdown 
+// Qty dropdown
 const qtyOptions = ['pcs', 'ml', 'l', 'kg', 'g', 'cup', 'can']
 
 //Manual or Automatic
@@ -324,13 +331,13 @@ function promptItemType() {
 // Add item function
 function addItem(type) {
   addedItems.value.push({
-    type,          // 'manual' or 'automatic'
+    type, // 'manual' or 'automatic'
     name: '',
     qty: 'pcs',
     category: '',
     expiryDate: '',
     dateAdded: new Date().toISOString().split('T')[0], // auto today
-    img: null
+    img: null,
   })
 }
 
@@ -341,11 +348,7 @@ function onImageChange(event, index) {
     addedItems.value[index].img = URL.createObjectURL(file)
   }
 }
-
-
-
 </script>
-
 
 <style scoped>
 /* MAIN FRIDGE  */
@@ -402,89 +405,4 @@ main.fridge-main p {
   background-color: white;
   margin: 0;
 }
-
-/* HEADER */
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 32px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  background-color: #e0c6a6;
-  z-index: 10;
-}
-
-.logo-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.logo-brand img {
-  height: 48px;
-  width: auto;
-}
-
-.logo-brand h1 {
-  font-size: 24px;
-  font-weight: bold;
-  margin: 0;
-}
-
-nav a {
-  margin-left: 24px;
-  text-decoration: none;
-  font-weight: 600;
-  color: #44704d;
-  transition: color 0.3s;
-}
-
-nav a:hover {
-  color: gray;
-}
-
-.login-btn {
-  border: 1px solid black;
-  padding: 6px 16px;
-  border-radius: 9999px;
-}
-
-.login-btn:hover {
-  background-color: black;
-  color: white;
-}
-
-/* FOOTER */
-footer {
-  background-color: white;
-  text-align: center;
-  padding: 24px 16px;
-}
-
-.footer-links {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  margin-bottom: 12px;
-}
-
-.footer-links a {
-  text-decoration: none;
-  color: black;
-  transition: text-decoration 0.3s;
-}
-
-.footer-links a:hover {
-  text-decoration: underline;
-}
-
-footer p {
-  font-size: 14px;
-  opacity: 0.8;
-  margin: 0;
-}
 </style>
-
-
