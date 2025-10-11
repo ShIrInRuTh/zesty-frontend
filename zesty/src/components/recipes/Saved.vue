@@ -109,7 +109,7 @@ export default {
         },
         {
           title: 'Mango Sticky Rice',
-          image: '../../public/reciepes_discover/mango_sticky_rice.jpg',
+          image: '../../public/reciepes_discover/mango_rice.jpg',
           meta: [
             { icon: '⏲', text: '20m' },
             { icon: '🥭', text: 'Thai' },
