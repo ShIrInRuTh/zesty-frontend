@@ -7,3 +7,4 @@ import Landing from '../components/Landing.vue'
     <Landing />
   </main>
 </template>
+  
