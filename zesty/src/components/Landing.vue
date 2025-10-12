@@ -104,7 +104,6 @@
 import { RouterLink } from 'vue-router'
 import Header from './common/Header.vue'
 import Footer from './common/Footer.vue'
-import Header from './common/Header.vue';
 </script>
 
 <script>
