@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div class="app" id="start">
     <!-- HEADER -->
     <Header />
 
@@ -20,13 +20,12 @@
           <!-- CAROUSEL SECTION -->
           <section class="carousel-section">
             <div class="mx-auto box">
-
               <!-- HERO OVERLAY -->
               <div class="hero-overlay">
                 <h2>{{ randomTagline }}</h2>
                 <p>
-                  Discover bold flavours, creative recipes, and a pinch of sass. Zesty is your ultimate
-                  cooking companion.
+                  Discover bold flavours, creative recipes, and a pinch of sass. Zesty is your
+                  ultimate cooking companion.
                 </p>
                 <RouterLink to="/recipes" class="explore-btn">Explore Recipes</RouterLink>
               </div>
@@ -34,34 +33,65 @@
               <!-- set the carousel -->
               <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-indicators">
-                  <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
-                    aria-current="true" aria-label="Slide 1"></button>
-                  <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
-                    aria-label="Slide 2"></button>
-                  <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
-                    aria-label="Slide 3"></button>
+                  <button
+                    type="button"
+                    data-bs-target="#carouselExampleCaptions"
+                    data-bs-slide-to="0"
+                    class="active"
+                    aria-current="true"
+                    aria-label="Slide 1"
+                  ></button>
+                  <button
+                    type="button"
+                    data-bs-target="#carouselExampleCaptions"
+                    data-bs-slide-to="1"
+                    aria-label="Slide 2"
+                  ></button>
+                  <button
+                    type="button"
+                    data-bs-target="#carouselExampleCaptions"
+                    data-bs-slide-to="2"
+                    aria-label="Slide 3"
+                  ></button>
                 </div>
 
                 <div class="carousel-inner">
                   <div class="carousel-item active">
-                    <img src="../../public/delicious-healthy-asian-food-gray-textured-background-with-copy-space.jpg"
-                      class="d-block w-100" alt="..." />
+                    <img
+                      src="../../public/delicious-healthy-asian-food-gray-textured-background-with-copy-space.jpg"
+                      class="d-block w-100"
+                      alt="..."
+                    />
                   </div>
                   <div class="carousel-item">
-                    <img src="../../public/noodles-spicy-frying-pans-with-ingredients-black-cement-surface-top-view.jpg"
-                      class="d-block w-100" alt="..." />
+                    <img
+                      src="../../public/noodles-spicy-frying-pans-with-ingredients-black-cement-surface-top-view.jpg"
+                      class="d-block w-100"
+                      alt="..."
+                    />
                   </div>
                   <div class="carousel-item">
-                    <img src="../../public/top-view-fresh-delicious-vietnamese-food-table.jpg" class="d-block w-100"
-                      alt="..." />
+                    <img
+                      src="../../public/top-view-fresh-delicious-vietnamese-food-table.jpg"
+                      class="d-block w-100"
+                      alt="..."
+                    />
                   </div>
-                  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
-                    data-bs-slide="prev">
+                  <button
+                    class="carousel-control-prev"
+                    type="button"
+                    data-bs-target="#carouselExampleCaptions"
+                    data-bs-slide="prev"
+                  >
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Previous</span>
                   </button>
-                  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
-                    data-bs-slide="next">
+                  <button
+                    class="carousel-control-next"
+                    type="button"
+                    data-bs-target="#carouselExampleCaptions"
+                    data-bs-slide="next"
+                  >
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Next</span>
                   </button>
@@ -71,30 +101,31 @@
           </section>
 
           <!-- EVENT CARDS -->
-          <div class="container" id="features">
+          <div class="container" id="feature">
             <div class="row">
               <div class="col">
-                <h2>
-                  Features
-                </h2>
+                <h2>Features</h2>
               </div>
             </div>
 
             <div class="row align-items-center mb-5">
-
               <!-- FEATURE 1 -->
               <div class="col">
-                <div class="card" style="width: 25rem;">
+                <div class="card" style="width: 25rem">
                   <div class="row g-0">
                     <div class="col">
-                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="...">
+                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="..." />
                     </div>
                     <div class="col-md-8">
                       <div class="card-body">
                         <h5 class="card-title">Card title</h5>
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                          additional content.</p>
-                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                        <p class="card-text">
+                          This is a wider card with supporting text below as a natural lead-in to
+                          additional content.
+                        </p>
+                        <p class="card-text">
+                          <small class="text-muted">Last updated 3 mins ago</small>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -103,17 +134,21 @@
 
               <!-- FEATURE 2 -->
               <div class="col">
-                <div class="card" style="width: 25rem;">
+                <div class="card" style="width: 25rem">
                   <div class="row g-0">
                     <div class="col">
-                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="...">
+                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="..." />
                     </div>
                     <div class="col-md-8">
                       <div class="card-body">
                         <h5 class="card-title">Card title</h5>
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                          additional content.</p>
-                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                        <p class="card-text">
+                          This is a wider card with supporting text below as a natural lead-in to
+                          additional content.
+                        </p>
+                        <p class="card-text">
+                          <small class="text-muted">Last updated 3 mins ago</small>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -122,17 +157,21 @@
 
               <!-- FEATURE 3 -->
               <div class="col">
-                <div class="card" style="width: 25rem;">
+                <div class="card" style="width: 25rem">
                   <div class="row g-0">
                     <div class="col">
-                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="...">
+                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="..." />
                     </div>
                     <div class="col-md-8">
                       <div class="card-body">
                         <h5 class="card-title">Card title</h5>
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                          additional content.</p>
-                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                        <p class="card-text">
+                          This is a wider card with supporting text below as a natural lead-in to
+                          additional content.
+                        </p>
+                        <p class="card-text">
+                          <small class="text-muted">Last updated 3 mins ago</small>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -141,20 +180,23 @@
             </div>
 
             <div class="row align-items-center mb-5">
-
               <!-- FEATURE 4 -->
               <div class="col">
-                <div class="card" style="width: 25rem;">
+                <div class="card" style="width: 25rem">
                   <div class="row g-0">
                     <div class="col">
-                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="...">
+                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="..." />
                     </div>
                     <div class="col-md-8">
                       <div class="card-body">
                         <h5 class="card-title">Card title</h5>
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                          additional content.</p>
-                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                        <p class="card-text">
+                          This is a wider card with supporting text below as a natural lead-in to
+                          additional content.
+                        </p>
+                        <p class="card-text">
+                          <small class="text-muted">Last updated 3 mins ago</small>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -163,17 +205,21 @@
 
               <!-- FEATURE 5 -->
               <div class="col">
-                <div class="card" style="width: 25rem;">
+                <div class="card" style="width: 25rem">
                   <div class="row g-0">
                     <div class="col">
-                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="...">
+                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="..." />
                     </div>
                     <div class="col-md-8">
                       <div class="card-body">
                         <h5 class="card-title">Card title</h5>
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                          additional content.</p>
-                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                        <p class="card-text">
+                          This is a wider card with supporting text below as a natural lead-in to
+                          additional content.
+                        </p>
+                        <p class="card-text">
+                          <small class="text-muted">Last updated 3 mins ago</small>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -182,17 +228,21 @@
 
               <!-- FEATURE 6 -->
               <div class="col">
-                <div class="card" style="width: 25rem;">
+                <div class="card" style="width: 25rem">
                   <div class="row g-0">
                     <div class="col">
-                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="...">
+                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="..." />
                     </div>
                     <div class="col-md-8">
                       <div class="card-body">
                         <h5 class="card-title">Card title</h5>
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                          additional content.</p>
-                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                        <p class="card-text">
+                          This is a wider card with supporting text below as a natural lead-in to
+                          additional content.
+                        </p>
+                        <p class="card-text">
+                          <small class="text-muted">Last updated 3 mins ago</small>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -201,20 +251,23 @@
             </div>
 
             <div class="row align-items-center mb-5">
-
               <!-- FEATURE 7 -->
               <div class="col-4">
-                <div class="card" style="width: 25rem;">
+                <div class="card" style="width: 25rem">
                   <div class="row g-0">
                     <div class="col">
-                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="...">
+                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="..." />
                     </div>
                     <div class="col-md-8">
                       <div class="card-body">
                         <h5 class="card-title">Card title</h5>
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                          additional content.</p>
-                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                        <p class="card-text">
+                          This is a wider card with supporting text below as a natural lead-in to
+                          additional content.
+                        </p>
+                        <p class="card-text">
+                          <small class="text-muted">Last updated 3 mins ago</small>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -223,31 +276,31 @@
 
               <!-- FEATURE 8 -->
               <div class="col">
-                <div class="card" style="width: 25rem;">
+                <div class="card" style="width: 25rem">
                   <div class="row g-0">
                     <div class="col">
-                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="...">
+                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="..." />
                     </div>
                     <div class="col-md-8">
                       <div class="card-body">
                         <h5 class="card-title">Card title</h5>
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                          additional content.</p>
-                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                        <p class="card-text">
+                          This is a wider card with supporting text below as a natural lead-in to
+                          additional content.
+                        </p>
+                        <p class="card-text">
+                          <small class="text-muted">Last updated 3 mins ago</small>
+                        </p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-
             </div>
-
           </div>
-
         </main>
         <!-- FOOTER -->
         <Footer />
-
       </div>
     </transition>
   </div>
@@ -264,25 +317,26 @@ export default {
   data() {
     return {
       showIntro: true,
-      randomTagline: "",
-      taglines: [        // list of random taglines
-        "Cooking with Attitude 💅",
-        "Spice Up Your Kitchen Adventures 🌶️",
-        "Where Bold Flavours Begin",
-        "Flavour, Fun, and a Pinch of Sass 🤌",
-        "Your Ultimate Cooking Companion",
-        "Whisk, Stir, Taste, Repeat",
-        "Unleash Your Inner Chef 🧑‍🍳",
+      randomTagline: '',
+      taglines: [
+        // list of random taglines
+        'Cooking with Attitude 💅',
+        'Spice Up Your Kitchen Adventures 🌶️',
+        'Where Bold Flavours Begin',
+        'Flavour, Fun, and a Pinch of Sass 🤌',
+        'Your Ultimate Cooking Companion',
+        'Whisk, Stir, Taste, Repeat',
+        'Unleash Your Inner Chef 🧑‍🍳',
         "Cooking like a Chef, I'm a 5-star Michelin ✨",
         "I'm COOKED 💀",
-        "What's cooking, good-looking? 😏"
-      ]
-    };
+        "What's cooking, good-looking? 😏",
+      ],
+    }
   },
 
   mounted() {
     // pick a random tagline
-    this.randomTagline = this.taglines[Math.floor(Math.random() * this.taglines.length)];
+    this.randomTagline = this.taglines[Math.floor(Math.random() * this.taglines.length)]
 
     // Keep intro for ~2.5 seconds, then fade it out
     setTimeout(() => {
@@ -313,9 +367,9 @@ export default {
   background:
     radial-gradient(ellipse at 60% 40%, rgba(255, 255, 255, 0.24) 0%, transparent 60%),
     /* glossy highlight */
-    radial-gradient(ellipse at 40% 70%, rgba(255, 255, 255, 0.12) 0%, transparent 65%),
+      radial-gradient(ellipse at 40% 70%, rgba(255, 255, 255, 0.12) 0%, transparent 65%),
     /* bottom-left soft gloss */
-    radial-gradient(circle at 50% 47%, #ffece0 0%, #ffd8af 45%, #ffba7c 78%, #ffb786 100%);
+      radial-gradient(circle at 50% 47%, #ffece0 0%, #ffd8af 45%, #ffba7c 78%, #ffb786 100%);
   background-color: #fff1e5;
   color: #3b2f2f;
   display: flex;
