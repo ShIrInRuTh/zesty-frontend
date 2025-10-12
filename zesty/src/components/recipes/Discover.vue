@@ -341,7 +341,7 @@ const searchQuery = ref('')
   /* Outer shadow removed */
   box-shadow:
     inset 0 0 40px 15px #ffebbc,
-    inset 0 0 60px 10px #daa86e;
+    inset 0 0 60px 10px #ff8012;
 }
 
 .kc-image-wrap {
@@ -492,5 +492,10 @@ const searchQuery = ref('')
 .kc-like-btn.liked {
   background: #ffcad3;
   color: #e44a5c;
+}
+
+.kc-like-btn:hover {
+  background: #e44a5c;
+  color: white;
 }
 </style>
