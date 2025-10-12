@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div class="app" id="start">
     <!-- HEADER -->
     <Header />
 
@@ -101,7 +101,7 @@
           </section>
 
           <!-- EVENT CARDS -->
-          <div class="container" id="features">
+          <div class="container" id="feature">
             <div class="row">
               <div class="col">
                 <h2>Features</h2>
