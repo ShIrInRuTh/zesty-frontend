@@ -17,19 +17,20 @@
       <div v-if="!showIntro" class="landing">
         <!-- HERO SECTION -->
         <main>
-          <!-- HERO OVERLAY -->
-          <div class="hero-overlay">
-            <h2>{{ randomTagline }}</h2>
-            <p>
-              Discover bold flavours, creative recipes, and a pinch of sass. Zesty is your ultimate
-              cooking companion.
-            </p>
-            <RouterLink to="/recipes" class="explore-btn">Explore Recipes</RouterLink>
-          </div>
-
           <!-- CAROUSEL SECTION -->
-          <section class="carousel-section" id="feature">
+          <section class="carousel-section">
             <div class="mx-auto box">
+
+              <!-- HERO OVERLAY -->
+              <div class="hero-overlay">
+                <h2>{{ randomTagline }}</h2>
+                <p>
+                  Discover bold flavours, creative recipes, and a pinch of sass. Zesty is your ultimate
+                  cooking companion.
+                </p>
+                <RouterLink to="/recipes" class="explore-btn">Explore Recipes</RouterLink>
+              </div>
+
               <!-- set the carousel -->
               <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-indicators">
@@ -70,19 +71,171 @@
           </section>
 
           <!-- EVENT CARDS -->
-          <div class="container">
-
+          <div class="container" id="features">
             <div class="row">
-
               <div class="col">
-                <div class="card" style="width: 18rem;">
-                  <img src="../../public/logo.png" class="card-img-top" alt="...">
-                  <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                      card's
-                      content.</p>
-                    <a href="http://sunjun.site" class="btn btn-primary">Go somewhere</a>
+                <h2>
+                  Features
+                </h2>
+              </div>
+            </div>
+
+            <div class="row align-items-center mb-5">
+
+              <!-- FEATURE 1 -->
+              <div class="col">
+                <div class="card" style="width: 25rem;">
+                  <div class="row g-0">
+                    <div class="col">
+                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="card-body">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                          additional content.</p>
+                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- FEATURE 2 -->
+              <div class="col">
+                <div class="card" style="width: 25rem;">
+                  <div class="row g-0">
+                    <div class="col">
+                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="card-body">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                          additional content.</p>
+                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- FEATURE 3 -->
+              <div class="col">
+                <div class="card" style="width: 25rem;">
+                  <div class="row g-0">
+                    <div class="col">
+                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="card-body">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                          additional content.</p>
+                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row align-items-center mb-5">
+
+              <!-- FEATURE 4 -->
+              <div class="col">
+                <div class="card" style="width: 25rem;">
+                  <div class="row g-0">
+                    <div class="col">
+                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="card-body">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                          additional content.</p>
+                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- FEATURE 5 -->
+              <div class="col">
+                <div class="card" style="width: 25rem;">
+                  <div class="row g-0">
+                    <div class="col">
+                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="card-body">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                          additional content.</p>
+                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- FEATURE 6 -->
+              <div class="col">
+                <div class="card" style="width: 25rem;">
+                  <div class="row g-0">
+                    <div class="col">
+                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="card-body">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                          additional content.</p>
+                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row align-items-center mb-5">
+
+              <!-- FEATURE 7 -->
+              <div class="col-4">
+                <div class="card" style="width: 25rem;">
+                  <div class="row g-0">
+                    <div class="col">
+                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="card-body">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                          additional content.</p>
+                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- FEATURE 8 -->
+              <div class="col">
+                <div class="card" style="width: 25rem;">
+                  <div class="row g-0">
+                    <div class="col">
+                      <img src="../../public/logo.png" class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="card-body">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                          additional content.</p>
+                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -244,7 +397,7 @@ export default {
   background: #fff;
   color: #333;
   text-align: center;
-  padding-top: 20vh;
+  padding-top: 5vh;
 }
 
 @keyframes zoomOut {
@@ -320,6 +473,8 @@ main {
   text-align: center;
   color: white;
   text-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
+  background-color: rgba(224, 198, 166, 0.9);
+  border-radius: 10px;
   z-index: 2;
   padding: 2rem;
 }
