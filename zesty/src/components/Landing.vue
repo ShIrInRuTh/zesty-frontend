@@ -1,9 +1,7 @@
 <template>
   <div class="app">
     <!-- HEADER -->
-    <Header>
-
-    </Header>
+    <Header />
 
     <!-- Dramatic Intro Screen -->
     <transition name="fade">
@@ -95,9 +93,8 @@
 
         </main>
         <!-- FOOTER -->
-        <Footer>
+        <Footer />
 
-        </Footer>
       </div>
     </transition>
   </div>
