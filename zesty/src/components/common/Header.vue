@@ -1,6 +1,6 @@
 <template>
   <!-- HEADER -->
-  <header id="start">
+  <header>
     <div class="logo-brand">
       <img src="/logo.png" alt="Zesty Logo" />
     </div>
@@ -12,9 +12,7 @@
         <RouterLink :to="{ path: '/', hash: '#start' }" :class="{ active: isActive('#start') }"
           >Home</RouterLink
         >
-        <RouterLink
-          :to="{ path: '/', hash: '#features' }"
-          :class="{ active: isActive('#features') }"
+        <RouterLink :to="{ path: '/', hash: '#feature' }" :class="{ active: isActive('#feature') }"
           >Features</RouterLink
         >
         <RouterLink :to="{ path: '/', hash: '#contact' }" :class="{ active: isActive('#contact') }"
@@ -89,10 +87,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRoute, RouterLink } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
+const router = useRouter()
 const menuOpen = ref(false)
 const user = ref(localStorage.getItem('username'))
 
@@ -100,14 +99,37 @@ const toggleMenu = () => {
   menuOpen.value = !menuOpen.value
 }
 
-const isActive = (path) => {
-  if (path.startsWith('#')) {
-    return route.hash === path || (!route.hash && path === '#start') ? 'active' : ''
+// -- Improved isActive function --
+const isActive = (target) => {
+  if (target.startsWith('#')) {
+    // For sections with hash navigation (e.g. #feature)
+    // Default to #start if no hash present
+    const currentHash = route.hash || '#start'
+    return currentHash === target
   }
-  return route.path === path ? 'active' : ''
+  if (target === '/') {
+    // Active when on exact home path and no hash (or hash is #start)
+    return route.path === '/' && (!route.hash || route.hash === '' || route.hash === '#start')
+  }
+  // For all other paths: exact match
+  return route.path === target
 }
 
-// Live update on login/logout
+onMounted(() => {
+  if (window.location.hash) {
+    const hash = window.location.hash
+    const element = document.querySelector(hash)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+    setTimeout(() => {
+      // This will update both the address bar and the Vue Router's current route
+      router.replace({ path: window.location.pathname })
+    }, 400)
+  }
+})
+
+// Listen for login/logout updates via storage events
 window.addEventListener('storage', () => {
   user.value = localStorage.getItem('username')
 })
