@@ -1,34 +1,8 @@
 <template>
   <div class="app">
     <!-- HEADER -->
-    <header>
-      <div class="logo-brand">
-        <img src="/logo.png" alt="Zesty Logo" />
-        <h1>ZESTY</h1>
-      </div>
-
-      <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-        crossorigin="anonymous"
-      />
-
-      <nav>
-        <RouterLink to="/userhome" class="active" exact>Home</RouterLink>
-        <RouterLink to="/fridge">My Fridge</RouterLink>
-        <RouterLink to="/recipes">Recipes</RouterLink>
-
-        <div class="user-dropdown">
-          <button class="user-icon-btn">👤</button>
-          <div class="dropdown-content">
-            <a href="#">My Account</a>
-            <a href="#">Settings</a>
-            <a href="#">Log out</a>
-          </div>
-        </div>
-      </nav>
-    </header>
+     <Header/>
+    
 
     <!-- Welcome section -->
     <div class="user-home-container">
@@ -49,23 +23,23 @@
 
       <!-- 3 Feature Cards -->
       <section class="feature-cards">
-        <div class="card-item">
+        <RouterLink to="/fridge" class="card-item">
           <img src="/fridge-icon.png" alt="Fridge Icon" class="card-icon" />
           <h3 class="card-title">My Fridge</h3>
           <p class="card-subtitle">Your Fridge, your rules</p>
-        </div>
+        </RouterLink>
 
-        <div class="card-item">
+        <RouterLink to="/recipe" class="card-item">
           <img src="/recipes-icon.png" alt="Recipe Book Icon" class="card-icon" />
           <h3 class="card-title">My Recipes</h3>
           <p class="card-subtitle">View your Cookbook</p>
-        </div>
+        </RouterLink>
 
-        <div class="card-item">
+        <RouterLink to="/settings" class="card-item">
           <img src="/settings-icon.png" alt="Settings Icon" class="card-icon" />
           <h3 class="card-title">Settings</h3>
           <p class="card-subtitle">Tweak to your preferences</p>
-        </div>
+        </RouterLink>
       </section>
 
       <!-- Graveyard Section -->
@@ -93,25 +67,21 @@
               </tr>
             </tbody>
           </table>
-          <div class="view-more">View more >></div>
+          <RouterLink to="/fridge" class="view-more">View more >></RouterLink>
         </div>
       </section>
     </div>
     <!-- FOOTER -->
-    <footer>
-      <div class="footer-links">
-        <RouterLink to="/privacy">Privacy</RouterLink>
-        <RouterLink to="/contact">Contact</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </div>
-      <p>© 2025 Zesty • Crafted with ❤️ for food lovers</p>
-    </footer>
+    <Footer/>
   </div>
 </template>
 
 <script setup>
 import { RouterLink } from 'vue-router'
+import Header from './common/Header.vue'
+import Footer from './common/Footer.vue'
 </script>
+
 
 <style scoped>
 /* GENERAL STYLES */
@@ -125,99 +95,6 @@ import { RouterLink } from 'vue-router'
   /* all text black */
   background-color: white;
   margin: 0;
-}
-
-/* HEADER */
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 32px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  background-color: #e0c6a6;
-  z-index: 10;
-}
-
-.logo-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.logo-brand img {
-  height: 48px;
-  width: auto;
-}
-
-.logo-brand h1 {
-  font-size: 24px;
-  font-weight: bold;
-  margin: 0;
-}
-
-nav a {
-  margin-left: 24px;
-  text-decoration: none;
-  font-weight: 600;
-  color: #44704d;
-  transition: color 0.3s;
-}
-
-nav a:hover {
-  color: gray;
-}
-
-nav a .active {
-  color: gray;
-}
-
-.user-dropdown {
-  position: relative;
-  display: inline-block;
-  margin-left: 24px;
-  z-index: 20;
-}
-
-.user-icon-btn {
-  background-color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.dropdown-content {
-  display: none; /* Hidden by default */
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background-color: white;
-  min-width: 130px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  z-index: 21;
-  padding: 5px 0;
-  border: 1px solid #ddd;
-}
-
-.user-dropdown:hover .dropdown-content {
-  display: block; /* Show on hover */
-}
-
-.dropdown-content a {
-  color: black;
-  padding: 8px 16px;
-  text-decoration: none;
-  display: block;
-  font-size: 14px;
-}
-
-.dropdown-content a:hover {
-  background-color: #f1f1f1;
 }
 
 /* --- FOOD GRAVEYARD --- */
@@ -323,33 +200,4 @@ tbody tr:nth-child(even) {
   margin: 0;
 }
 
-/* FOOTER */
-footer {
-  background-color: white;
-  text-align: center;
-  padding: 24px 16px;
-}
-
-.footer-links {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  margin-bottom: 12px;
-}
-
-.footer-links a {
-  text-decoration: none;
-  color: black;
-  transition: text-decoration 0.3s;
-}
-
-.footer-links a:hover {
-  text-decoration: underline;
-}
-
-footer p {
-  font-size: 14px;
-  opacity: 0.8;
-  margin: 0;
-}
 </style>

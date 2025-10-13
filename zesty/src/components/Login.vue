@@ -1,125 +1,121 @@
 <template>
-    <div class="auth-page">
-      <div class="logo-container">
-        <img src="/logo.png" alt="Zesty Logo" />
-      </div>
-  
-      <div class="form-container">
-        <h2>Welcome Back</h2>
-        <p>Log in to your account</p>
-  
-        <form @submit.prevent="handleLogin">
-          <div class="input-group">
-            <label for="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              v-model="email"
-              placeholder="Enter a valid email address"
-              required
-            />
-            <span v-if="errors.email" class="error-message">{{
-              errors.email
-            }}</span>
-          </div>
-  
-          <div class="input-group">
-            <label for="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              v-model="password"
-              placeholder="Enter your password"
-              required
-            />
-            <span v-if="errors.password" class="error-message">{{
-              errors.password
-            }}</span>
-          </div>
-  
-          <div class="forgot-password">
-            <a href="#" @click.prevent="handleForgotPassword">Forgot password?</a>
-          </div>
-  
-          <div class="checkbox-group">
-            <input type="checkbox" id="rememberMe" v-model="rememberMe" />
-            <label for="rememberMe">Remember me</label>
-          </div>
-  
-          <button type="submit" class="btn">Log in</button>
-  
-          <div class="switch-text">
-            Don’t have an account?
-            <RouterLink to="/signup">Sign up</RouterLink>
-          </div>
-        </form>
-      </div>
+  <div class="auth-page">
+    <div class="logo-container">
+      <img src="/logo.png" alt="Zesty Logo" />
     </div>
-  </template>
-  
-  <script setup>
-  import { reactive, ref } from "vue";
-  import { useRouter } from "vue-router";
-  
-  const router = useRouter();
-  
-  const email = ref("");
-  const password = ref("");
-  const rememberMe = ref(false);
-  const errors = reactive({ email: "", password: "" });
-  
-  function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  }
-  
-  function handleLogin() {
-    errors.email = "";
-    errors.password = "";
-  
-    if (!validateEmail(email.value)) {
-      errors.email = "Please enter a valid email";
-    }
-    if (password.value.trim() === "") {
-      errors.password = "Password is required";
-    }
-  
-    if (!errors.email && !errors.password) {
-      alert(`Login successful!\nEmail: ${email.value}`);
-      setTimeout(() => router.push("/home"), 1000);
-    }
-  }
-  
-  function handleForgotPassword() {
-    alert("Password reset link would be sent to your email!");
-  }
-  </script>
-  
-  <style scoped>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
 
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: #f8f1e3;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 40px 20px;
-        position: relative;
-        overflow-x: hidden;
-    } 
+    <div class="form-container">
+      <h2>Welcome Back</h2>
+      <p>Log in to your account</p>
+
+      <form @submit.prevent="handleLogin">
+        <div class="input-group">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            v-model="email"
+            placeholder="Enter a valid email address"
+            required
+          />
+          <span v-if="errors.email" class="error-message">{{ errors.email }}</span>
+        </div>
+
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            v-model="password"
+            placeholder="Enter your password"
+            required
+          />
+          <span v-if="errors.password" class="error-message">{{ errors.password }}</span>
+        </div>
+
+        <div class="forgot-password">
+          <a href="#" @click.prevent="handleForgotPassword">Forgot password?</a>
+        </div>
+
+        <div class="checkbox-group">
+          <input type="checkbox" id="rememberMe" v-model="rememberMe" />
+          <label for="rememberMe">Remember me</label>
+        </div>
+
+        <button type="submit" class="btn">Log in</button>
+
+        <div class="switch-text">
+          Don’t have an account?
+          <RouterLink to="/signup">Sign up</RouterLink>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const email = ref('')
+const password = ref('')
+const rememberMe = ref(false)
+const errors = reactive({ email: '', password: '' })
+
+function validateEmail(email) {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return re.test(email)
+}
+
+function handleLogin() {
+  errors.email = ''
+  errors.password = ''
+
+  if (!validateEmail(email.value)) {
+    errors.email = 'Please enter a valid email'
+  }
+  if (password.value.trim() === '') {
+    errors.password = 'Password is required'
+  }
+
+  if (!errors.email && !errors.password) {
+    alert(`Login successful!\nEmail: ${email.value}`)
+    setTimeout(() => router.push('/userhome'), 1000)
+  }
+}
+
+function handleForgotPassword() {
+  alert('Password reset link would be sent to your email!')
+}
+</script>
+
+<style scoped>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f8f1e3;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  position: relative;
+  overflow-x: hidden;
+}
 
 /* Decorative food images */
-    .decoration {
-        position: fixed;
-        z-index: 1;
-    }
+.decoration {
+  position: fixed;
+  z-index: 1;
+}
 
 /* .decoration.top-right {
     top: 20px;
@@ -145,217 +141,217 @@
     background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180"><ellipse cx="90" cy="60" rx="25" ry="30" fill="%23ff69b4"/><path d="M70 100 Q90 80 110 100 Q90 120 70 100" fill="%23ffd93d"/><rect x="85" y="120" width="10" height="40" fill="%23228b22"/></svg>') no-repeat;
 } */
 
-    .logo-container {
-        width: 180px;
-        height: 180px;
-        background: #44704D;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 40px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        z-index: 2;
-        position: relative;
-        overflow: hidden;
-    }
+.logo-container {
+  width: 180px;
+  height: 180px;
+  background: #44704d;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  z-index: 2;
+  position: relative;
+  overflow: hidden;
+}
 
-    .logo-container img {
-        width: 60%;
-        height: 60%;
-        object-fit: cover;
-    }
+.logo-container img {
+  width: 60%;
+  height: 60%;
+  object-fit: cover;
+}
 
-    .form-container {
-        background: white;
-        border-radius: 30px;
-        padding: 50px 60px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 500px;
-        position: relative;
-        z-index: 2;
-    }
+.form-container {
+  background: white;
+  border-radius: 30px;
+  padding: 50px 60px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+  position: relative;
+  z-index: 2;
+}
 
-    .form-wrapper {
-        position: relative;
-        overflow: hidden;
-    }
+.form-wrapper {
+  position: relative;
+  overflow: hidden;
+}
 
-    .form-section {
-        transition: opacity 0.3s ease, transform 0.3s ease;
-    }
+.form-section {
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
 
-    .form-section.hidden {
-        display: none;
-    }
+.form-section.hidden {
+  display: none;
+}
 
-    .form-section h2 {
-        font-size: 28px;
-        text-align: center;
-        margin-bottom: 10px;
-        color: #333;
-    }
+.form-section h2 {
+  font-size: 28px;
+  text-align: center;
+  margin-bottom: 10px;
+  color: #333;
+}
 
-    .form-section p {
-        text-align: center;
-        color: #666;
-        margin-bottom: 35px;
-        font-size: 15px;
-    }
+.form-section p {
+  text-align: center;
+  color: #666;
+  margin-bottom: 35px;
+  font-size: 15px;
+}
 
-    .input-group {
-        margin-bottom: 25px;
-    }
+.input-group {
+  margin-bottom: 25px;
+}
 
-    .input-group label {
-        display: block;
-        margin-bottom: 8px;
-        color: #333;
-        font-weight: 500;
-        font-size: 15px;
-    }
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 500;
+  font-size: 15px;
+}
 
-    .input-group input {
-        width: 100%;
-        padding: 15px 20px;
-        border: none;
-        background: #e8e8e8;
-        border-radius: 25px;
-        font-size: 15px;
-        transition: all 0.3s;
-        outline: none;
-    }
+.input-group input {
+  width: 100%;
+  padding: 15px 20px;
+  border: none;
+  background: #e8e8e8;
+  border-radius: 25px;
+  font-size: 15px;
+  transition: all 0.3s;
+  outline: none;
+}
 
-    .input-group input:focus {
-        background: #ddd;
-        box-shadow: 0 0 0 3px rgba(68, 112, 77, 0.1);
-    }
+.input-group input:focus {
+  background: #ddd;
+  box-shadow: 0 0 0 3px rgba(68, 112, 77, 0.1);
+}
 
-    .input-group input::placeholder {
-        color: #999;
-    }
+.input-group input::placeholder {
+  color: #999;
+}
 
-    .error-message {
-        color: #ff4757;
-        font-size: 12px;
-        margin-top: 5px;
-        display: none;
-    }
+.error-message {
+  color: #ff4757;
+  font-size: 12px;
+  margin-top: 5px;
+  display: none;
+}
 
-    .password-strength {
-        height: 4px;
-        border-radius: 2px;
-        margin-top: 8px;
-        transition: all 0.3s;
-    }
+.password-strength {
+  height: 4px;
+  border-radius: 2px;
+  margin-top: 8px;
+  transition: all 0.3s;
+}
 
-    .strength-weak { 
-        background: #ff4757; 
-        width: 33%;
-    }
+.strength-weak {
+  background: #ff4757;
+  width: 33%;
+}
 
-    .strength-medium { 
-        background: #ffa502; 
-        width: 66%;
-    }
+.strength-medium {
+  background: #ffa502;
+  width: 66%;
+}
 
-    .strength-strong { 
-        background: #26de81; 
-        width: 100%;
-    }
+.strength-strong {
+  background: #26de81;
+  width: 100%;
+}
 
-    .btn {
-        width: 100%;
-        padding: 15px;
-        background: #44704D;
-        color: white;
-        border: none;
-        border-radius: 25px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s;
-        margin-top: 10px;
-    }
+.btn {
+  width: 100%;
+  padding: 15px;
+  background: #44704d;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 10px;
+}
 
-    .btn:hover {
-        background: #3a5f42;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(68, 112, 77, 0.3);
-    }
+.btn:hover {
+  background: #3a5f42;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(68, 112, 77, 0.3);
+}
 
-    .btn:active {
-        transform: translateY(0);
-    }
+.btn:active {
+  transform: translateY(0);
+}
 
-    .switch-text {
-        text-align: center;
-        margin-top: 25px;
-        color: #666;
-        font-size: 14px;
-    }
+.switch-text {
+  text-align: center;
+  margin-top: 25px;
+  color: #666;
+  font-size: 14px;
+}
 
-    .switch-text a {
-        color: #44704D;
-        font-weight: 600;
-        text-decoration: none;
-        cursor: pointer;
-    }
+.switch-text a {
+  color: #44704d;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
 
-    .switch-text a:hover {
-        text-decoration: underline;
-    }
+.switch-text a:hover {
+  text-decoration: underline;
+}
 
-    .checkbox-group {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
-    }
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
 
-    .checkbox-group input {
-        margin-right: 10px;
-        cursor: pointer;
-        width: 18px;
-        height: 18px;
-    }
+.checkbox-group input {
+  margin-right: 10px;
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}
 
-    .checkbox-group label {
-        font-size: 14px;
-        color: #666;
-        cursor: pointer;
-    }
+.checkbox-group label {
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
+}
 
-    .forgot-password {
-        text-align: right;
-        margin-top: -15px;
-        margin-bottom: 20px;
-    }
+.forgot-password {
+  text-align: right;
+  margin-top: -15px;
+  margin-bottom: 20px;
+}
 
-    .forgot-password a {
-        color: #44704D;
-        font-size: 13px;
-        text-decoration: none;
-    }
+.forgot-password a {
+  color: #44704d;
+  font-size: 13px;
+  text-decoration: none;
+}
 
-    .forgot-password a:hover {
-        text-decoration: underline;
-    }
+.forgot-password a:hover {
+  text-decoration: underline;
+}
 
-    @media (max-width: 768px) {
-        .form-container {
-            padding: 40px 30px;
-        }
+@media (max-width: 768px) {
+  .form-container {
+    padding: 40px 30px;
+  }
 
-        .logo-container {
-            width: 150px;
-            height: 150px;
-        }
+  .logo-container {
+    width: 150px;
+    height: 150px;
+  }
 
-        .decoration {
-            display: none;
-        }
-    }
+  .decoration {
+    display: none;
+  }
+}
 </style>
-  
-  
