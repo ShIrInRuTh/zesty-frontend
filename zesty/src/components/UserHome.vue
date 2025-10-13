@@ -8,7 +8,7 @@
       <section class="welcome-section">
         <div class="welcome-text">
           <h2 class="welcome-title">Welcome, 
-            <span class="username">{{ currentUsername }}</span>
+             <span class="username">{{ currentUsername }}</span>
           </h2>
           <p class="tagline">Discover delicious meals with what you already have.</p>
           <RouterLink to="/recipe" class="start-cooking-btn">Start Cooking</RouterLink>
@@ -93,16 +93,6 @@ export default {
 </script>
 
 <style scoped>
-:root {
-    --color-primary: #388E3C; /* Deep Sage Green (The main brand color) */
-    --color-secondary: #D4624F; /* Warm Spice/Tomato Red (The main CTA color) */
-    --color-accent: #FF7043; /* Bright Orange Accent (For highlights) */
-    --color-background: #FFF8E1; /* Light, warm yellowish-white */
-    --color-text: #333333; /* Dark text for contrast */
-    --font-heading: 'Bricolage Grotesque', sans-serif;
-    --font-body: 'Inter', Arial, sans-serif; 
-}
-
 /* GENERAL STYLES */
 .app {
   min-height: 100vh;
@@ -116,8 +106,7 @@ export default {
   margin: 0;
 }
 
-
-/* --- WELCOME SECTION STYLING --- */
+/* --- WELCOME SECTION STYLING (Kept the strong existing styling) --- */
 .welcome-section {
     /* Use a warm, soft gradient background instead of flat color for better depth */
     background: linear-gradient(135deg, var(--color-background) 0%, #FFFDE7 100%);
@@ -189,11 +178,13 @@ export default {
     padding: 1.1rem 3rem; /* Substantial touch target */
     font-size: 1.2rem;
     font-weight: 700;
-    color: black;
+    color: black; /* Ensures high contrast against the secondary color */
     background-color: var(--color-secondary);
     border: none;
     border-radius: 50px; /* Pill shape */
     cursor: pointer;
+    text-decoration: none; /* RouterLink styling */
+    display: inline-block; /* Required for padding and alignment */
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     /* Stronger, more colorful shadow */
     box-shadow: 0 8px 25px rgba(212, 98, 79, 0.5);
@@ -269,7 +260,6 @@ export default {
         transform: none; /* Disable hover animation on mobile */
     }
 }
-
 
 /* --- FOOD GRAVEYARD --- */
 .graveyard-section {

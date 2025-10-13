@@ -18,7 +18,7 @@
 
     <!-- Actual Landing Page -->
     <transition name="fade-delayed">
-      <div v-if="!showIntro" class="landing" >
+      <div v-if="!showIntro" class="landing">
         <!-- HERO SECTION -->
         <main>
           <!-- CAROUSEL SECTION -->
@@ -113,7 +113,6 @@
             </div>
 
             <div class="row align-items-center mb-5">
-
               <!-- FEATURE 1 -->
               <div class="col-lg-4 mb-5">
                 <div class="card">
@@ -298,7 +297,6 @@
                 </div>
               </div>
             </div>
-
           </div>
         </main>
         <!-- FOOTER -->
