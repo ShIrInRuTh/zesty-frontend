@@ -1,7 +1,6 @@
 <!-- TODO as of 12 Oct 2025
- Make sure the nav bar links to the specific sections (for now, home doesn't scroll to carousel)
- Everytime when the page is refreshed, the actual landing page should be set to default
- Complete features' event cards -->
+ Complete features' event cards
+ Make the columns for event card dynamic -->
 
 <template>
   <div class="app" id="start">
@@ -106,17 +105,18 @@
           </section>
 
           <!-- EVENT CARDS -->
-          <div class="container" id="feature">
+          <div class="container">
             <div class="row">
-              <div class="col">
-                <h2>Features</h2>
+              <div class="col-lg-">
+                <h2 class="mb-5" id="feature">Features</h2>
               </div>
             </div>
 
             <div class="row align-items-center mb-5">
+
               <!-- FEATURE 1 -->
-              <div class="col">
-                <div class="card" style="width: 25rem">
+              <div class="col-lg-4 mb-5">
+                <div class="card">
                   <div class="row g-0">
                     <div class="col">
                       <img src="../../public/logo.png" class="img-fluid rounded-start" alt="..." />
@@ -138,8 +138,8 @@
               </div>
 
               <!-- FEATURE 2 -->
-              <div class="col">
-                <div class="card" style="width: 25rem">
+              <div class="col-lg-4 mb-5">
+                <div class="card">
                   <div class="row g-0">
                     <div class="col">
                       <img src="../../public/logo.png" class="img-fluid rounded-start" alt="..." />
@@ -161,8 +161,8 @@
               </div>
 
               <!-- FEATURE 3 -->
-              <div class="col">
-                <div class="card" style="width: 25rem">
+              <div class="col-lg-4 mb-5">
+                <div class="card">
                   <div class="row g-0">
                     <div class="col">
                       <img src="../../public/logo.png" class="img-fluid rounded-start" alt="..." />
@@ -182,12 +182,10 @@
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div class="row align-items-center mb-5">
               <!-- FEATURE 4 -->
-              <div class="col">
-                <div class="card" style="width: 25rem">
+              <div class="col-lg-4 mb-5">
+                <div class="card">
                   <div class="row g-0">
                     <div class="col">
                       <img src="../../public/logo.png" class="img-fluid rounded-start" alt="..." />
@@ -209,8 +207,8 @@
               </div>
 
               <!-- FEATURE 5 -->
-              <div class="col">
-                <div class="card" style="width: 25rem">
+              <div class="col-lg-4 mb-5">
+                <div class="card">
                   <div class="row g-0">
                     <div class="col">
                       <img src="../../public/logo.png" class="img-fluid rounded-start" alt="..." />
@@ -232,8 +230,8 @@
               </div>
 
               <!-- FEATURE 6 -->
-              <div class="col">
-                <div class="card" style="width: 25rem">
+              <div class="col-lg-4 mb-5">
+                <div class="card">
                   <div class="row g-0">
                     <div class="col">
                       <img src="../../public/logo.png" class="img-fluid rounded-start" alt="..." />
@@ -253,12 +251,10 @@
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div class="row align-items-center mb-5">
               <!-- FEATURE 7 -->
-              <div class="col-4">
-                <div class="card" style="width: 25rem">
+              <div class="col-lg-4 mb-5">
+                <div class="card">
                   <div class="row g-0">
                     <div class="col">
                       <img src="../../public/logo.png" class="img-fluid rounded-start" alt="..." />
@@ -280,8 +276,8 @@
               </div>
 
               <!-- FEATURE 8 -->
-              <div class="col">
-                <div class="card" style="width: 25rem">
+              <div class="col-lg-4 mb-5">
+                <div class="card">
                   <div class="row g-0">
                     <div class="col">
                       <img src="../../public/logo.png" class="img-fluid rounded-start" alt="..." />
@@ -302,6 +298,7 @@
                 </div>
               </div>
             </div>
+
           </div>
         </main>
         <!-- FOOTER -->
