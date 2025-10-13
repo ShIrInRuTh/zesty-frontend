@@ -1,3 +1,8 @@
+<!-- TODO as of 12 Oct 2025
+ Make sure the nav bar links to the specific sections (for now, home doesn't scroll to carousel)
+ Everytime when the page is refreshed, the actual landing page should be set to default
+ Complete features' event cards -->
+
 <template>
   <div class="app" id="start">
     <!-- HEADER -->
@@ -14,7 +19,7 @@
 
     <!-- Actual Landing Page -->
     <transition name="fade-delayed">
-      <div v-if="!showIntro" class="landing">
+      <div v-if="!showIntro" class="landing" >
         <!-- HERO SECTION -->
         <main>
           <!-- CAROUSEL SECTION -->

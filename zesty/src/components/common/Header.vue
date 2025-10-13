@@ -45,7 +45,7 @@
     <div v-if="menuOpen" class="menu-overlay">
       <div class="menu-content">
         <template v-if="!user">
-          <RouterLink to="/" :class="{ active: isActive('/') }" @click="toggleMenu"
+          <RouterLink to="#start" :class="{ active: isActive('#start') }" @click="toggleMenu"
             >Home</RouterLink
           >
           <RouterLink to="#features" :class="{ active: isActive('#features') }" @click="toggleMenu"
