@@ -1,9 +1,12 @@
 <script setup>
-import Landing from '../components/Landing.vue'
+import Login from '@/components/Login.vue';
+
 </script>
 
 <template>
   <main>
-    <Landing />
+    <Login />
   </main>
 </template>
+
+

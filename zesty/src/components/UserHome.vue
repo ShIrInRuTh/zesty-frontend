@@ -20,9 +20,7 @@
         <RouterLink to="/recipes">Recipes</RouterLink>
 
         <div class="user-dropdown">
-          <button class="user-icon-btn">
-            👤
-          </button>
+          <button class="user-icon-btn">👤</button>
           <div class="dropdown-content">
             <a href="#">My Account</a>
             <a href="#">Settings</a>
@@ -34,67 +32,70 @@
 
     <!-- Welcome section -->
     <div class="user-home-container">
-        <section class="welcome-section">
+      <section class="welcome-section">
         <div class="welcome-text">
-            <h2 class="welcome-title">Welcome, <span class="username">Username</span></h2>
-            <p class="tagline">Discover delicious meals with what you already have.</p>
-            <button class="start-cooking-btn">Start Cooking</button>
+          <h2 class="welcome-title">Welcome, <span class="username">Username</span></h2>
+          <p class="tagline">Discover delicious meals with what you already have.</p>
+          <button class="start-cooking-btn">Start Cooking</button>
         </div>
         <div class="header-image-wrapper">
-            <img src="/header-pattern.jpg" alt="Food pattern illustration" class="header-pattern-img" />
+          <img
+            src="/header-pattern.jpg"
+            alt="Food pattern illustration"
+            class="header-pattern-img"
+          />
         </div>
-        </section>
-    
-    <!-- 3 Feature Cards -->
-    <section class="feature-cards">
-      <div class="card-item">
-        <img src="/fridge-icon.png" alt="Fridge Icon" class="card-icon" />
-        <h3 class="card-title">My Fridge</h3>
-        <p class="card-subtitle">Your Fridge, your rules</p>
-      </div>
+      </section>
 
-      <div class="card-item">
-        <img src="/recipes-icon.png" alt="Recipe Book Icon" class="card-icon" />
-        <h3 class="card-title">My Recipes</h3>
-        <p class="card-subtitle">View your Cookbook</p>
-      </div>
+      <!-- 3 Feature Cards -->
+      <section class="feature-cards">
+        <div class="card-item">
+          <img src="/fridge-icon.png" alt="Fridge Icon" class="card-icon" />
+          <h3 class="card-title">My Fridge</h3>
+          <p class="card-subtitle">Your Fridge, your rules</p>
+        </div>
 
-      <div class="card-item">
-        <img src="/settings-icon.png" alt="Settings Icon" class="card-icon" />
-        <h3 class="card-title">Settings</h3>
-        <p class="card-subtitle">Tweak to your preferences</p>
-      </div>
-    </section>
+        <div class="card-item">
+          <img src="/recipes-icon.png" alt="Recipe Book Icon" class="card-icon" />
+          <h3 class="card-title">My Recipes</h3>
+          <p class="card-subtitle">View your Cookbook</p>
+        </div>
 
-    <!-- Graveyard Section -->
-    <section class="graveyard-section">
-      <div class="graveyard-card">
-        <h3 class="graveyard-title">My Food Graveyard</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Ingredient</th>
-              <th>Qty</th>
-              <th>Expiry</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Full Cream Milk</td>
-              <td>2</td>
-              <td class="expired-date">20/08/2025</td>
-            </tr>
-            <tr>
-              <td>Mozarella Cheese</td>
-              <td>300g</td>
-              <td>28/09/2025</td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="view-more">View more >></div>
-      </div>
-    </section>
+        <div class="card-item">
+          <img src="/settings-icon.png" alt="Settings Icon" class="card-icon" />
+          <h3 class="card-title">Settings</h3>
+          <p class="card-subtitle">Tweak to your preferences</p>
+        </div>
+      </section>
 
+      <!-- Graveyard Section -->
+      <section class="graveyard-section">
+        <div class="graveyard-card">
+          <h3 class="graveyard-title">My Food Graveyard</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Ingredient</th>
+                <th>Qty</th>
+                <th>Expiry</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Full Cream Milk</td>
+                <td>2</td>
+                <td class="expired-date">20/08/2025</td>
+              </tr>
+              <tr>
+                <td>Mozarella Cheese</td>
+                <td>300g</td>
+                <td>28/09/2025</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="view-more">View more >></div>
+        </div>
+      </section>
     </div>
     <!-- FOOTER -->
     <footer>
@@ -105,8 +106,7 @@
       </div>
       <p>© 2025 Zesty • Crafted with ❤️ for food lovers</p>
     </footer>
-
-</div>
+  </div>
 </template>
 
 <script setup>
@@ -174,10 +174,10 @@ nav a .active {
 }
 
 .user-dropdown {
-    position: relative;
-    display: inline-block;
-    margin-left: 24px;
-    z-index: 20;
+  position: relative;
+  display: inline-block;
+  margin-left: 24px;
+  z-index: 20;
 }
 
 .user-icon-btn {
@@ -219,7 +219,6 @@ nav a .active {
 .dropdown-content a:hover {
   background-color: #f1f1f1;
 }
-
 
 /* --- FOOD GRAVEYARD --- */
 .graveyard-section {
@@ -353,5 +352,4 @@ footer p {
   opacity: 0.8;
   margin: 0;
 }
-
 </style>
