@@ -5,12 +5,13 @@
     
 
     <!-- Welcome section -->
-    <div class="user-home-container">
       <section class="welcome-section">
         <div class="welcome-text">
-          <h2 class="welcome-title">Welcome, <span class="username">Username</span></h2>
+          <h2 class="welcome-title">Welcome, 
+            <span class="username">{{ currentUsername }}</span>
+          </h2>
           <p class="tagline">Discover delicious meals with what you already have.</p>
-          <button class="start-cooking-btn">Start Cooking</button>
+          <RouterLink to="/recipe" class="start-cooking-btn">Start Cooking</RouterLink>
         </div>
         <div class="header-image-wrapper">
           <img
@@ -73,7 +74,6 @@
     </div>
     <!-- FOOTER -->
     <Footer/>
-  </div>
 </template>
 
 <script setup>
@@ -82,8 +82,27 @@ import Header from './common/Header.vue'
 import Footer from './common/Footer.vue'
 </script>
 
+<script>
+export default {
+  data() {
+    return {
+      currentUsername: "Mr Shar",
+    }
+  }
+}
+</script>
 
 <style scoped>
+:root {
+    --color-primary: #388E3C; /* Deep Sage Green (The main brand color) */
+    --color-secondary: #D4624F; /* Warm Spice/Tomato Red (The main CTA color) */
+    --color-accent: #FF7043; /* Bright Orange Accent (For highlights) */
+    --color-background: #FFF8E1; /* Light, warm yellowish-white */
+    --color-text: #333333; /* Dark text for contrast */
+    --font-heading: 'Bricolage Grotesque', sans-serif;
+    --font-body: 'Inter', Arial, sans-serif; 
+}
+
 /* GENERAL STYLES */
 .app {
   min-height: 100vh;
@@ -96,6 +115,161 @@ import Footer from './common/Footer.vue'
   background-color: white;
   margin: 0;
 }
+
+
+/* --- WELCOME SECTION STYLING --- */
+.welcome-section {
+    /* Use a warm, soft gradient background instead of flat color for better depth */
+    background: linear-gradient(135deg, var(--color-background) 0%, #FFFDE7 100%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 60px 80px; /* Increased padding for spacious feel */
+    margin-top: 30px;
+    border-radius: 24px; /* More rounded corners */
+    /* Refined, softer shadow with a subtle lift effect */
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+}
+
+/* Subtle lift effect on hover for the entire section */
+.welcome-section:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+/* Text Container */
+.welcome-text {
+    flex: 1;
+    max-width: 55%; /* Increased text area */
+    padding-right: 50px;
+    z-index: 10;
+}
+
+/* The Title */
+.welcome-title {
+    font-family: var(--font-heading);
+    font-size: 3.8rem; /* Larger for high impact */
+    font-weight: 900;
+    color: var(--color-text); /* Use dark text color for excellent contrast */
+    line-height: 1.05;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Username Highlight */
+.welcome-title .username {
+    color: var(--color-accent); /* Bright accent color for a pop */
+    font-style: normal;
+    font-weight: 900;
+    padding: 0 5px;
+    display: inline-block;
+    position: relative;
+    /* Optional: A simple line highlight under the name */
+    text-decoration: underline;
+    text-decoration-thickness: 4px;
+    text-decoration-color: rgba(255, 112, 67, 0.3); /* Semi-transparent accent color */
+    text-underline-offset: 8px;
+}
+
+/* Tagline/Subtitle */
+.tagline {
+    font-family: var(--font-body);
+    font-size: 1.4rem; 
+    color: var(--color-text);
+    font-weight: 500;
+    margin-bottom: 40px;
+    opacity: 0.8;
+}
+
+/* Start Cooking Button */
+.start-cooking-btn {
+    padding: 1.1rem 3rem; /* Substantial touch target */
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: black;
+    background-color: var(--color-secondary);
+    border: none;
+    border-radius: 50px; /* Pill shape */
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    /* Stronger, more colorful shadow */
+    box-shadow: 0 8px 25px rgba(212, 98, 79, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.start-cooking-btn:hover {
+    background-color: #EF7A67; /* Noticeably lighter on hover */
+    transform: translateY(-4px); /* Bigger lift effect */
+    box-shadow: 0 12px 30px rgba(212, 98, 79, 0.7);
+}
+
+/* Image Styling */
+.header-image-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-left: 20px;
+}
+
+.header-pattern-img {
+    width: 100%;
+    max-width: 450px;
+    height: auto;
+    border-radius: 20px;
+    object-fit: cover;
+    /* Neutralized initial rotation, using shadow for dynamism */
+    transform: rotate(0deg); 
+    box-shadow: -15px 15px 40px rgba(0, 0, 0, 0.15); /* Shadow pulled left/down */
+    transition: transform 0.5s ease-out;
+}
+
+.welcome-section:hover .header-pattern-img {
+    transform: rotate(-1deg) scale(1.02); /* Slight rotation and scale on section hover */
+}
+
+/* --- RESPONSIVENESS (Mobile Optimization) --- */
+@media (max-width: 1024px) {
+    .welcome-section {
+        flex-direction: column; /* Stack elements vertically */
+        text-align: center;
+        padding: 40px 30px;
+    }
+
+    .welcome-text {
+        max-width: 100%;
+        padding-right: 0;
+        margin-bottom: 30px;
+    }
+
+    .welcome-title {
+        font-size: 3rem; /* Adjust title size for mobile */
+    }
+    
+    .tagline {
+        font-size: 1.2rem;
+    }
+
+    .header-image-wrapper {
+        justify-content: center;
+        padding-left: 0;
+    }
+
+    .header-pattern-img {
+        max-width: 300px; /* Smaller image on mobile */
+        transform: none; /* No rotation on mobile */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .welcome-section:hover .header-pattern-img {
+        transform: none; /* Disable hover animation on mobile */
+    }
+}
+
 
 /* --- FOOD GRAVEYARD --- */
 .graveyard-section {
