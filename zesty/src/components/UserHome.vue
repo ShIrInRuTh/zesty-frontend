@@ -1,42 +1,17 @@
 <template>
   <div class="app">
     <!-- HEADER -->
-    <header>
-      <div class="logo-brand">
-        <img src="/logo.png" alt="Zesty Logo" />
-        <h1>ZESTY</h1>
-      </div>
-
-      <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-        crossorigin="anonymous"
-      />
-
-      <nav>
-        <RouterLink to="/userhome" class="active" exact>Home</RouterLink>
-        <RouterLink to="/fridge">My Fridge</RouterLink>
-        <RouterLink to="/recipes">Recipes</RouterLink>
-
-        <div class="user-dropdown">
-          <button class="user-icon-btn">👤</button>
-          <div class="dropdown-content">
-            <a href="#">My Account</a>
-            <a href="#">Settings</a>
-            <a href="#">Log out</a>
-          </div>
-        </div>
-      </nav>
-    </header>
+     <Header/>
+    
 
     <!-- Welcome section -->
-    <div class="user-home-container">
       <section class="welcome-section">
         <div class="welcome-text">
-          <h2 class="welcome-title">Welcome, <span class="username">Username</span></h2>
+          <h2 class="welcome-title">Welcome, 
+            <span class="username">{{ currentUsername }}</span>
+          </h2>
           <p class="tagline">Discover delicious meals with what you already have.</p>
-          <button class="start-cooking-btn">Start Cooking</button>
+          <RouterLink to="/recipe" class="start-cooking-btn">Start Cooking</RouterLink>
         </div>
         <div class="header-image-wrapper">
           <img
@@ -49,23 +24,23 @@
 
       <!-- 3 Feature Cards -->
       <section class="feature-cards">
-        <div class="card-item">
+        <RouterLink to="/fridge" class="card-item">
           <img src="/fridge-icon.png" alt="Fridge Icon" class="card-icon" />
           <h3 class="card-title">My Fridge</h3>
           <p class="card-subtitle">Your Fridge, your rules</p>
-        </div>
+        </RouterLink>
 
-        <div class="card-item">
+        <RouterLink to="/recipe" class="card-item">
           <img src="/recipes-icon.png" alt="Recipe Book Icon" class="card-icon" />
           <h3 class="card-title">My Recipes</h3>
           <p class="card-subtitle">View your Cookbook</p>
-        </div>
+        </RouterLink>
 
-        <div class="card-item">
+        <RouterLink to="/settings" class="card-item">
           <img src="/settings-icon.png" alt="Settings Icon" class="card-icon" />
           <h3 class="card-title">Settings</h3>
           <p class="card-subtitle">Tweak to your preferences</p>
-        </div>
+        </RouterLink>
       </section>
 
       <!-- Graveyard Section -->
@@ -93,27 +68,41 @@
               </tr>
             </tbody>
           </table>
-          <div class="view-more">View more >></div>
+          <RouterLink to="/fridge" class="view-more">View more >></RouterLink>
         </div>
       </section>
     </div>
     <!-- FOOTER -->
-    <footer>
-      <div class="footer-links">
-        <RouterLink to="/privacy">Privacy</RouterLink>
-        <RouterLink to="/contact">Contact</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </div>
-      <p>© 2025 Zesty • Crafted with ❤️ for food lovers</p>
-    </footer>
-  </div>
+    <Footer/>
 </template>
 
 <script setup>
 import { RouterLink } from 'vue-router'
+import Header from './common/Header.vue'
+import Footer from './common/Footer.vue'
+</script>
+
+<script>
+export default {
+  data() {
+    return {
+      currentUsername: "Mr Shar",
+    }
+  }
+}
 </script>
 
 <style scoped>
+:root {
+    --color-primary: #388E3C; /* Deep Sage Green (The main brand color) */
+    --color-secondary: #D4624F; /* Warm Spice/Tomato Red (The main CTA color) */
+    --color-accent: #FF7043; /* Bright Orange Accent (For highlights) */
+    --color-background: #FFF8E1; /* Light, warm yellowish-white */
+    --color-text: #333333; /* Dark text for contrast */
+    --font-heading: 'Bricolage Grotesque', sans-serif;
+    --font-body: 'Inter', Arial, sans-serif; 
+}
+
 /* GENERAL STYLES */
 .app {
   min-height: 100vh;
@@ -127,98 +116,160 @@ import { RouterLink } from 'vue-router'
   margin: 0;
 }
 
-/* HEADER */
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 32px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  background-color: #e0c6a6;
-  z-index: 10;
+
+/* --- WELCOME SECTION STYLING --- */
+.welcome-section {
+    /* Use a warm, soft gradient background instead of flat color for better depth */
+    background: linear-gradient(135deg, var(--color-background) 0%, #FFFDE7 100%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 60px 80px; /* Increased padding for spacious feel */
+    margin-top: 30px;
+    border-radius: 24px; /* More rounded corners */
+    /* Refined, softer shadow with a subtle lift effect */
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
 }
 
-.logo-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+/* Subtle lift effect on hover for the entire section */
+.welcome-section:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 
-.logo-brand img {
-  height: 48px;
-  width: auto;
+/* Text Container */
+.welcome-text {
+    flex: 1;
+    max-width: 55%; /* Increased text area */
+    padding-right: 50px;
+    z-index: 10;
 }
 
-.logo-brand h1 {
-  font-size: 24px;
-  font-weight: bold;
-  margin: 0;
+/* The Title */
+.welcome-title {
+    font-family: var(--font-heading);
+    font-size: 3.8rem; /* Larger for high impact */
+    font-weight: 900;
+    color: var(--color-text); /* Use dark text color for excellent contrast */
+    line-height: 1.05;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-nav a {
-  margin-left: 24px;
-  text-decoration: none;
-  font-weight: 600;
-  color: #44704d;
-  transition: color 0.3s;
+/* Username Highlight */
+.welcome-title .username {
+    color: var(--color-accent); /* Bright accent color for a pop */
+    font-style: normal;
+    font-weight: 900;
+    padding: 0 5px;
+    display: inline-block;
+    position: relative;
+    /* Optional: A simple line highlight under the name */
+    text-decoration: underline;
+    text-decoration-thickness: 4px;
+    text-decoration-color: rgba(255, 112, 67, 0.3); /* Semi-transparent accent color */
+    text-underline-offset: 8px;
 }
 
-nav a:hover {
-  color: gray;
+/* Tagline/Subtitle */
+.tagline {
+    font-family: var(--font-body);
+    font-size: 1.4rem; 
+    color: var(--color-text);
+    font-weight: 500;
+    margin-bottom: 40px;
+    opacity: 0.8;
 }
 
-nav a .active {
-  color: gray;
+/* Start Cooking Button */
+.start-cooking-btn {
+    padding: 1.1rem 3rem; /* Substantial touch target */
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: black;
+    background-color: var(--color-secondary);
+    border: none;
+    border-radius: 50px; /* Pill shape */
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    /* Stronger, more colorful shadow */
+    box-shadow: 0 8px 25px rgba(212, 98, 79, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.user-dropdown {
-  position: relative;
-  display: inline-block;
-  margin-left: 24px;
-  z-index: 20;
+.start-cooking-btn:hover {
+    background-color: #EF7A67; /* Noticeably lighter on hover */
+    transform: translateY(-4px); /* Bigger lift effect */
+    box-shadow: 0 12px 30px rgba(212, 98, 79, 0.7);
 }
 
-.user-icon-btn {
-  background-color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+/* Image Styling */
+.header-image-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-left: 20px;
 }
 
-.dropdown-content {
-  display: none; /* Hidden by default */
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background-color: white;
-  min-width: 130px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  z-index: 21;
-  padding: 5px 0;
-  border: 1px solid #ddd;
+.header-pattern-img {
+    width: 100%;
+    max-width: 450px;
+    height: auto;
+    border-radius: 20px;
+    object-fit: cover;
+    /* Neutralized initial rotation, using shadow for dynamism */
+    transform: rotate(0deg); 
+    box-shadow: -15px 15px 40px rgba(0, 0, 0, 0.15); /* Shadow pulled left/down */
+    transition: transform 0.5s ease-out;
 }
 
-.user-dropdown:hover .dropdown-content {
-  display: block; /* Show on hover */
+.welcome-section:hover .header-pattern-img {
+    transform: rotate(-1deg) scale(1.02); /* Slight rotation and scale on section hover */
 }
 
-.dropdown-content a {
-  color: black;
-  padding: 8px 16px;
-  text-decoration: none;
-  display: block;
-  font-size: 14px;
+/* --- RESPONSIVENESS (Mobile Optimization) --- */
+@media (max-width: 1024px) {
+    .welcome-section {
+        flex-direction: column; /* Stack elements vertically */
+        text-align: center;
+        padding: 40px 30px;
+    }
+
+    .welcome-text {
+        max-width: 100%;
+        padding-right: 0;
+        margin-bottom: 30px;
+    }
+
+    .welcome-title {
+        font-size: 3rem; /* Adjust title size for mobile */
+    }
+    
+    .tagline {
+        font-size: 1.2rem;
+    }
+
+    .header-image-wrapper {
+        justify-content: center;
+        padding-left: 0;
+    }
+
+    .header-pattern-img {
+        max-width: 300px; /* Smaller image on mobile */
+        transform: none; /* No rotation on mobile */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .welcome-section:hover .header-pattern-img {
+        transform: none; /* Disable hover animation on mobile */
+    }
 }
 
-.dropdown-content a:hover {
-  background-color: #f1f1f1;
-}
 
 /* --- FOOD GRAVEYARD --- */
 .graveyard-section {
@@ -323,33 +374,4 @@ tbody tr:nth-child(even) {
   margin: 0;
 }
 
-/* FOOTER */
-footer {
-  background-color: white;
-  text-align: center;
-  padding: 24px 16px;
-}
-
-.footer-links {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  margin-bottom: 12px;
-}
-
-.footer-links a {
-  text-decoration: none;
-  color: black;
-  transition: text-decoration 0.3s;
-}
-
-.footer-links a:hover {
-  text-decoration: underline;
-}
-
-footer p {
-  font-size: 14px;
-  opacity: 0.8;
-  margin: 0;
-}
 </style>

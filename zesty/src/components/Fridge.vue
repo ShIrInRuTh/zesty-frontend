@@ -1,7 +1,4 @@
-<!-- TODO as of 10/10/25
- Make Remove Button Functional
- Revamp how we add things {ASK ADVICE + HELP}
- Make Adding Functional
+<!-- TODO as of 14/10/25
  Hook up to Fridge DB BACKEND
  Work with img recogg api
  Lastly Link ALL to backend and db
@@ -19,103 +16,103 @@
       <div class="container-fluid">
         <div class="row justify-content-center" id="Fcontrols">
           <div class="col-md-6 text-center">
-            <button class="btn btn-success m-2" @click="promptItemType">Add Item</button>
-            <button class="btn btn-danger m-2">Remove Item</button>
+            <button class="btn btn-success m-2" @click="addItemRow">Add Item</button>
+            <button class="btn btn-danger" @click="openRemoveModal()">Remove</button>
+
           </div>
         </div>
       </div>
 
       <!-- HIDDEN FORMS--------------------------------------------------------------------------------------------------- -->
-      <div class="container mt-3" id="addItemContainer">
-        <div v-for="(item, index) in addedItems" :key="index" class="border p-3 mb-3 rounded">
-          <!-- Manual: -->
-          <div v-if="item.type === 'manual'">
+      <div class="container mt-3" id="addItemContainer" v-if="addedItems.length > 0">
+        <div
+          v-for="(item, index) in addedItems"
+          :key="index"
+          class="row border p-3 mb-3 rounded justify-content-center align-items-start text-center"
+        >
+          <!-- RADIO selector FIRST -->
+          <div class="col-12 mb-3 d-flex justify-content-center gap-4">
+            <label>
+              <input type="radio" v-model="item.selected" value="manual"/> Manual
+            </label>
+            <label>
+              <input type="radio" v-model="item.selected" value="automatic"/> Automatic
+            </label>
+          </div>
+
+          <!-- Left: Manual -->
+          <div class="col-md-5" v-show="item.selected === 'manual'">
             <strong>Manual:</strong>
             <div class="mb-2">
               <label>Item Name:</label>
-              <input type="text" v-model="item.name" class="form-control d-inline-block w-auto" />
+              <input type="text" v-model="item.name" class="form-control"/>
             </div>
             <div class="mb-2">
               <label>Qty:</label>
-              <select v-model="item.qty" class="form-select d-inline-block w-auto">
+              <select v-model="item.qty" class="form-select">
                 <option v-for="opt in qtyOptions" :key="opt" :value="opt">{{ opt }}</option>
               </select>
             </div>
             <div class="mb-2">
               <label>Category:</label>
-              <input
-                type="text"
-                v-model="item.category"
-                class="form-control d-inline-block w-auto"
-              />
+              <select v-model="item.category" class="form-select">
+                <option v-for="cat in categories.slice(1)" :key="cat" :value="cat">{{ cat }}</option>
+              </select>
             </div>
             <div class="mb-2">
               <label>Expiry Date:</label>
-              <input
-                type="date"
-                v-model="item.expiryDate"
-                class="form-control d-inline-block w-auto"
-              />
+              <input type="date" v-model="item.expiryDate" class="form-control"/>
             </div>
             <div class="mb-2">
               <label>Date Added:</label>
-              <input
-                type="date"
-                v-model="item.dateAdded"
-                class="form-control d-inline-block w-auto"
-                readonly
-              />
+              <input type="date" v-model="item.dateAdded" class="form-control" readonly/>
             </div>
           </div>
 
-          <!-- Automatic: -->
-          <div v-else>
+          <!-- Right: Automatic -->
+          <div class="col-md-5" v-show="item.selected === 'automatic'">
             <strong>Automatic:</strong>
             <div class="mb-2">
               <label>Image Input:</label>
-              <input
-                type="file"
-                @change="onImageChange($event, index)"
-                class="form-control d-inline-block w-auto"
-              />
+              <input type="file" @change="onImageChange($event, index)" class="form-control"/>
             </div>
             <div class="mb-2">
               <label>Qty:</label>
-              <select v-model="item.qty" class="form-select d-inline-block w-auto">
+              <select v-model="item.qty" class="form-select">
                 <option v-for="opt in qtyOptions" :key="opt" :value="opt">{{ opt }}</option>
               </select>
             </div>
+
+            
+            <!-- TAKE OUT CATEGORY IF YOU CAN GET THE API TO RECOGNISE What exactly it s ==========================-------------------------------------------------------->
             <div class="mb-2">
               <label>Category:</label>
-              <input
-                type="text"
-                v-model="item.category"
-                class="form-control d-inline-block w-auto"
-              />
+              <select v-model="item.category" class="form-select">
+                <option v-for="cat in categories.slice(1)" :key="cat" :value="cat">{{ cat }}</option>
+              </select>
             </div>
+            <!-- TAKE OUT CATEGORY IF YOU CAN GET THE API TO RECOGNISE What exactly it s ==========================-------------------------------------------------------->
+
+            
             <div class="mb-2">
               <label>Expiry Date:</label>
-              <input
-                type="date"
-                v-model="item.expiryDate"
-                class="form-control d-inline-block w-auto"
-              />
+              <input type="date" v-model="item.expiryDate" class="form-control"/>
             </div>
             <div class="mb-2">
               <label>Date Added:</label>
-              <input
-                type="date"
-                v-model="item.dateAdded"
-                class="form-control d-inline-block w-auto"
-                readonly
-              />
+              <input type="date" v-model="item.dateAdded" class="form-control" readonly/>
             </div>
+          </div>
+
+          <!-- SUBMIT BUTTON -->
+          <div class="col-12 mt-3">
+            <button class="btn btn-primary" @click="submitItem(index)">Submit</button>
           </div>
         </div>
       </div>
-
       <!-- END of HIDDEN FORMS-------------------------------------------------------------------------------------------- -->
 
+      
       <!-- CAT TABS -->
       <!-- None  <576px, sm  ≥576px, md  ≥768px, lg  ≥992px, xl  ≥1200px, xxl  ≥1400px -->
       <!-- CATEGORY TABS -->
@@ -168,7 +165,68 @@
             v-for="(item, index) in sortedFilteredItems"
             :key="index"
           >
-            <div class="card h-100 shadow-sm" style="border-radius: 20px">
+            <div class="card h-100 shadow-sm position-relative" style="border-radius: 20px">
+              <!-- REMOVE BUTTON -->
+              <button
+                v-if="removeMode"
+                class="btn btn-danger position-absolute"
+                style="top: 5px; right: 5px; border-radius: 50%; width: 30px; height: 30px; padding: 0;"
+                @click="confirmRemove(item, index)"
+              >
+                X
+              </button>
+
+              <!-- Remove Modal -->
+              <div class="modal fade" id="removeModal" tabindex="-1" aria-labelledby="removeModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="removeModalLabel">Remove Ingredients</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                          <!-- Search bar inside remove modal -->
+                          <div class="mb-3 text-center">
+                            <input
+                              v-model="removeSearchQuery"
+                              type="text"
+                              class="form-control w-50 mx-auto"
+                              placeholder="Search items..."
+                            />
+                          </div>
+
+                          <div class="row row-cols-1 row-cols-md-3 g-3">
+                            <div v-for="(item, index) in filteredFridgeItemsForRemove" :key="index" class="col">
+                          <div class="card h-100 text-center">
+
+                            <img
+                            :src="getImageSrc(item)"
+                            class="card-img-top"
+                            :alt="item.name"
+                            @error="(event) => (event.target.src = getImageSrc({ category: item.category }))"
+                            style="height:120px; object-fit:contain;"
+                          />
+                            <div class="card-body">
+                              <h6 class="card-title">{{ item.name }}</h6>
+                              <p class="card-text item-qty">Qty: {{ item.qty }}</p>
+                              <p class="card-text small mb-1">{{ item.category }}</p>
+                              <p class="card-text item-expiry" :style="{ color: getExpiryColor(item.expiryDate) }">
+                  Expiry: {{ item.expiryDate }}
+                </p>
+                          <button class="btn btn-outline-danger btn-sm" @click="askRemove(item)">❌ Remove</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
               <!-- IMAGE HANDLER incase no img -->
               <img
                 :src="getImageSrc(item)"
@@ -177,25 +235,44 @@
                 @error="(event) => (event.target.src = getImageSrc({ category: item.category }))"
                 style="padding: 30px"
               />
-
               <div class="card-body text-center">
                 <h5 class="card-title item-name">{{ item.name }}</h5>
                 <p class="card-text item-qty">Qty: {{ item.qty }}</p>
                 <p class="card-text item-date-added">Date Added: {{ item.dateAdded }}</p>
-                <p
-                  class="card-text item-expiry"
-                  :style="{ color: getExpiryColor(item.expiryDate) }"
-                >
+                <p class="card-text item-expiry" :style="{ color: getExpiryColor(item.expiryDate) }">
                   Expiry: {{ item.expiryDate }}
                 </p>
-                <span class="badge bg-secondary text-capitalize">
-                  {{ item.category }}
-                </span>
+                <span class="badge bg-secondary text-capitalize">{{ item.category }}</span>
               </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
+    <!-- Toggle Hidden Remove ------------------------------------------------------------------------------------------------->
+      <!-- Quantity & Confirm Modal -->
+      <div class="modal fade" id="confirmRemoveModal" tabindex="-1" aria-labelledby="confirmRemoveModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="confirmRemoveModalLabel">Remove Quantity</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+              <p>Enter quantity to remove from <strong>{{ itemToRemove?.name }}</strong>:</p>
+              <input type="text" v-model="removeQty" class="form-control w-50 mx-auto" placeholder="Quantity">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-danger" @click="confirmRemoveQty">Remove</button>
             </div>
           </div>
         </div>
       </div>
+
+    <!-- Toggle Hidden Remove ------------------------------------------------------------------------------------------------->
     </main>
 
     <!-- FOOTER -->
@@ -245,7 +322,7 @@ const filteredItems = computed(() => {
     return matchesCategory && matchesSearch
   })
 })
-
+  
 // sort filtered items by expiry date
 const sortedFilteredItems = computed(() => {
   return [...filteredItems.value].sort((a, b) => {
@@ -348,6 +425,78 @@ function onImageChange(event, index) {
     addedItems.value[index].img = URL.createObjectURL(file)
   }
 }
+
+// Add new empty row (only one )
+function addItemRow() {
+  if (addedItems.value.length === 0) {  // only allow one row
+    addedItems.value.push({
+      selected: 'manual', // default selected form
+      name: '',
+      qty: 'pcs',
+      category: '',
+      expiryDate: '',
+      dateAdded: new Date().toISOString().split('T')[0],
+      img: null,
+    })
+  }
+}
+
+// ======================================================================================================       <REMOVE MODE Toggleing>
+
+// remove modal handling
+function openRemoveModal() {
+  const modal = new bootstrap.Modal(document.getElementById('removeModal'))
+  modal.show()
+}
+
+// live search for remove modal (works exactly like main search)
+const removeSearchQuery = ref('')
+
+const filteredFridgeItemsForRemove = computed(() => {
+  return fridgeItems.filter((item) => {
+    const q = removeSearchQuery.value.toLowerCase()
+    return (
+      item.name.toLowerCase().includes(q) ||
+      item.category.toLowerCase().includes(q) ||
+      (item.expiry && item.expiry.toLowerCase().includes(q))
+    )
+  })
+})
+
+// Track which item user wants to remove
+const itemToRemove = ref(null)
+const removeQty = ref('')
+
+// Trigger the second modal when clicked
+function askRemove(item) {
+  itemToRemove.value = item
+  removeQty.value = ''
+  const modal = new bootstrap.Modal(document.getElementById('confirmRemoveModal'))
+  modal.show()
+}
+
+// Confirm removal
+function confirmRemoveQty() {
+  if (!removeQty.value) return alert('Please enter a quantity')
+
+  const confirmed = confirm(`Remove ${removeQty.value} from ${itemToRemove.value.name}?`)
+  if (confirmed) {
+    alert(`${removeQty.value} of ${itemToRemove.value.name} removed! (placeholder action)`)
+    // TODO: call backend or update fridgeItems here
+  }
+
+  // Close modal programmatically
+  const modalEl = document.getElementById('confirmRemoveModal')
+  const modalInstance = bootstrap.Modal.getInstance(modalEl)
+  modalInstance.hide()
+}
+
+
+
+
+
+
+// ======================================================================================================  
 </script>
 
 <style scoped>
