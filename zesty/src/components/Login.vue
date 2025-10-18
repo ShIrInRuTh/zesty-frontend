@@ -5,7 +5,7 @@
     </div>
 
     <div class="form-container">
-      <h2>Welcome Back</h2>
+      <h2 class="title">Welcome Back</h2>
       <p>Log in to your account</p>
 
       <form @submit.prevent="handleLogin">
@@ -81,8 +81,10 @@ function handleLogin() {
   }
 
   if (!errors.email && !errors.password) {
+    sessionStorage.setItem('username', email.value)
+    sessionStorage.setItem('password', password.value)
     alert(`Login successful!\nEmail: ${email.value}`)
-    setTimeout(() => router.push('/userhome'), 1000)
+    setTimeout(() => router.push('/recipe'), 1000)
   }
 }
 
@@ -96,12 +98,13 @@ function handleForgotPassword() {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: black;
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f8f1e3;
-  min-height: 100vh;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: #cccccc;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -109,6 +112,34 @@ body {
   padding: 40px 20px;
   position: relative;
   overflow-x: hidden;
+}
+
+.auth-page {
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.678), rgba(255, 255, 255, 0.654)),
+    url('../../public/login.jpg') center/cover no-repeat;
+  background-size: 10% auto; /* Adjust percentage as needed */
+  background-position: center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.form-container h2,
+.form-container p {
+  text-align: center;
+}
+
+.title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  color: #3a5f42;
 }
 
 /* Decorative food images */
@@ -144,7 +175,7 @@ body {
 .logo-container {
   width: 180px;
   height: 180px;
-  background: #44704d;
+  background: #a3caab;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -157,8 +188,8 @@ body {
 }
 
 .logo-container img {
-  width: 60%;
-  height: 60%;
+  width: 120px;
+  height: auto;
   object-fit: cover;
 }
 

@@ -25,12 +25,27 @@
 
       <!-- For logged-in users -->
       <template v-else>
-        <RouterLink to="/" :class="{ active: isActive('/home') }">Home</RouterLink>
-        <RouterLink to="/myfridge" :class="{ active: isActive('/myfridge') }">My Fridge</RouterLink>
-        <RouterLink to="/recipes" :class="{ active: isActive('/recipes') }">Recipes</RouterLink>
-        <RouterLink to="/logout" :class="{ active: isActive('/logout') }" class="login-btn"
-          >Logout</RouterLink
-        >
+        <RouterLink to="/userhome" :class="{ active: isActive('/userhome') }">Home</RouterLink>
+        <RouterLink to="/fridge" :class="{ active: isActive('/fridge') }">My Fridge</RouterLink>
+        <RouterLink to="/recipe" :class="{ active: isActive('/recipe') }">Recipes</RouterLink>
+
+        <!-- Profile and Notification Icons -->
+        <RouterLink to="/logout" :class="{ active: isActive('/logout') }" class="login-btn">
+          Logout
+        </RouterLink>
+        <div class="nav-icons">
+          <RouterLink to="/profile" class="profile-circle">
+            <img src="../../../public/profile.jpeg" alt="Profile" />
+            <!-- Or use initials as fallback -->
+            <!-- <span>JD</span> -->
+          </RouterLink>
+          <button class="icon-btn notification-btn">
+            <i class="fas fa-bell"></i>
+            <!-- Font Awesome icon -->
+            <!-- Optional notification badge -->
+            <span class="notification-badge">3</span>
+          </button>
+        </div>
       </template>
     </nav>
 
@@ -64,13 +79,13 @@
         </template>
 
         <template v-else>
-          <RouterLink to="/" :class="{ active: isActive('/') }" @click="toggleMenu"
+          <RouterLink to="/userhome" :class="{ active: isActive('/userhome') }" @click="toggleMenu"
             >Home</RouterLink
           >
-          <RouterLink to="/myfridge" :class="{ active: isActive('/myfridge') }" @click="toggleMenu"
+          <RouterLink to="/fridge" :class="{ active: isActive('/fridge') }" @click="toggleMenu"
             >My Fridge</RouterLink
           >
-          <RouterLink to="/recipes" :class="{ active: isActive('/recipes') }" @click="toggleMenu"
+          <RouterLink to="/recipe" :class="{ active: isActive('/recipe') }" @click="toggleMenu"
             >Recipes</RouterLink
           >
           <RouterLink
@@ -93,7 +108,7 @@ import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
 const router = useRouter()
 const menuOpen = ref(false)
-const user = ref(localStorage.getItem('username'))
+const user = ref(sessionStorage.getItem('username'))
 
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value
@@ -200,7 +215,240 @@ nav a.active {
   color: #44704d;
 }
 
-/* --- HAMBURGER ICON --- */
+/* --- Profile Popup Styles --- */
+.profile-container {
+  position: relative;
+}
+
+.profile-circle,
+.profile-circle:hover,
+.profile-circle:focus {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  padding: 0;
+  margin: 0;
+  background: #f0f0f0;
+}
+
+.profile-circle img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  padding: 0;
+  margin: 0;
+}
+
+.profile-popup {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  width: 280px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  animation: popupFadeIn 0.2s ease-out;
+}
+
+@keyframes popupFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.popup-header {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+  background: linear-gradient(135deg, #44704d, #5a8c65);
+  color: white;
+  border-radius: 12px 12px 0 0;
+}
+
+.popup-profile-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  margin-right: 12px;
+}
+
+.popup-profile-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.popup-user-info h3 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.popup-user-info p {
+  margin: 0;
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.popup-menu {
+  padding: 10px 0;
+}
+
+.popup-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  text-decoration: none;
+  color: #333;
+  transition: all 0.2s ease;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-size: 14px;
+}
+
+.popup-item:hover {
+  background: #f8f9fa;
+  color: #44704d;
+}
+
+.popup-item i {
+  width: 20px;
+  margin-right: 12px;
+  font-size: 14px;
+}
+
+.popup-divider {
+  height: 1px;
+  background: #eee;
+  margin: 8px 0;
+}
+
+.logout-item {
+  color: #dc3545;
+}
+
+.logout-item:hover {
+  background: #fff5f5;
+  color: #dc3545;
+}
+
+/* --- Navigation Icons --- */
+.nav-icons {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-left: 24px;
+}
+
+.notification-btn {
+  background-color: #44704d;
+  width: 40px;
+  height: 40px;
+  color: white;
+  border-radius: 50%;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+  position: relative;
+  padding: 0; /* Remove default padding */
+  border: none;
+  font-size: 1.2rem;
+  display: flex; /* Enable Flexbox */
+  align-items: center; /* Vertical center */
+  justify-content: center; /* Horizontal center */
+}
+
+.notification-btn:hover {
+  background-color: white;
+  color: #44704d;
+}
+
+.notification-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #ff4757;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- Mobile Profile Section --- */
+.mobile-profile-section {
+  width: 100%;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.mobile-profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 0 20px;
+}
+
+.mobile-profile-header img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid #44704d;
+}
+
+.mobile-profile-header h3 {
+  margin: 0;
+  color: white;
+  font-size: 18px;
+}
+
+.mobile-profile-header p {
+  margin: 4px 0 0 0;
+  color: #e0c6a6;
+  font-size: 14px;
+}
+
+.mobile-profile-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  margin: 5px 0;
+}
+
+.mobile-profile-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #e0c6a6;
+}
+
+.mobile-profile-link i {
+  width: 20px;
+}
+
+/* --- Rest of your existing styles (Hamburger, Menu Overlay, etc.) --- */
 .hamburger {
   display: none;
   flex-direction: column;
@@ -216,7 +464,6 @@ nav a.active {
   border-radius: 2px;
 }
 
-/* --- FULLSCREEN MENU --- */
 .menu-overlay {
   position: fixed;
   inset: 0;
@@ -273,12 +520,10 @@ nav a.active {
   }
 }
 
-/* --- Responsive Behaviour --- */
 @media (max-width: 768px) {
   nav {
     display: none;
   }
-
   .hamburger {
     display: flex;
   }
