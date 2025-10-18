@@ -101,7 +101,8 @@
           </section>
 
           <!-- EVENT CARDS -->
-          <div class="container" id="feature">
+          <div id="feature" style="height: 100px"></div>
+          <div class="container">
             <div class="row">
               <div class="col">
                 <h2>Features</h2>
@@ -358,6 +359,7 @@ export default {
   color: black;
   background-color: white;
   margin: 0;
+  scroll-margin-top: 90px;
 }
 
 /* --- Fullscreen intro overlay --- */
