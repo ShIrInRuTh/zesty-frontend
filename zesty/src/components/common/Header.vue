@@ -30,9 +30,7 @@
         <RouterLink to="/recipe" :class="{ active: isActive('/recipe') }">Recipes</RouterLink>
 
         <!-- Profile and Notification Icons -->
-        <RouterLink to="/logout" :class="{ active: isActive('/logout') }" class="login-btn">
-          Logout
-        </RouterLink>
+        <button @click="handleLogout" class="login-btn logout-btn">Logout</button>
         <div class="nav-icons">
           <RouterLink to="/profile" class="profile-circle">
             <img src="../../../public/profile.jpeg" alt="Profile" />
@@ -88,13 +86,7 @@
           <RouterLink to="/recipe" :class="{ active: isActive('/recipe') }" @click="toggleMenu"
             >Recipes</RouterLink
           >
-          <RouterLink
-            to="/logout"
-            :class="{ active: isActive('/logout') }"
-            class="login-btn"
-            @click="toggleMenu"
-            >Logout</RouterLink
-          >
+          <button @click="handleLogout" class="login-btn logout-btn">Logout</button>
         </template>
       </div>
     </div>
@@ -128,6 +120,15 @@ const isActive = (target) => {
   }
   // For all other paths: exact match
   return route.path === target
+}
+
+const handleLogout = () => {
+  sessionStorage.removeItem('username')
+  sessionStorage.removeItem('password')
+  user.value = null
+  menuOpen.value = false
+  router.push('/')
+  console.log('Logged out successfully')
 }
 
 onMounted(() => {
@@ -200,18 +201,42 @@ nav a.active {
   padding: 0.9rem;
 }
 
-.login-btn {
+.login-btn,
+.logout-btn {
+  font-size: 13px;
+  border: none;
   padding: 1rem;
   border-radius: 1rem;
   background-color: #44704d;
   color: white;
   box-shadow: 2px 2px #af9e8b;
   text-decoration: none;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   transition: all 0.3s ease;
+  margin-left: 24px;
+  font-weight: 600;
 }
 
+.logout-btn:hover,
 .login-btn:hover {
   background-color: white;
+  color: #44704d;
+}
+
+.mobile-logout-btn {
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  background-color: #44704d;
+  color: white;
+  padding: 0.8rem 1.6rem;
+  border-radius: 12px;
+  font-size: 18px;
+  text-decoration: none;
+}
+
+.mobile-logout-btn:hover {
+  background-color: #e0c6a6;
   color: #44704d;
 }
 
