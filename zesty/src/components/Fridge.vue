@@ -1,7 +1,8 @@
-<!-- TODO as of 14/10/25
- Hook up to Fridge DB BACKEND
- Work with img recogg api
- Lastly Link ALL to backend and db
+<!-- TODO as of 25/10/25
+  Fix Bug where added in manual stuff icons fail sometimes [FIX]
+  Move functions to backend and call [FIX]
+  AI ingredient and category recognition [FEAT]
+  Automatic Addition Form processing + Confirmation [FEAT]
  Pray it works -->
 
 <template>
@@ -40,34 +41,55 @@
             </label>
           </div>
 
+          
           <!-- Left: Manual -->
           <div class="col-md-5" v-show="item.selected === 'manual'">
             <strong>Manual:</strong>
+
             <div class="mb-2">
               <label>Item Name:</label>
               <input type="text" v-model="item.name" class="form-control"/>
             </div>
+
             <div class="mb-2">
               <label>Qty:</label>
-              <select v-model="item.qty" class="form-select">
-                <option v-for="opt in qtyOptions" :key="opt" :value="opt">{{ opt }}</option>
-              </select>
+              <div class="d-flex align-items-center">
+                <!-- Numeric Value (left) -->
+                <input 
+                  type="number" 
+                  v-model.number="item.qtyValue" 
+                  class="form-control me-2" 
+                  min="0" 
+                  placeholder="Value" 
+                  style="max-width: 50%;"
+                />
+
+                <!-- Quantity Type (right) -->
+                <select v-model="item.qty" class="form-select" style="max-width: 50%;">
+                  <option v-for="opt in qtyOptions" :key="opt" :value="opt">{{ opt }}</option>
+                </select>
+              </div>
             </div>
+
             <div class="mb-2">
               <label>Category:</label>
               <select v-model="item.category" class="form-select">
                 <option v-for="cat in categories.slice(1)" :key="cat" :value="cat">{{ cat }}</option>
               </select>
             </div>
+
             <div class="mb-2">
               <label>Expiry Date:</label>
               <input type="date" v-model="item.expiryDate" class="form-control"/>
             </div>
+
             <div class="mb-2">
               <label>Date Added:</label>
               <input type="date" v-model="item.dateAdded" class="form-control" readonly/>
             </div>
           </div>
+
+
 
           <!-- Right: Automatic -->
           <div class="col-md-5" v-show="item.selected === 'automatic'">
@@ -83,7 +105,6 @@
               </select>
             </div>
 
-            
             <!-- TAKE OUT CATEGORY IF YOU CAN GET THE API TO RECOGNISE What exactly it s ==========================-------------------------------------------------------->
             <div class="mb-2">
               <label>Category:</label>
@@ -93,7 +114,6 @@
             </div>
             <!-- TAKE OUT CATEGORY IF YOU CAN GET THE API TO RECOGNISE What exactly it s ==========================-------------------------------------------------------->
 
-            
             <div class="mb-2">
               <label>Expiry Date:</label>
               <input type="date" v-model="item.expiryDate" class="form-control"/>
@@ -112,20 +132,16 @@
       </div>
       <!-- END of HIDDEN FORMS-------------------------------------------------------------------------------------------- -->
 
-      
       <!-- CAT TABS -->
-      <!-- None  <576px, sm  ≥576px, md  ≥768px, lg  ≥992px, xl  ≥1200px, xxl  ≥1400px -->
-      <!-- CATEGORY TABS -->
-      <div class="container mt-4">
-        <ul class="nav nav-tabs nav-fill" role="tablist">
-          <li class="nav-item" v-for="category in categories" :key="category">
+      <div class="container mt-4">  
+        <ul class="nav nav-tabs nav-fill" role="tablist" style="background-color: #dbc09c; border-radius: 18px; padding: 0.5rem;">
+          <li class="nav-item" v-for="category in categories" :key="category" style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: bold;">
             <button
               class="nav-link"
               :class="{ active: activeCategory === category }"
               @click="activeCategory = category"
               role="tab"
             >
-              <!-- THIS IS THE TABS -->
               {{ category }}
               <span class="badge bg-light text-dark ms-1"> ({{ getCount(category) }}) </span>
             </button>
@@ -158,14 +174,14 @@
       </div>
 
       <!-- bscards in con -->
-      <div class="container my-5">
+      <div class="container my-5" v-if="fridgeItems.length > 0">
         <div class="row">
           <div
             class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4"
             v-for="(item, index) in sortedFilteredItems"
             :key="index"
           >
-            <div class="card h-100 shadow-sm position-relative" style="border-radius: 20px">
+            <div class="kitchen-card" style="border-radius: 20px">
               <!-- REMOVE BUTTON -->
               <button
                 v-if="removeMode"
@@ -203,12 +219,12 @@
                             :src="getImageSrc(item)"
                             class="card-img-top"
                             :alt="item.name"
-                            @error="(event) => (event.target.src = getImageSrc({ category: item.category }))"
+                            @error="(event) => (event.target.src = getImageSrc({ category: item.category, item_name: item.name }))"
                             style="height:120px; object-fit:contain;"
                           />
                             <div class="card-body">
                               <h6 class="card-title">{{ item.name }}</h6>
-                              <p class="card-text item-qty">Qty: {{ item.qty }}</p>
+                              <p class="card-text item-qty">Qty: {{ item.qty }}{{ item.qty_type }}</p>
                               <p class="card-text small mb-1">{{ item.category }}</p>
                               <p class="card-text item-expiry" :style="{ color: getExpiryColor(item.expiryDate) }">
                   Expiry: {{ item.expiryDate }}
@@ -226,20 +242,40 @@
                 </div>
               </div>
 
+              <!-- Quantity & Confirm Remove Modal -->
+              <div class="modal fade" id="confirmRemoveModal" tabindex="-1" aria-labelledby="confirmRemoveModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="confirmRemoveModalLabel">Remove Quantity</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                      <h6>Enter quantity to remove from <strong>{{ itemToRemove?.name }}</strong>:</h6>
+                      <input type="text" v-model="removeQty" class="form-control w-50 mx-auto" placeholder="Quantity">
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                      <button type="button" class="btn btn-danger" @click="confirmRemoveQty">Confirm</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
 
               <!-- IMAGE HANDLER incase no img -->
               <img
                 :src="getImageSrc(item)"
                 class="card-img-top"
                 :alt="item.name"
-                @error="(event) => (event.target.src = getImageSrc({ category: item.category }))"
+                @error="(event) => (event.target.src = getImageSrc({ category: item.category, item_name: item.name }))"
                 style="padding: 30px"
               />
               <div class="card-body text-center">
                 <h5 class="card-title item-name">{{ item.name }}</h5>
-                <p class="card-text item-qty">Qty: {{ item.qty }}</p>
-                <p class="card-text item-date-added">Date Added: {{ item.dateAdded }}</p>
-                <p class="card-text item-expiry" :style="{ color: getExpiryColor(item.expiryDate) }">
+                <p class="kc-meta">Qty: {{ item.qty }}{{ item.qty_type }}</p>
+                <p class="kc-meta" style="color:#2980b9">Date Added: {{ item.dateAdded }}</p>
+                <p class="kc-meta" :style="{ color: getExpiryColor(item.expiryDate) }">
                   Expiry: {{ item.expiryDate }}
                 </p>
                 <span class="badge bg-secondary text-capitalize">{{ item.category }}</span>
@@ -250,29 +286,44 @@
         </div>
       </div>
 
+      <!-- Hidden Message modals -->
+       <div class="modal fade" id="messageModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Notice</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-    <!-- Toggle Hidden Remove ------------------------------------------------------------------------------------------------->
-      <!-- Quantity & Confirm Modal -->
-      <div class="modal fade" id="confirmRemoveModal" tabindex="-1" aria-labelledby="confirmRemoveModalLabel" aria-hidden="true">
+      <!--Auto Img Confirmation Modal -->
+      <div class="modal fade" id="apiConfirmModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="confirmRemoveModalLabel">Remove Quantity</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <h5 class="modal-title">Confirm Item</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body text-center">
-              <p>Enter quantity to remove from <strong>{{ itemToRemove?.name }}</strong>:</p>
-              <input type="text" v-model="removeQty" class="form-control w-50 mx-auto" placeholder="Quantity">
+              <p>Predicted Item: <strong>{{ predictedItem?.name }}</strong></p>
+              <p>Category: <strong>{{ predictedItem?.category }}</strong></p>
+              <img :src="predictedItem?.img" alt="Preview" style="max-height:150px; object-fit:contain;" />
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-              <button type="button" class="btn btn-danger" @click="confirmRemoveQty">Remove</button>
+              <button type="button" class="btn btn-primary" @click="confirmApiPrediction">Confirm</button>
             </div>
           </div>
         </div>
       </div>
 
-    <!-- Toggle Hidden Remove ------------------------------------------------------------------------------------------------->
+
     </main>
 
     <!-- FOOTER -->
@@ -282,22 +333,66 @@
 
 <script setup>
 // ==============================================================  <Imports nonsense> [[[Please adjust for real data]]]
-import { ref, computed } from 'vue'
-import { RouterLink } from 'vue-router'
-import fridgeItems from '../../public/sample_data' // sample data path        [[[CHANGE TO ACTUAL BACKEND LATER]]]
+import { ref, computed, onMounted } from 'vue'
 import Header from './common/Header.vue'
 import Footer from './common/Footer.vue'
 
+
 // ======================================================================================================   <Tabbing wif number count>
-// tabs
 const categories = ['All', 'Protein', 'Vegetable', 'Dairy', 'Fruit', 'Sauces', 'Dry-Ration']
 const activeCategory = ref('All')
 
+// ===================================== Fridge Items =====================================
+const fridgeItems = ref([])
+
+// Supabase client setup
+const SUPABASE_URL = "https://lckghapuxijhsfydfzmy.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxja2doYXB1eGlqaHNmeWRmem15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3OTY0MzAsImV4cCI6MjA3NjM3MjQzMH0.yjW7FEGKDuhpPI-AMuOcj-1UJRP7AbMNvLyAbE1Q5RA";
+
+async function fetchFridgeItems() {
+  const fridgeId = sessionStorage.getItem("fridgeId")
+  if (!fridgeId) return console.warn("No fridge ID found in sessionStorage")
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/fridge_items?fridge_id=eq.${fridgeId}`, {
+      headers: {
+        apiKey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation' // optional, can help with inserts
+      }
+    })
+
+    if (!res.ok) throw new Error(`Error fetching fridge items: ${res.statusText}`)
+    const data = await res.json()
+
+    // Map Supabase columns to your local item object
+    fridgeItems.value = data.map(item => ({
+      id: item.item_id,
+      img: item.img_url || '',
+      name: item.item_name,
+      qty: item.qty,
+      qty_type: item.qty_type,
+      dateAdded: new Date(item.date_added).toISOString().split('T')[0],
+      expiryDate: new Date(item.expiry_date).toISOString().split('T')[0],
+      category: item.category
+    }))
+
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+onMounted(() => {
+  fetchFridgeItems()
+})
+
 // get tab count
 function getCount(category) {
-  if (category === 'All') return fridgeItems.length
-  return fridgeItems.filter((item) => item.category.toLowerCase() === category.toLowerCase()).length
+  if (category === 'All') return fridgeItems.value.length
+  return fridgeItems.value.filter((item) => item.category.toLowerCase() === category.toLowerCase()).length
 }
+
 // ======================================================================================================
 
 // ======================================================================================================  <Sorting + Searching>
@@ -310,30 +405,21 @@ const searchQuery = ref('')
 
 // filter items based on category and search
 const filteredItems = computed(() => {
-  return fridgeItems.filter((item) => {
-    // category filter
+  return fridgeItems.value.filter((item) => {
     const matchesCategory =
       activeCategory.value === 'All' ||
       item.category.toLowerCase() === activeCategory.value.toLowerCase()
-
-    // search filter (case-insensitive)
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-
     return matchesCategory && matchesSearch
   })
 })
-  
+
 // sort filtered items by expiry date
 const sortedFilteredItems = computed(() => {
   return [...filteredItems.value].sort((a, b) => {
     const dateA = new Date(a.expiryDate)
     const dateB = new Date(b.expiryDate)
-
-    if (sortOrder.value === 'asc') {
-      return dateA - dateB
-    } else {
-      return dateB - dateA
-    }
+    return sortOrder.value === 'asc' ? dateA - dateB : dateB - dateA
   })
 })
 // ======================================================================================================
@@ -343,94 +429,55 @@ function getExpiryColor(expiryDate) {
   const now = new Date()
   const expiry = new Date(expiryDate)
   const diffTime = expiry - now
-  const diffDays = diffTime / (1000 * 60 * 60 * 24) // convert ms to days
-
-  if (diffDays > 30) {
-    return 'green'
-  } else if (diffDays >= 14) {
-    return 'orange'
-  } else {
-    return 'red'
-  }
+  const diffDays = diffTime / (1000 * 60 * 60 * 24)
+  if (diffDays > 30) return 'green'
+  if (diffDays >= 14) return 'orange'
+  return 'red'
 }
 // ======================================================================================================
 
-// ======================================================================================================   <image for category>
 // ======================================================================================================   <Image fallback based on category>
 function getImageSrc(item) {
-  // If the item has a valid img path, use it
-  if (item.img && item.img.trim() !== '') {
-    return item.img
-  }
-
-  // Otherwise, return a category-based placeholder
+  if (item.img && item.img.trim() !== '') return item.img
   const category = (item.category || '').toLowerCase()
+  console.log(category)
+  console.log(item.category,item)
   switch (category) {
-    case 'protein':
-      return '/Cat_Icons/Protein.png'
-    case 'dairy':
-      return '/Cat_Icons/Dairy.png'
+    case 'protein': return '/Cat_Icons/Protein.png'
+    case 'dairy': return '/Cat_Icons/Dairy.png'
     case 'dry-ration':
-    case 'dry':
-      return '/Cat_Icons/Dry.png'
-    case 'fruit':
-      return '/Cat_Icons/Fruit.png'
+    case 'dry': return '/Cat_Icons/Dry.png'
+    case 'fruit': return '/Cat_Icons/Fruit.png'
     case 'sauces':
-    case 'sauce':
-      return '/Cat_Icons/Sauces.png'
-    case 'vegetable':
-      return '/Cat_Icons/Vegetable.png'
-    default:
-      return '/Cat_Icons/Dry.png' // generic fallback
+    case 'sauce': return '/Cat_Icons/Sauces.png'
+    case 'vegetable': return '/Cat_Icons/Vegetable.png'
+    default: return '../public/logo.png'
   }
 }
-
-// ======================================================================================================
 
 // ======================================================================================================  <FORM>
-
-// Track added items (manual or automatic)
 const addedItems = ref([])
-
-// Qty dropdown
 const qtyOptions = ['pcs', 'ml', 'l', 'kg', 'g', 'cup', 'can']
 
-//Manual or Automatic
-function promptItemType() {
-  const type = window.prompt("Enter item type: 'manual' or 'automatic'").toLocaleLowerCase()
-  if (type === 'manual' || type === 'automatic') {
-    addItem(type)
-  } else if (type !== null) {
-    alert("Please enter 'manual' or 'automatic'")
+async function onImageChange(event, index) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  // Show a temporary local preview first
+  addedItems.value[index].img = URL.createObjectURL(file);
+
+  // Upload to Cloudinary
+  const cloudUrl = await uploadToCloudinary(file);
+  if (cloudUrl) {
+    addedItems.value[index].img = cloudUrl; // replace preview with Cloudinary URL
+    console.log("Uploaded Cloudinary URL:", cloudUrl);
   }
 }
 
-// Add item function
-function addItem(type) {
-  addedItems.value.push({
-    type, // 'manual' or 'automatic'
-    name: '',
-    qty: 'pcs',
-    category: '',
-    expiryDate: '',
-    dateAdded: new Date().toISOString().split('T')[0], // auto today
-    img: null,
-  })
-}
-
-// img
-function onImageChange(event, index) {
-  const file = event.target.files[0]
-  if (file) {
-    addedItems.value[index].img = URL.createObjectURL(file)
-  }
-}
-
-// Add new empty row (only one )
 function addItemRow() {
-  if (addedItems.value.length === 0) {  // only allow one row
+  if (addedItems.value.length === 0) {
     addedItems.value.push({
-      selected: 'manual', // default selected form
+      selected: 'manual',
       name: '',
       qty: 'pcs',
       category: '',
@@ -442,18 +489,14 @@ function addItemRow() {
 }
 
 // ======================================================================================================       <REMOVE MODE Toggleing>
-
-// remove modal handling
 function openRemoveModal() {
   const modal = new bootstrap.Modal(document.getElementById('removeModal'))
   modal.show()
 }
 
-// live search for remove modal (works exactly like main search)
 const removeSearchQuery = ref('')
-
 const filteredFridgeItemsForRemove = computed(() => {
-  return fridgeItems.filter((item) => {
+  return fridgeItems.value.filter((item) => {
     const q = removeSearchQuery.value.toLowerCase()
     return (
       item.name.toLowerCase().includes(q) ||
@@ -463,11 +506,10 @@ const filteredFridgeItemsForRemove = computed(() => {
   })
 })
 
-// Track which item user wants to remove
 const itemToRemove = ref(null)
 const removeQty = ref('')
 
-// Trigger the second modal when clicked
+// Show confirm modal
 function askRemove(item) {
   itemToRemove.value = item
   removeQty.value = ''
@@ -476,19 +518,243 @@ function askRemove(item) {
 }
 
 // Confirm removal
-function confirmRemoveQty() {
-  if (!removeQty.value) return alert('Please enter a quantity')
-
-  const confirmed = confirm(`Remove ${removeQty.value} from ${itemToRemove.value.name}?`)
-  if (confirmed) {
-    alert(`${removeQty.value} of ${itemToRemove.value.name} removed! (placeholder action)`)
-    // TODO: call backend or update fridgeItems here
+async function confirmRemoveQty() {
+  // 1️⃣ Basic checks
+  if (!removeQty.value) {
+    showModalMessage('Please enter a quantity to remove.')
+    return
+  }
+  if (!itemToRemove.value || !itemToRemove.value.id) {
+    showModalMessage('No item selected or missing item ID.')
+    return
   }
 
-  // Close modal programmatically
+  const fridgeId = sessionStorage.getItem("fridgeId")
+  if (!fridgeId) {
+    showModalMessage('No fridge ID found in session.')
+    return
+  }
+
+  try {
+    // 2️⃣ Parse quantity values
+    const currentQtyNum = parseFloat(itemToRemove.value.qty)
+    const removeQtyNum = parseFloat(removeQty.value)
+    const unit = itemToRemove.value.qty_type || ''
+
+    // 3️⃣ Validate quantity inputs
+    if (isNaN(currentQtyNum) || isNaN(removeQtyNum)) {
+      showModalMessage('Invalid quantity input.')
+      return
+    }
+    if (removeQtyNum <= 0) {
+      showModalMessage('Invalid amount — must be positive (>0).')
+      return
+    }
+    if (removeQtyNum > currentQtyNum) {
+      showModalMessage(`Try Again — you only have ${currentQtyNum} ${unit} available.`)
+      return
+    }
+
+    const newQtyNum = currentQtyNum - removeQtyNum
+
+    // 4️⃣ If new qty ≤ 0, delete the item
+    if (newQtyNum <= 0) {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/fridge_items?item_id=eq.${itemToRemove.value.id}`, {
+        method: 'DELETE',
+        headers: {
+          apiKey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      if (!res.ok) throw new Error('Failed to delete item.')
+
+      // Remove from Vue state
+      fridgeItems.value = fridgeItems.value.filter(i => i.id !== itemToRemove.value.id)
+      showModalMessage(`${itemToRemove.value.name} fully removed from fridge!`)
+    } 
+    // 5️⃣ Otherwise, update the item quantity
+    else {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/fridge_items?item_id=eq.${itemToRemove.value.id}`, {
+        method: 'PATCH',
+        headers: {
+          apiKey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ qty: newQtyNum })
+      })
+      if (!res.ok) throw new Error('Failed to update item.')
+
+      // Update local state
+      const index = fridgeItems.value.findIndex(i => i.id === itemToRemove.value.id)
+      if (index !== -1) fridgeItems.value[index].qty = newQtyNum
+
+      showModalMessage(`${removeQty.value} ${unit} removed from ${itemToRemove.value.name}`)
+    }
+
+  } catch (err) {
+    console.error(err)
+    showModalMessage('Error removing quantity: ' + err.message)
+  }
+
+  // 6️⃣ Close the confirm modal programmatically
   const modalEl = document.getElementById('confirmRemoveModal')
   const modalInstance = bootstrap.Modal.getInstance(modalEl)
-  modalInstance.hide()
+  if (modalInstance) modalInstance.hide()
+}
+
+
+// Utility: show modal with message instead of alert
+function showModalMessage(message) {
+  const modalEl = document.getElementById('messageModal');
+  const modalBody = modalEl.querySelector('.modal-body');
+  modalBody.textContent = message;
+
+  // Create a new Bootstrap modal instance if none exists
+  let modal = bootstrap.Modal.getInstance(modalEl);
+  if (!modal) modal = new bootstrap.Modal(modalEl);
+
+  // Show the modal
+  modal.show();
+
+  // Listen for modal hidden event to remove any leftover backdrop
+  modalEl.addEventListener('hidden.bs.modal', () => {
+    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+    // Optional: remove modal-open class from body
+    document.body.classList.remove('modal-open');
+  }, { once: true }); // ensures listener runs only once
+}
+
+
+
+// ======================================================================================================       
+
+
+
+// ======================================================================================================       <ITEM INSERTION>
+
+///////////////FORM type Selector
+async function submitItem(index) {
+  const item = addedItems.value[index];
+  if (!item) return;
+
+  // Prepare full form data
+  const formData = {
+    name: item.name,
+    qtyValue: item.qtyValue,
+    qtyType: item.qty,
+    category: item.category.toLowerCase(),
+    expiryDate: item.expiryDate,
+    dateAdded: item.dateAdded,
+    img: item.img,
+  };
+
+  try {
+    if (item.selected === 'manual') {
+      // Call manual handler
+      await manualFunc(formData);
+      showModalMessage(`${item.name} submitted manually!`);
+    } else if (item.selected === 'automatic') {
+      // Call automatic handler
+      await autoFunc(formData);
+      showModalMessage(`${item.name} submitted automatically!`);
+    }
+
+    // ✅ Remove the form for this item after submission
+    addedItems.value.splice(index, 1);
+
+  } catch (err) {
+    console.error(err);
+    showModalMessage('Error submitting: ' + err.message);
+  }
+}
+
+
+// Manual submission handler
+// Manual submission handler - adds item to Supabase
+async function manualFunc(formData) {
+  const fridgeId = sessionStorage.getItem("fridgeId");
+  if (!fridgeId) return showModalMessage("No fridge ID found in session.");
+
+  // Basic validation
+  if (
+    !formData.name ||
+    !formData.qtyValue ||
+    formData.qtyValue <= 0 ||
+    !formData.qtyType ||
+    !formData.category ||
+    !formData.expiryDate
+  ) {
+    return showModalMessage("Please fill in all fields correctly.");
+  }
+
+  try {
+    const newItem = {
+      item_name: formData.name.trim(),
+      qty: parseFloat(formData.qtyValue),
+      qty_type: formData.qtyType,
+      category: formData.category,
+      expiry_date: formData.expiryDate,
+      date_added: formData.dateAdded || new Date().toISOString(),
+      img_url: formData.img || '/images/missing/default.png',
+      fridge_id: fridgeId
+    };
+
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/fridge_items`, {
+      method: 'POST',
+      headers: {
+        apiKey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation' // optional, gets inserted record back
+      },
+      body: JSON.stringify(newItem)
+    });
+
+    if (!res.ok) throw new Error('Failed to add item.');
+
+    showModalMessage(`${formData.name} added successfully!`);
+
+    // Refresh local fridge items
+    await fetchFridgeItems();
+
+  } catch (err) {
+    console.error(err);
+    showModalMessage('Error adding item: ' + err.message);
+  }
+}
+// ======================================================================================================   
+
+
+
+
+// ======================================================================================================       <Img Auto Insertion>
+// Cloudinary info
+const CLOUD_NAME = "dld2rfhyu";
+const UPLOAD_PRESET = "fridge_preset";
+
+async function uploadToCloudinary(file) {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", UPLOAD_PRESET);
+
+  try {
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!res.ok) throw new Error("Upload failed");
+
+    const data = await res.json();
+    console.log("Cloudinary URL:", data.secure_url);
+    return data.secure_url;
+
+  } catch (err) {
+    console.error("Cloudinary upload error:", err);
+    return null;
+  }
 }
 
 
@@ -496,8 +762,13 @@ function confirmRemoveQty() {
 
 
 
-// ======================================================================================================  
+
+
+
 </script>
+
+
+
 
 <style scoped>
 /* MAIN FRIDGE  */
@@ -526,6 +797,13 @@ main.fridge-main p {
   margin-bottom: 10px;
 }
 
+.active{
+  background-color: #44704d !important;
+  border: none !important;
+  color: white !important;
+  border-radius: 18px;
+}
+
 .item-qty {
   color: #16a085;
   font-weight: 500;
@@ -541,6 +819,12 @@ main.fridge-main p {
   color: #c0392b;
   font-size: 90%;
 }
+
+.nav-link:hover{
+  border-radius: 18px !important;
+  background: #D5BD99;
+  border: none;
+}
 </style>
 
 <style scoped>
@@ -553,5 +837,41 @@ main.fridge-main p {
   color: black;
   background-color: white;
   margin: 0;
+}
+
+.kc-meta {
+  background: #f4e3d4;
+  border-radius: 18px 16px 20px 15px/20px 22px 15px 18px;
+  font-size: 12px;
+  padding: 9px 19px;
+  color: #054e1c;
+  font-weight: 600;
+  box-shadow: 0 1.5px 6px rgba(180, 120, 60, 0.07);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  margin-bottom:10px !important;
+}
+
+.kitchen-card {
+  background: linear-gradient(135deg, #fff9ec 90%, #ead9c9 100%);
+  border: 2.3px solid #e6d1b1;
+  border-radius: 38px 42px 33px 44px/40px 36px 40px 38px;
+  width: 315px;
+  min-height: 340px;
+  margin: 40px 24px 0 0;
+  box-shadow: 0 8px 48px 3px rgba(210, 170, 110, 0.19);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 20px 22px 20px;
+  font-family: 'Bricolage Grotesque', 'Comic Sans MS', Arial, sans-serif;
+  position: relative;
+  transition:
+    box-shadow 0.16s,
+    transform 0.16s;
+  width:250px;
 }
 </style>

@@ -81,6 +81,7 @@ body,
   align-items: stretch;
   margin-bottom: 50px;
 }
+
 .tab-bar-bg {
   width: fit-content;
   margin: 32px auto 28px auto;
