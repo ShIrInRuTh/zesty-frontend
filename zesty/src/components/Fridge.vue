@@ -26,43 +26,34 @@
 
       <!-- HIDDEN FORMS--------------------------------------------------------------------------------------------------- -->
       <div class="container mt-3" id="addItemContainer" v-if="addedItems.length > 0">
-        <div
-          v-for="(item, index) in addedItems"
-          :key="index"
-          class="row border p-3 mb-3 rounded justify-content-center align-items-start text-center"
-        >
+        <div v-for="(item, index) in addedItems" :key="index"
+          class="row border p-3 mb-3 rounded justify-content-center align-items-start text-center">
           <!-- RADIO selector FIRST -->
           <div class="col-12 mb-3 d-flex justify-content-center gap-4">
             <label>
-              <input type="radio" v-model="item.selected" value="manual"/> Manual
+              <input type="radio" v-model="item.selected" value="manual" /> Manual
             </label>
             <label>
-              <input type="radio" v-model="item.selected" value="automatic"/> Automatic
+              <input type="radio" v-model="item.selected" value="automatic" /> Automatic
             </label>
           </div>
 
-          
+
           <!-- Left: Manual -->
           <div class="col-md-5" v-show="item.selected === 'manual'">
             <strong>Manual:</strong>
 
             <div class="mb-2">
               <label>Item Name:</label>
-              <input type="text" v-model="item.name" class="form-control"/>
+              <input type="text" v-model="item.name" class="form-control" />
             </div>
 
             <div class="mb-2">
               <label>Qty:</label>
               <div class="d-flex align-items-center">
                 <!-- Numeric Value (left) -->
-                <input 
-                  type="number" 
-                  v-model.number="item.qtyValue" 
-                  class="form-control me-2" 
-                  min="0" 
-                  placeholder="Value" 
-                  style="max-width: 50%;"
-                />
+                <input type="number" v-model.number="item.qtyValue" class="form-control me-2" min="0"
+                  placeholder="Value" style="max-width: 50%;" />
 
                 <!-- Quantity Type (right) -->
                 <select v-model="item.qty" class="form-select" style="max-width: 50%;">
@@ -80,12 +71,12 @@
 
             <div class="mb-2">
               <label>Expiry Date:</label>
-              <input type="date" v-model="item.expiryDate" class="form-control"/>
+              <input type="date" v-model="item.expiryDate" class="form-control" />
             </div>
 
             <div class="mb-2">
               <label>Date Added:</label>
-              <input type="date" v-model="item.dateAdded" class="form-control" readonly/>
+              <input type="date" v-model="item.dateAdded" class="form-control" readonly />
             </div>
           </div>
 
@@ -96,7 +87,7 @@
             <strong>Automatic:</strong>
             <div class="mb-2">
               <label>Image Input:</label>
-              <input type="file" @change="onImageChange($event, index)" class="form-control"/>
+              <input type="file" @change="onImageChange($event, index)" class="form-control" />
             </div>
             <div class="mb-2">
               <label>Qty:</label>
@@ -116,11 +107,11 @@
 
             <div class="mb-2">
               <label>Expiry Date:</label>
-              <input type="date" v-model="item.expiryDate" class="form-control"/>
+              <input type="date" v-model="item.expiryDate" class="form-control" />
             </div>
             <div class="mb-2">
               <label>Date Added:</label>
-              <input type="date" v-model="item.dateAdded" class="form-control" readonly/>
+              <input type="date" v-model="item.dateAdded" class="form-control" readonly />
             </div>
           </div>
 
@@ -133,15 +124,13 @@
       <!-- END of HIDDEN FORMS-------------------------------------------------------------------------------------------- -->
 
       <!-- CAT TABS -->
-      <div class="container mt-4">  
-        <ul class="nav nav-tabs nav-fill" role="tablist" style="background-color: #dbc09c; border-radius: 18px; padding: 0.5rem;">
-          <li class="nav-item" v-for="category in categories" :key="category" style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: bold;">
-            <button
-              class="nav-link"
-              :class="{ active: activeCategory === category }"
-              @click="activeCategory = category"
-              role="tab"
-            >
+      <div class="container mt-4">
+        <ul class="nav nav-tabs nav-fill" role="tablist"
+          style="background-color: #dbc09c; border-radius: 18px; padding: 0.5rem;">
+          <li class="nav-item" v-for="category in categories" :key="category"
+            style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: bold;">
+            <button class="nav-link" :class="{ active: activeCategory === category }" @click="activeCategory = category"
+              role="tab" v-on:click='fetchFridgeItems(category)'>
               {{ category }}
               <span class="badge bg-light text-dark ms-1"> ({{ getCount(category) }}) </span>
             </button>
@@ -162,13 +151,8 @@
           <!-- searchbar -->
           <div class="d-flex align-items-center">
             <label for="searchQuery" class="me-2 fw-semibold">Search:</label>
-            <input
-              type="text"
-              id="searchQuery"
-              v-model="searchQuery"
-              class="form-control w-auto"
-              placeholder="Enter item name"
-            />
+            <input type="text" id="searchQuery" v-model="searchQuery" class="form-control w-auto"
+              placeholder="Enter item name" />
           </div>
         </div>
       </div>
@@ -176,24 +160,18 @@
       <!-- bscards in con -->
       <div class="container my-5" v-if="fridgeItems.length > 0">
         <div class="row">
-          <div
-            class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4"
-            v-for="(item, index) in sortedFilteredItems"
-            :key="index"
-          >
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" v-for="(item, index) in fridgeItems" :key="index">
             <div class="kitchen-card" style="border-radius: 20px">
               <!-- REMOVE BUTTON -->
-              <button
-                v-if="removeMode"
-                class="btn btn-danger position-absolute"
+              <button v-if="removeMode" class="btn btn-danger position-absolute"
                 style="top: 5px; right: 5px; border-radius: 50%; width: 30px; height: 30px; padding: 0;"
-                @click="confirmRemove(item, index)"
-              >
+                @click="confirmRemove(item, index)">
                 X
               </button>
 
               <!-- Remove Modal -->
-              <div class="modal fade" id="removeModal" tabindex="-1" aria-labelledby="removeModalLabel" aria-hidden="true">
+              <div class="modal fade" id="removeModal" tabindex="-1" aria-labelledby="removeModalLabel"
+                aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                   <div class="modal-content">
                     <div class="modal-header">
@@ -201,35 +179,27 @@
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                          <!-- Search bar inside remove modal -->
-                          <div class="mb-3 text-center">
-                            <input
-                              v-model="removeSearchQuery"
-                              type="text"
-                              class="form-control w-50 mx-auto"
-                              placeholder="Search items..."
-                            />
-                          </div>
+                      <!-- Search bar inside remove modal -->
+                      <div class="mb-3 text-center">
+                        <input v-model="removeSearchQuery" type="text" class="form-control w-50 mx-auto"
+                          placeholder="Search items..." />
+                      </div>
 
-                          <div class="row row-cols-1 row-cols-md-3 g-3">
-                            <div v-for="(item, index) in filteredFridgeItemsForRemove" :key="index" class="col">
+                      <div class="row row-cols-1 row-cols-md-3 g-3">
+                        <div v-for="(item, index) in filteredFridgeItemsForRemove" :key="index" class="col">
                           <div class="card h-100 text-center">
 
-                            <img
-                            :src="getImageSrc(item)"
-                            class="card-img-top"
-                            :alt="item.name"
-                            @error="(event) => (event.target.src = getImageSrc({ category: item.category, item_name: item.name }))"
-                            style="height:120px; object-fit:contain;"
-                          />
+                            <img :src="getImageSrc(item)" class="card-img-top" :alt="item.name"
+                              @error="(event) => (event.target.src = getImageSrc({ category: item.category, item_name: item.name }))"
+                              style="height:120px; object-fit:contain;" />
                             <div class="card-body">
                               <h6 class="card-title">{{ item.name }}</h6>
                               <p class="card-text item-qty">Qty: {{ item.qty }}{{ item.qty_type }}</p>
                               <p class="card-text small mb-1">{{ item.category }}</p>
                               <p class="card-text item-expiry" :style="{ color: getExpiryColor(item.expiryDate) }">
-                  Expiry: {{ item.expiryDate }}
-                </p>
-                          <button class="btn btn-outline-danger btn-sm" @click="askRemove(item)">❌ Remove</button>
+                                Expiry: {{ item.expiryDate }}
+                              </p>
+                              <button class="btn btn-outline-danger btn-sm" @click="askRemove(item)">❌ Remove</button>
                             </div>
                           </div>
                         </div>
@@ -243,7 +213,8 @@
               </div>
 
               <!-- Quantity & Confirm Remove Modal -->
-              <div class="modal fade" id="confirmRemoveModal" tabindex="-1" aria-labelledby="confirmRemoveModalLabel" aria-hidden="true">
+              <div class="modal fade" id="confirmRemoveModal" tabindex="-1" aria-labelledby="confirmRemoveModalLabel"
+                aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                   <div class="modal-content">
                     <div class="modal-header">
@@ -264,13 +235,9 @@
 
 
               <!-- IMAGE HANDLER incase no img -->
-              <img
-                :src="getImageSrc(item)"
-                class="card-img-top"
-                :alt="item.name"
+              <img :src="getImageSrc(item)" class="card-img-top" :alt="item.name"
                 @error="(event) => (event.target.src = getImageSrc({ category: item.category, item_name: item.name }))"
-                style="padding: 30px"
-              />
+                style="padding: 30px" />
               <div class="card-body text-center">
                 <h5 class="card-title item-name">{{ item.name }}</h5>
                 <p class="kc-meta">Qty: {{ item.qty }}{{ item.qty_type }}</p>
@@ -287,20 +254,20 @@
       </div>
 
       <!-- Hidden Message modals -->
-       <div class="modal fade" id="messageModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Notice</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div class="modal fade" id="messageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Notice</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center"></div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="modal-body text-center"></div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
 
       <!--Auto Img Confirmation Modal -->
       <div class="modal fade" id="apiConfirmModal" tabindex="-1" aria-hidden="true">
@@ -336,6 +303,8 @@
 import { ref, computed, onMounted } from 'vue'
 import Header from './common/Header.vue'
 import Footer from './common/Footer.vue'
+import axios from 'axios'
+
 
 
 // ======================================================================================================   <Tabbing wif number count>
@@ -349,25 +318,21 @@ const fridgeItems = ref([])
 const SUPABASE_URL = "https://lckghapuxijhsfydfzmy.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxja2doYXB1eGlqaHNmeWRmem15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3OTY0MzAsImV4cCI6MjA3NjM3MjQzMH0.yjW7FEGKDuhpPI-AMuOcj-1UJRP7AbMNvLyAbE1Q5RA";
 
-async function fetchFridgeItems() {
+async function fetchFridgeItems(cat='') {
   const fridgeId = sessionStorage.getItem("fridgeId")
   if (!fridgeId) return console.warn("No fridge ID found in sessionStorage")
 
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/fridge_items?fridge_id=eq.${fridgeId}`, {
-      headers: {
-        apiKey: SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=representation' // optional, can help with inserts
-      }
-    })
+    const res = await axios.post(`http://localhost:8000/api/fridge/${fridgeId}`, {cat})
+    const result = res.data.message
+    console.log(fridgeItems)
 
-    if (!res.ok) throw new Error(`Error fetching fridge items: ${res.statusText}`)
-    const data = await res.json()
+
+    // if (!res.ok) throw new Error(`Error fetching fridge items: ${res.statusText}`)
+    // const data = await res.json()
 
     // Map Supabase columns to your local item object
-    fridgeItems.value = data.map(item => ({
+    fridgeItems.value = result.map(item => ({
       id: item.item_id,
       img: item.img_url || '',
       name: item.item_name,
@@ -384,8 +349,12 @@ async function fetchFridgeItems() {
 }
 
 onMounted(() => {
-  fetchFridgeItems()
+  fetchFridgeItems('')
+  
 })
+
+
+
 
 // get tab count
 function getCount(category) {
@@ -403,25 +372,6 @@ const sortOrder = ref('asc')
 // search by name
 const searchQuery = ref('')
 
-// filter items based on category and search
-const filteredItems = computed(() => {
-  return fridgeItems.value.filter((item) => {
-    const matchesCategory =
-      activeCategory.value === 'All' ||
-      item.category.toLowerCase() === activeCategory.value.toLowerCase()
-    const matchesSearch = item.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-    return matchesCategory && matchesSearch
-  })
-})
-
-// sort filtered items by expiry date
-const sortedFilteredItems = computed(() => {
-  return [...filteredItems.value].sort((a, b) => {
-    const dateA = new Date(a.expiryDate)
-    const dateB = new Date(b.expiryDate)
-    return sortOrder.value === 'asc' ? dateA - dateB : dateB - dateA
-  })
-})
 // ======================================================================================================
 
 // ======================================================================================================   <Expiry Date Coloring WOWSER>
@@ -431,7 +381,7 @@ function getExpiryColor(expiryDate) {
   const diffTime = expiry - now
   const diffDays = diffTime / (1000 * 60 * 60 * 24)
   if (diffDays > 30) return 'green'
-  if (diffDays >= 14) return 'orange'
+  if (diffDays >= 14) return 'yellow'
   return 'red'
 }
 // ======================================================================================================
@@ -441,7 +391,7 @@ function getImageSrc(item) {
   if (item.img && item.img.trim() !== '') return item.img
   const category = (item.category || '').toLowerCase()
   console.log(category)
-  console.log(item.category,item)
+  console.log(item.category, item)
   switch (category) {
     case 'protein': return '/Cat_Icons/Protein.png'
     case 'dairy': return '/Cat_Icons/Dairy.png'
@@ -572,7 +522,7 @@ async function confirmRemoveQty() {
       // Remove from Vue state
       fridgeItems.value = fridgeItems.value.filter(i => i.id !== itemToRemove.value.id)
       showModalMessage(`${itemToRemove.value.name} fully removed from fridge!`)
-    } 
+    }
     // 5️⃣ Otherwise, update the item quantity
     else {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/fridge_items?item_id=eq.${itemToRemove.value.id}`, {
@@ -797,7 +747,7 @@ main.fridge-main p {
   margin-bottom: 10px;
 }
 
-.active{
+.active {
   background-color: #44704d !important;
   border: none !important;
   color: white !important;
@@ -820,7 +770,7 @@ main.fridge-main p {
   font-size: 90%;
 }
 
-.nav-link:hover{
+.nav-link:hover {
   border-radius: 18px !important;
   background: #D5BD99;
   border: none;
@@ -852,7 +802,7 @@ main.fridge-main p {
   justify-content: center;
   gap: 5px;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  margin-bottom:10px !important;
+  margin-bottom: 10px !important;
 }
 
 .kitchen-card {
@@ -872,6 +822,6 @@ main.fridge-main p {
   transition:
     box-shadow 0.16s,
     transform 0.16s;
-  width:250px;
+  width: 250px;
 }
 </style>
