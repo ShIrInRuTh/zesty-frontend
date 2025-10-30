@@ -1,13 +1,14 @@
 <template>
   <div class="app">
     <!-- HEADER -->
-     <Header/>
-    
+    <Header />
 
-    <!-- Welcome section -->
+    <main class="user-home-main">
+      <!-- Welcome section -->
       <section class="welcome-section">
         <div class="welcome-text">
-          <h2 class="welcome-title">Welcome, 
+          <h2 class="welcome-title">
+            Welcome,
             <span class="username">{{ currentUsername }}</span>
           </h2>
           <p class="tagline">Discover delicious meals with what you already have.</p>
@@ -39,279 +40,347 @@
         <RouterLink to="/settings" class="card-item">
           <img src="/settings-icon.png" alt="Settings Icon" class="card-icon" />
           <h3 class="card-title">Settings</h3>
-          <p class="card-subtitle">Tweak to your preferences</p>
+          <p class="card-subtitle">Manage your account</p>
         </RouterLink>
       </section>
 
-      <!-- Graveyard Section -->
-      <section class="graveyard-section">
-        <div class="graveyard-card">
-          <h3 class="graveyard-title">My Food Graveyard</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Ingredient</th>
-                <th>Qty</th>
-                <th>Expiry</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Full Cream Milk</td>
-                <td>2</td>
-                <td class="expired-date">20/08/2025</td>
-              </tr>
-              <tr>
-                <td>Mozarella Cheese</td>
-                <td>300g</td>
-                <td>28/09/2025</td>
-              </tr>
-            </tbody>
-          </table>
-          <RouterLink to="/fridge" class="view-more">View more >></RouterLink>
+      <!-- Dashboard Section (Fridge & Graveyard) -->
+      <section class="dashboard-section">
+        <!-- Fridge Summary -->
+        <div class="dashboard-card fridge-summary">
+          <h3 class="dashboard-title">Expiring Soon</h3>
+          <ul class="item-list">
+            <li v-for="item in fridgeItems" :key="item.id" class="item">
+              <span class="item-name">{{ item.name }}</span>
+              <span class="item-expiry">Exp: {{ getFormattedDate(item.expiryDate) }}</span>
+            </li>
+          </ul>
+          <RouterLink to="/fridge" class="view-more">View full fridge</RouterLink>
+        </div>
+
+        <!-- Graveyard -->
+        <div class="dashboard-card graveyard">
+          <h3 class="dashboard-title">Recently Expired</h3>
+          <div class="table-responsive-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Expired On</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in expiredItems" :key="item.id">
+                  <td>{{ item.name }}</td>
+                  <td class="expired-date">{{ getFormattedDate(item.expiryDate) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <RouterLink to="/graveyard" class="view-more">View full graveyard</RouterLink>
         </div>
       </section>
-    </div>
+    </main>
+
     <!-- FOOTER -->
-    <Footer/>
+    <Footer />
+  </div>
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import Header from './common/Header.vue'
-import Footer from './common/Footer.vue'
-</script>
+import Footer from './common/Footer.vue' // <-- Fixed typo 'commonf' to 'common'
 
-<script>
-export default {
-  data() {
-    return {
-      currentUsername: "Mr Shar",
-    }
-  }
+// Dummy data - replace with your actual data store (e.g., Pinia)
+const allFridgeItems = [
+  { id: 1, name: 'Milk', expiryDate: '2025-11-02' },
+  { id: 2, name: 'Eggs', expiryDate: '2025-11-05' },
+  { id: 3, name: 'Cheese', expiryDate: '2025-11-10' },
+  { id: 4, name: 'Chicken Breast', expiryDate: '2025-11-01' },
+  { id: 5, name: 'Carrots', expiryDate: '2025-11-08' },
+  { id: 6, name: 'Yogurt', expiryDate: '2025-11-04' },
+  { id: 7, name: 'Old Bread', expiryDate: '2025-10-28' }, // Expired
+  { id: 8, name: 'Spinach', expiryDate: '2025-10-25' } // Expired
+]
+
+const username = 'Foodie' // Dummy username
+
+const currentUsername = computed(() => {
+  // Replace with logic to get logged-in user's name
+  return username || 'User'
+})
+
+// Sort items by expiry date (soonest first)
+const sortedItems = computed(() => {
+  return [...allFridgeItems].sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate))
+})
+
+// Get top 5 items expiring soon (but not yet expired)
+const fridgeItems = computed(() => {
+  const today = new Date().toISOString().split('T')[0]
+  return sortedItems.value.filter((item) => item.expiryDate >= today).slice(0, 5)
+})
+
+// Get top 5 recently expired items
+const expiredItems = computed(() => {
+  const today = new Date().toISOString().split('T')[0]
+  return sortedItems.value
+    .filter((item) => item.expiryDate < today)
+    .reverse() // Show most recently expired first
+    .slice(0, 5)
+})
+
+const getFormattedDate = (dateString) => {
+  const options = { year: 'numeric', month: 'short', day: 'numeric' }
+  return new Date(dateString).toLocaleDateString(undefined, options)
 }
 </script>
 
 <style scoped>
+/* Using fonts and colors from your other pages for consistency */
 :root {
-    --color-primary: #388E3C; /* Deep Sage Green (The main brand color) */
-    --color-secondary: #D4624F; /* Warm Spice/Tomato Red (The main CTA color) */
-    --color-accent: #FF7043; /* Bright Orange Accent (For highlights) */
-    --color-background: #FFF8E1; /* Light, warm yellowish-white */
-    --color-text: #333333; /* Dark text for contrast */
-    --font-heading: 'Bricolage Grotesque', sans-serif;
-    --font-body: 'Inter', Arial, sans-serif; 
+  --color-primary-green: #44704d;
+  --color-dark-green: #3a5f42;
+  --color-primary-brown: #a35d35;
+  --color-light-tan: #f0e0c0;
+  --color-bg: #fdfaf6;
+  --color-text-primary: #333;
+  --color-text-secondary: #555;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --border-radius-main: 18px;
+  --shadow-main: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
-/* GENERAL STYLES */
 .app {
-  min-height: 100vh;
-  min-width: 100vw;
   display: flex;
   flex-direction: column;
-  font-family: Arial, sans-serif;
-  color: black;
-  /* all text black */
-  background-color: white;
-  margin: 0;
+  min-height: 100vh;
+  min-width: 100vw; /* <-- Added for consistency with your other pages */
+  background-color: var(--color-bg);
+  font-family: var(--font-body);
+  color: var(--color-text-primary);
 }
 
+.user-home-main {
+  flex-grow: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
 
-/* --- WELCOME SECTION STYLING --- */
+/* --- Welcome Section --- */
 .welcome-section {
-    /* Use a warm, soft gradient background instead of flat color for better depth */
-    background: linear-gradient(135deg, var(--color-background) 0%, #FFFDE7 100%);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 60px 80px; /* Increased padding for spacious feel */
-    margin-top: 30px;
-    border-radius: 24px; /* More rounded corners */
-    /* Refined, softer shadow with a subtle lift effect */
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
-    position: relative;
-    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+  display: flex;
+  flex-direction: column; /* Mobile-first: stack text and image */
+  align-items: center;
+  background: white;
+  border-radius: var(--border-radius-main);
+  box-shadow: var(--shadow-main);
+  padding: 24px;
+  margin-bottom: 32px;
+  overflow: hidden;
 }
 
-/* Subtle lift effect on hover for the entire section */
-.welcome-section:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.08);
-}
-
-/* Text Container */
 .welcome-text {
-    flex: 1;
-    max-width: 55%; /* Increased text area */
-    padding-right: 50px;
-    z-index: 10;
+  flex: 1;
+  text-align: center; /* Center text on mobile */
 }
 
-/* The Title */
 .welcome-title {
-    font-family: var(--font-heading);
-    font-size: 3.8rem; /* Larger for high impact */
-    font-weight: 900;
-    color: var(--color-text); /* Use dark text color for excellent contrast */
-    line-height: 1.05;
-    margin-bottom: 15px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 8px;
 }
 
-/* Username Highlight */
-.welcome-title .username {
-    color: var(--color-accent); /* Bright accent color for a pop */
-    font-style: normal;
-    font-weight: 900;
-    padding: 0 5px;
-    display: inline-block;
-    position: relative;
-    /* Optional: A simple line highlight under the name */
-    text-decoration: underline;
-    text-decoration-thickness: 4px;
-    text-decoration-color: rgba(255, 112, 67, 0.3); /* Semi-transparent accent color */
-    text-underline-offset: 8px;
+.username {
+  color: var(--color-primary-green);
 }
 
-/* Tagline/Subtitle */
 .tagline {
-    font-family: var(--font-body);
-    font-size: 1.4rem; 
-    color: var(--color-text);
-    font-weight: 500;
-    margin-bottom: 40px;
-    opacity: 0.8;
+  font-size: 1.1rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 24px;
 }
 
-/* Start Cooking Button */
 .start-cooking-btn {
-    padding: 1.1rem 3rem; /* Substantial touch target */
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: black;
-    background-color: var(--color-secondary);
-    border: none;
-    border-radius: 50px; /* Pill shape */
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    /* Stronger, more colorful shadow */
-    box-shadow: 0 8px 25px rgba(212, 98, 79, 0.5);
-    text-transform: uppercase;
-    letter-spacing: 1px;
+  display: inline-block;
+  background: var(--color-primary-green);
+  color: white;
+  padding: 12px 28px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s ease;
 }
 
 .start-cooking-btn:hover {
-    background-color: #EF7A67; /* Noticeably lighter on hover */
-    transform: translateY(-4px); /* Bigger lift effect */
-    box-shadow: 0 12px 30px rgba(212, 98, 79, 0.7);
+  background: var(--color-dark-green);
+  transform: translateY(-2px);
 }
 
-/* Image Styling */
 .header-image-wrapper {
-    flex: 1;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding-left: 20px;
+  flex: 1;
+  max-width: 400px; /* Control image size */
+  margin-top: 24px; /* Add space on mobile */
 }
 
 .header-pattern-img {
-    width: 100%;
-    max-width: 450px;
-    height: auto;
-    border-radius: 20px;
-    object-fit: cover;
-    /* Neutralized initial rotation, using shadow for dynamism */
-    transform: rotate(0deg); 
-    box-shadow: -15px 15px 40px rgba(0, 0, 0, 0.15); /* Shadow pulled left/down */
-    transition: transform 0.5s ease-out;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
 }
 
-.welcome-section:hover .header-pattern-img {
-    transform: rotate(-1deg) scale(1.02); /* Slight rotation and scale on section hover */
+/* --- Feature Cards --- */
+.feature-cards {
+  display: grid;
+  /* This is the responsive magic:
+    - 'auto-fit': Fit as many columns as possible.
+    - 'minmax(280px, 1fr)': Each column must be at least 280px wide.
+      If there's extra space, distribute it equally (1fr).
+    This handles all 6 breakpoints without media queries.
+  */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
 }
 
-/* --- RESPONSIVENESS (Mobile Optimization) --- */
-@media (max-width: 1024px) {
-    .welcome-section {
-        flex-direction: column; /* Stack elements vertically */
-        text-align: center;
-        padding: 40px 30px;
-    }
-
-    .welcome-text {
-        max-width: 100%;
-        padding-right: 0;
-        margin-bottom: 30px;
-    }
-
-    .welcome-title {
-        font-size: 3rem; /* Adjust title size for mobile */
-    }
-    
-    .tagline {
-        font-size: 1.2rem;
-    }
-
-    .header-image-wrapper {
-        justify-content: center;
-        padding-left: 0;
-    }
-
-    .header-pattern-img {
-        max-width: 300px; /* Smaller image on mobile */
-        transform: none; /* No rotation on mobile */
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    }
-    
-    .welcome-section:hover .header-pattern-img {
-        transform: none; /* Disable hover animation on mobile */
-    }
-}
-
-
-/* --- FOOD GRAVEYARD --- */
-.graveyard-section {
-  display: flex;
-  justify-content: center;
-  padding: 40px 0;
-}
-
-.graveyard-card {
-  width: 60%; /* Center and set width */
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.card-item {
+  background: #ffffff;
+  border-radius: var(--border-radius-main);
+  box-shadow: var(--shadow-main);
+  padding: 24px;
   text-align: center;
+  text-decoration: none;
+  color: var(--color-text-primary);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
-.graveyard-title {
-  font-size: 22px;
+.card-item:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
+}
+
+.card-icon {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 16px;
+}
+
+.card-title {
+  font-size: 1.4rem;
   font-weight: 600;
-  color: #44704d;
-  margin-bottom: 15px;
+  color: var(--color-primary-green);
+  margin-bottom: 8px;
+}
+
+.card-subtitle {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+}
+
+/* --- Dashboard Section --- */
+.dashboard-section {
+  display: grid;
+  /* Capped max width of columns to 550px to prevent over-stretching */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 550px));
+  gap: 24px;
+  /* Center the grid items on large screens */
+  justify-content: center;
+}
+
+.dashboard-card {
+  background: #ffffff;
+  border-radius: var(--border-radius-main);
+  box-shadow: var(--shadow-main);
+  padding: 24px;
+}
+
+.dashboard-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-primary-green);
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--color-light-tan);
+}
+
+.view-more {
+  display: inline-block;
+  font-size: 0.9rem;
+  color: var(--color-primary-brown);
+  cursor: pointer;
+  margin-top: 16px;
+  text-decoration: none;
+  font-weight: 600;
+}
+.view-more:hover {
+  text-decoration: underline;
+}
+
+/* Fridge Summary List */
+.item-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+.item:last-child {
+  border-bottom: none;
+}
+
+.item-name {
+  font-weight: 500;
+}
+
+.item-expiry {
+  font-size: 0.9rem;
+  color: #c0392b; /* Red from Fridge.vue */
+  font-weight: 500;
+}
+
+/* Graveyard Table */
+.table-responsive-wrapper {
+  width: 100%;
+  /* This makes the table scroll horizontally on small screens */
+  /* if it's still too wide, without breaking the card layout. */
+  overflow-x: auto;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 10px;
 }
 
 thead th {
-  background-color: #f0e0c0; /* Light orange-brown header color */
-  color: #44704d;
+  background-color: var(--color-light-tan);
+  color: var(--color-primary-green);
   font-weight: 600;
-  padding: 10px;
-  border-bottom: 2px solid #a35d35;
+  padding: 12px;
+  border-bottom: 2px solid var(--color-primary-brown);
+  text-align: left;
 }
 
 tbody td {
-  padding: 10px;
+  padding: 12px;
   border-bottom: 1px solid #eee;
+  color: var(--color-text-secondary);
 }
 
 tbody tr:nth-child(even) {
@@ -323,55 +392,49 @@ tbody tr:nth-child(even) {
   font-weight: 600;
 }
 
-.view-more {
-  font-size: 14px;
-  color: #a35d35;
-  cursor: pointer;
-  margin-top: 10px;
+/* --- Breakpoints for larger screens --- */
+
+/* Small (sm) - 576px */
+@media (min-width: 576px) {
+  .welcome-text {
+    text-align: left; /* Align text left */
+  }
 }
 
-/* --- FEATURE CARDS --- */
-.feature-cards {
-  display: flex;
-  justify-content: space-around;
-  gap: 30px;
-  margin: 30px 0;
+/* Medium (md) - 768px */
+@media (min-width: 768px) {
+  .user-home-main {
+    padding: 32px;
+  }
+
+  .welcome-section {
+    flex-direction: row; /* Image beside text */
+    padding: 32px;
+    align-items: center;
+  }
+
+  .welcome-text {
+    padding-right: 24px;
+  }
+
+  .header-image-wrapper {
+    margin-top: 0; /* Remove top margin */
+  }
+
+  .welcome-title {
+    font-size: 2.5rem;
+  }
 }
 
-.card-item {
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 15px;
-  padding: 20px 15px;
-  text-align: center;
-  width: 30%;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
-  cursor: pointer;
-}
+/* Large (lg) - 992px */
+@media (min-width: 992px) {
+  .welcome-section {
+    padding: 48px;
+  }
 
-.card-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  .welcome-title {
+    font-size: 2.75rem;
+  }
 }
-
-.card-icon {
-  width: 60px; /* Adjust as needed for your icons */
-  height: 60px;
-  margin-bottom: 10px;
-}
-
-.card-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: #a35d35; /* Orange-brown */
-  margin-bottom: 5px;
-}
-
-.card-subtitle {
-  font-size: 14px;
-  color: #777;
-  margin: 0;
-}
-
 </style>
+
