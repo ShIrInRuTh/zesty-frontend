@@ -1,8 +1,10 @@
 <!-- TODO as of 25/10/25
-  Fix Bug where added in manual stuff icons fail sometimes [FIX]
-  Move functions to backend and call [FIX]
-  AI ingredient and category recognition [FEAT]
-  Automatic Addition Form processing + Confirmation [FEAT]
+ Img recog feature
+ clean up rest 
+ expiry notif shit
+ clean up fonts and background imgs
+ Add breakpoints for responsiveness
+ profile page (extra)
  Pray it works -->
 
 <template>
@@ -96,14 +98,6 @@
               </select>
             </div>
 
-            <!-- TAKE OUT CATEGORY IF YOU CAN GET THE API TO RECOGNISE What exactly it s ==========================-------------------------------------------------------->
-            <div class="mb-2">
-              <label>Category:</label>
-              <select v-model="item.category" class="form-select">
-                <option v-for="cat in categories.slice(1)" :key="cat" :value="cat">{{ cat }}</option>
-              </select>
-            </div>
-            <!-- TAKE OUT CATEGORY IF YOU CAN GET THE API TO RECOGNISE What exactly it s ==========================-------------------------------------------------------->
 
             <div class="mb-2">
               <label>Expiry Date:</label>
@@ -129,11 +123,17 @@
           style="background-color: #dbc09c; border-radius: 18px; padding: 0.5rem;">
           <li class="nav-item" v-for="category in categories" :key="category"
             style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: bold;">
-            <button class="nav-link" :class="{ active: activeCategory === category }" @click="activeCategory = category"
-              role="tab" v-on:click='fetchFridgeItems(category)'>
-              {{ category }}
-              <span class="badge bg-light text-dark ms-1"> ({{ getCount(category) }}) </span>
+
+            <button class="nav-link"
+            :class="{ active: activeCategory === category }"
+            role="tab"
+            @click="switchCategory(category)">
+            {{ category }}
+            <span class="badge bg-light text-dark ms-1"> ({{ getCount(category) }}) </span>
             </button>
+
+
+
           </li>
         </ul>
 
@@ -160,7 +160,7 @@
       <!-- bscards in con -->
       <div class="container my-5" v-if="fridgeItems.length > 0">
         <div class="row">
-          <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" v-for="(item, index) in fridgeItems" :key="index">
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" v-for="(item, index) in filteredAndSortedItems" :key="index">
             <div class="kitchen-card" style="border-radius: 20px">
               <!-- REMOVE BUTTON -->
               <button v-if="removeMode" class="btn btn-danger position-absolute"
@@ -197,6 +197,7 @@
                               <p class="card-text item-qty">Qty: {{ item.qty }}{{ item.qty_type }}</p>
                               <p class="card-text small mb-1">{{ item.category }}</p>
                               <p class="card-text item-expiry" :style="{ color: getExpiryColor(item.expiryDate) }">
+                              <p v-if="new Date(item.expiryDate) < new Date()" class="text-danger fw-bold">⚠️ Expired</p>
                                 Expiry: {{ item.expiryDate }}
                               </p>
                               <button class="btn btn-outline-danger btn-sm" @click="askRemove(item)">❌ Remove</button>
@@ -243,6 +244,8 @@
                 <p class="kc-meta">Qty: {{ item.qty }}{{ item.qty_type }}</p>
                 <p class="kc-meta" style="color:#2980b9">Date Added: {{ item.dateAdded }}</p>
                 <p class="kc-meta" :style="{ color: getExpiryColor(item.expiryDate) }">
+                <p v-if="new Date(item.expiryDate) < new Date()" class="text-danger fw-bold">⚠️ Expired</p>
+
                   Expiry: {{ item.expiryDate }}
                 </p>
                 <span class="badge bg-secondary text-capitalize">{{ item.category }}</span>
@@ -270,21 +273,16 @@
       </div>
 
       <!--Auto Img Confirmation Modal -->
-      <div class="modal fade" id="apiConfirmModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Confirm Item</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body text-center">
-              <p>Predicted Item: <strong>{{ predictedItem?.name }}</strong></p>
-              <p>Category: <strong>{{ predictedItem?.category }}</strong></p>
-              <img :src="predictedItem?.img" alt="Preview" style="max-height:150px; object-fit:contain;" />
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-              <button type="button" class="btn btn-primary" @click="confirmApiPrediction">Confirm</button>
+      <div v-if="showAiModal" class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content p-4">
+            <h5>AI Detected Ingredient</h5>
+            <p><strong>Name:</strong> {{ aiResult?.name }}</p>
+            <p><strong>Category:</strong> {{ aiResult?.category }}</p>
+
+            <div class="d-flex justify-content-between mt-3">
+              <button class="btn btn-success" @click="confirmAiResult">Yes, Correct</button>
+              <button class="btn btn-secondary" @click="showAiModal = false">Try Again</button>
             </div>
           </div>
         </div>
@@ -305,6 +303,17 @@ import Header from './common/Header.vue'
 import Footer from './common/Footer.vue'
 import axios from 'axios'
 
+// AUTO FORM helper
+const itemName = ref("")
+const itemCategory = ref("")
+
+const confirmAiResult = () => {
+  if (aiResult.value) {
+    itemName.value = aiResult.value.name
+    itemCategory.value = aiResult.value.category
+  }
+  showAiModal.value = false
+}
 
 
 // ======================================================================================================   <Tabbing wif number count>
@@ -313,23 +322,38 @@ const activeCategory = ref('All')
 
 // ===================================== Fridge Items =====================================
 const fridgeItems = ref([])
+const categoryNum = ref([])
 
 // Supabase client setup
 const SUPABASE_URL = "https://lckghapuxijhsfydfzmy.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxja2doYXB1eGlqaHNmeWRmem15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3OTY0MzAsImV4cCI6MjA3NjM3MjQzMH0.yjW7FEGKDuhpPI-AMuOcj-1UJRP7AbMNvLyAbE1Q5RA";
 
-async function fetchFridgeItems(cat='') {
+// Loading + simple race-control
+const isLoading = ref(false)
+let currentFetchToken = 0
+
+// Centralised loader: calls backend, maps data, sets state
+async function loadFridgeItems(cat = "") {
   const fridgeId = sessionStorage.getItem("fridgeId")
-  if (!fridgeId) return console.warn("No fridge ID found in sessionStorage")
+  if (!fridgeId) {
+    console.warn("No fridge ID found in sessionStorage")
+    return
+  }
+
+  const token = ++currentFetchToken
+  isLoading.value = true
 
   try {
-    const res = await axios.post(`http://localhost:8000/api/fridge/${fridgeId}`, {cat})
-    const result = res.data.message
-    console.log(fridgeItems)
+    const res = await axios.post(`http://localhost:8000/api/fridge/${fridgeId}`, { cat })
+    const result = res.data.message || []
+    const cats = res.data.cat || []
+    console.log(cats, res.data)
 
-
-    // if (!res.ok) throw new Error(`Error fetching fridge items: ${res.statusText}`)
-    // const data = await res.json()
+    // If another fetch started after this one, discard this result
+    if (token !== currentFetchToken) {
+      // a newer request is in flight — ignore this result
+      return
+    }
 
     // Map Supabase columns to your local item object
     fridgeItems.value = result.map(item => ({
@@ -338,28 +362,44 @@ async function fetchFridgeItems(cat='') {
       name: item.item_name,
       qty: item.qty,
       qty_type: item.qty_type,
-      dateAdded: new Date(item.date_added).toISOString().split('T')[0],
-      expiryDate: new Date(item.expiry_date).toISOString().split('T')[0],
-      category: item.category
+      dateAdded: item.date_added ? new Date(item.date_added).toISOString().split('T')[0] : '',
+      expiryDate: item.expiry_date ? new Date(item.expiry_date).toISOString().split('T')[0] : '',
+      category: item.category || ''
     }))
 
+    categoryNum.value=cats
   } catch (err) {
-    console.error(err)
+    console.error("Error loading fridge items:", err)
+  } finally {
+    // Only clear loading if this is the latest fetch
+    if (token === currentFetchToken) isLoading.value = false
   }
 }
 
+
+
 onMounted(() => {
-  fetchFridgeItems('')
+  loadFridgeItems('')
   
 })
+
+function switchCategory(category) {
+  // Optionally reset search when switching
+  // searchQuery.value = ''
+  activeCategory.value = category
+  // call loader (backend will filter by category if supported)
+  loadFridgeItems(category === 'All' ? '' : category)
+}
+
 
 
 
 
 // get tab count
 function getCount(category) {
-  if (category === 'All') return fridgeItems.value.length
-  return fridgeItems.value.filter((item) => item.category.toLowerCase() === category.toLowerCase()).length
+  if (category === 'All') return Object.values(categoryNum.value).reduce((sum, n) => sum + Number(n || 0), 0)
+  console.log(categoryNum.value)
+  return categoryNum.value[category.toLowerCase()]
 }
 
 // ======================================================================================================
@@ -372,6 +412,33 @@ const sortOrder = ref('asc')
 // search by name
 const searchQuery = ref('')
 
+// ✅ Filtered + sorted fridge items for display
+const filteredAndSortedItems = computed(() => {
+  let items = [...fridgeItems.value]
+
+  // 🔍 Filter by search query
+  if (searchQuery.value.trim() !== "") {
+    const q = searchQuery.value.toLowerCase()
+    items = items.filter(item => item.name.toLowerCase().includes(q))
+  }
+
+  // 🧩 Filter by active category (if not 'All')
+  if (activeCategory.value && activeCategory.value !== "All") {
+    items = items.filter(
+      item => item.category.toLowerCase() === activeCategory.value.toLowerCase()
+    )
+  }
+
+  // 📅 Sort by expiry date (ascending or descending)
+  items.sort((a, b) => {
+    const dateA = new Date(a.expiryDate)
+    const dateB = new Date(b.expiryDate)
+    return sortOrder.value === "asc" ? dateA - dateB : dateB - dateA
+  })
+
+  return items
+})
+
 // ======================================================================================================
 
 // ======================================================================================================   <Expiry Date Coloring WOWSER>
@@ -380,9 +447,10 @@ function getExpiryColor(expiryDate) {
   const expiry = new Date(expiryDate)
   const diffTime = expiry - now
   const diffDays = diffTime / (1000 * 60 * 60 * 24)
-  if (diffDays > 30) return 'green'
-  if (diffDays >= 14) return 'yellow'
-  return 'red'
+  if (diffDays < 0) return 'gray' // expired items
+  if (diffDays <= 7) return 'red'
+  if (diffDays <= 30) return 'orange'
+  return 'green'
 }
 // ======================================================================================================
 
@@ -390,8 +458,6 @@ function getExpiryColor(expiryDate) {
 function getImageSrc(item) {
   if (item.img && item.img.trim() !== '') return item.img
   const category = (item.category || '').toLowerCase()
-  console.log(category)
-  console.log(item.category, item)
   switch (category) {
     case 'protein': return '/Cat_Icons/Protein.png'
     case 'dairy': return '/Cat_Icons/Dairy.png'
@@ -413,16 +479,20 @@ async function onImageChange(event, index) {
   const file = event.target.files[0];
   if (!file) return;
 
-  // Show a temporary local preview first
+  // Local preview first
   addedItems.value[index].img = URL.createObjectURL(file);
 
   // Upload to Cloudinary
   const cloudUrl = await uploadToCloudinary(file);
   if (cloudUrl) {
-    addedItems.value[index].img = cloudUrl; // replace preview with Cloudinary URL
-    console.log("Uploaded Cloudinary URL:", cloudUrl);
+    addedItems.value[index].img = cloudUrl;
+    // console.log("Uploaded Cloudinary URL:", cloudUrl);
+
+    //Trigger AI recognition here
+    await recognizeIngredient(cloudUrl);
   }
 }
+
 
 function addItemRow() {
   if (addedItems.value.length === 0) {
@@ -447,14 +517,16 @@ function openRemoveModal() {
 const removeSearchQuery = ref('')
 const filteredFridgeItemsForRemove = computed(() => {
   return fridgeItems.value.filter((item) => {
-    const q = removeSearchQuery.value.toLowerCase()
+    const q = (removeSearchQuery.value || '').toLowerCase()
+    const expiryStr = item.expiryDate ? item.expiryDate.toString().toLowerCase() : ''
     return (
-      item.name.toLowerCase().includes(q) ||
-      item.category.toLowerCase().includes(q) ||
-      (item.expiry && item.expiry.toLowerCase().includes(q))
+      (item.name || '').toLowerCase().includes(q) ||
+      (item.category || '').toLowerCase().includes(q) ||
+      expiryStr.includes(q)
     )
   })
 })
+
 
 const itemToRemove = ref(null)
 const removeQty = ref('')
@@ -680,6 +752,10 @@ async function manualFunc(formData) {
 
 
 // ======================================================================================================       <Img Auto Insertion>
+const aiResult = ref(null)
+const showAiModal = ref(false)
+const isRecognizing = ref(false)
+
 // Cloudinary info
 const CLOUD_NAME = "dld2rfhyu";
 const UPLOAD_PRESET = "fridge_preset";
@@ -707,6 +783,40 @@ async function uploadToCloudinary(file) {
   }
 }
 
+const handleImageUpload = async (file) => {
+  try {
+    const imgUrl = await uploadToCloudinary(file)
+    console.log("Cloudinary URL:", imgUrl)
+    await recognizeIngredient(imgUrl)
+  } catch (error) {
+    console.error("Error uploading or recognizing:", error)
+  }
+}
+
+const recognizeIngredient = async (imgUrl) => {
+  try {
+    isRecognizing.value = true;
+    const response = await axios.post("http://localhost:8000/api/imgreco", { img: imgUrl });
+
+    // The backend now returns a parsed object under 'item'
+    const aiData = response.data.item; 
+    
+    if (aiData && typeof aiData.name === 'string' && typeof aiData.category === 'string') {
+        aiResult.value = aiData;
+        showAiModal.value = true;
+    } else {
+        // Fallback if the backend response object is unexpected
+        aiResult.value = { name: "Unknown", category: "Unknown" };
+        showAiModal.value = true;
+        console.warn("Unexpected data structure from AI backend.");
+    }
+  } catch (error) {
+    console.error("AI recognition failed:", error.response?.data?.error || error.message);
+    alert(`AI recognition failed: ${error.response?.data?.error || "Check console for details."}`);
+  } finally {
+    isRecognizing.value = false;
+  }
+};
 
 
 
