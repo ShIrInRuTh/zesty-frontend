@@ -303,6 +303,17 @@ const getFormattedDate = (dateString) => {
   border-radius: var(--border-radius-main);
   box-shadow: var(--shadow-main);
   padding: 24px;
+  border: 1px solid #f0f0f0; /* Added subtle border for definition */
+}
+
+/* Added gradient background for fridge summary */
+.dashboard-card.fridge-summary {
+  background: linear-gradient(to bottom, #f2f7f2, #ffffff 60%);
+}
+
+/* Added gradient background for graveyard summary */
+.dashboard-card.graveyard {
+  background: linear-gradient(to bottom, #fbf7f4, #ffffff 60%);
 }
 
 .dashboard-title {
@@ -437,4 +448,5 @@ tbody tr:nth-child(even) {
   }
 }
 </style>
+
 
