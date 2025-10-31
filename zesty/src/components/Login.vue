@@ -83,7 +83,7 @@ function handleLogin() {
   if (!errors.email && !errors.password) {
     sessionStorage.setItem('username', email.value)
     sessionStorage.setItem('password', password.value)
-    setTimeout(() => router.push('/recipe'), 1000)
+    setTimeout(() => router.push('/userhome'), 1000)
   }
 }
 
