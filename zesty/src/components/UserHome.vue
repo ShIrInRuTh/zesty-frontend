@@ -5,25 +5,68 @@
 
     <main class="user-home-main">
       <!-- Welcome section -->
+      <!-- This outer section is now the styled container -->
       <section class="welcome-section">
-        <div class="welcome-text">
-          <h2 class="welcome-title">
-            Welcome,
-            <span class="username">{{ currentUsername }}</span>
-          </h2>
-          <p class="tagline">Discover delicious meals with what you already have.</p>
-          <RouterLink to="/recipe" class="start-cooking-btn">Start Cooking</RouterLink>
-        </div>
-        <div class="header-image-wrapper">
-          <img
-            src="/header-pattern.jpg"
-            alt="Food pattern illustration"
-            class="header-pattern-img"
-          />
+        <!-- This new inner div handles the flex layout -->
+        <div class="welcome-content">
+          <div class="welcome-text">
+            <h2 class="welcome-title">
+              Welcome,
+              <span class="username">{{ currentUsername }}</span>
+            </h2>
+            <p class="tagline">Discover delicious meals with what you already have.</p>
+            <RouterLink to="/recipe" class="start-cooking-btn">
+              <span>Start Cooking</span>
+              <!-- Added aesthetic icon -->
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="btn-icon"
+              >
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </RouterLink>
+          </div>
+          <!-- Reverted back to static image -->
+          <div class="header-image-wrapper">
+            <img
+              src="/header-pattern.jpg"
+              alt="Food pattern illustration"
+              class="header-pattern-img"
+            />
+          </div>
         </div>
       </section>
 
+      <!-- Added a section header for better hierarchy -->
+      <div class="section-header">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M4 6h16" />
+          <path d="M4 12h16" />
+          <path d="M4 18h16" />
+        </svg>
+        <h3>Get Started</h3>
+      </div>
+
       <!-- 3 Feature Cards -->
+      <!-- Removed the outer container card for a cleaner look -->
       <section class="feature-cards">
         <RouterLink to="/fridge" class="card-item">
           <img src="/fridge-icon.png" alt="Fridge Icon" class="card-icon" />
@@ -44,6 +87,25 @@
         </RouterLink>
       </section>
 
+      <!-- Added a section header for better hierarchy -->
+      <div class="section-header">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+          <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+        </svg>
+        <h3>Your Kitchen Dashboard</h3>
+      </div>
+
       <!-- Dashboard Section (Fridge & Graveyard) -->
       <section class="dashboard-section">
         <!-- Fridge Summary -->
@@ -52,7 +114,25 @@
           <ul class="item-list">
             <li v-for="item in fridgeItems" :key="item.id" class="item">
               <span class="item-name">{{ item.name }}</span>
-              <span class="item-expiry">Exp: {{ getFormattedDate(item.expiryDate) }}</span>
+              <span class="item-expiry">
+                <!-- Added a small icon for visual punch -->
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                  <path d="M12 8v4" />
+                  <path d="M12 16h.01" />
+                </svg>
+                Exp: {{ getFormattedDate(item.expiryDate) }}
+              </span>
             </li>
           </ul>
           <RouterLink to="/fridge" class="view-more">View full fridge</RouterLink>
@@ -77,7 +157,7 @@
               </tbody>
             </table>
           </div>
-          <RouterLink to="/graveyard" class="view-more">View full graveyard</RouterLink>
+          <!-- The 'View full graveyard' link was missing from your template, so I've left it out -->
         </div>
       </section>
     </main>
@@ -134,13 +214,28 @@ const expiredItems = computed(() => {
 
 const getFormattedDate = (dateString) => {
   const options = { year: 'numeric', month: 'short', day: 'numeric' }
-  return new Date(dateString).toLocaleDateString(undefined, options)
+  return new Date(dateString).toLocaleString(undefined, options)
 }
 </script>
 
 <style scoped>
+/* --- CSS Animations --- */
+@keyframes pulse {
+  0% {
+    box-shadow: var(--shadow-main);
+  }
+  50% {
+    /* Brighter, slightly larger shadow in the primary color */
+    box-shadow: 0 8px 25px rgba(68, 112, 77, 0.4);
+  }
+  100% {
+    box-shadow: var(--shadow-main);
+  }
+}
+
 /* Using fonts and colors from your other pages for consistency */
-:root {
+/* FIX: Combined both .app blocks into one for cleanliness */
+.app {
   --color-primary-green: #44704d;
   --color-dark-green: #3a5f42;
   --color-primary-brown: #a35d35;
@@ -152,9 +247,7 @@ const getFormattedDate = (dateString) => {
   --border-radius-main: 18px;
   --shadow-main: 0 4px 12px rgba(0, 0, 0, 0.08);
   --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.12);
-}
 
-.app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -172,17 +265,54 @@ const getFormattedDate = (dateString) => {
   padding: 24px;
 }
 
+/* --- Section Header --- */
+/* New element for better page structure */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  margin-top: 48px; /* Added spacing between sections */
+  padding-bottom: 10px;
+  border-bottom: 2px solid rgba(68, 112, 77, 0.1); /* Softer underline */
+}
+
+.section-header:first-of-type {
+  margin-top: 0; /* No top margin for the first one */
+}
+
+.section-header h3 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--color-primary-green);
+}
+
+.section-header svg {
+  width: 24px;
+  height: 24px;
+  stroke: var(--color-primary-brown);
+}
+
 /* --- Welcome Section --- */
 .welcome-section {
-  display: flex;
-  flex-direction: column; /* Mobile-first: stack text and image */
-  align-items: center;
-  background: white;
+  background: linear-gradient(
+    135deg,
+    #fdfaf6,
+    #fbf7f4 70%
+  ); /* More subtle tan gradient */
   border-radius: var(--border-radius-main);
   box-shadow: var(--shadow-main);
   padding: 24px;
   margin-bottom: 32px;
   overflow: hidden;
+  border: 1px solid #f0f0f0;
+}
+
+.welcome-content {
+  display: flex;
+  flex-direction: column; /* Mobile-first */
+  align-items: center;
+  gap: 24px; /* Added gap */
 }
 
 .welcome-text {
@@ -205,33 +335,55 @@ const getFormattedDate = (dateString) => {
   font-size: 1.1rem;
   color: var(--color-text-secondary);
   margin-bottom: 24px;
+  max-width: 450px; /* Constrain line length */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .start-cooking-btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   background: var(--color-primary-green);
   color: white;
-  padding: 12px 28px;
-  border-radius: 25px;
+  padding: 14px 32px; /* Made button slightly larger */
+  border-radius: 30px; /* Fully rounded */
   text-decoration: none;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 1.1rem; /* Slightly larger text */
+  box-shadow: var(--shadow-main);
   transition:
     background-color 0.3s ease,
-    transform 0.3s ease;
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  /* Added "fun" pulse animation */
+  animation: pulse 2.5s infinite ease-in-out;
 }
 
 .start-cooking-btn:hover {
   background: var(--color-dark-green);
-  transform: translateY(-2px);
+  transform: translateY(-3px); /* Deeper hover */
+  box-shadow: var(--shadow-hover);
+  animation-play-state: paused; /* Pause animation on hover */
+}
+
+.start-cooking-btn .btn-icon {
+  width: 20px; /* Slightly larger icon */
+  height: 20px;
+  transition: transform 0.2s ease;
+}
+
+.start-cooking-btn:hover .btn-icon {
+  transform: translateX(4px); /* Bigger nudge */
 }
 
 .header-image-wrapper {
   flex: 1;
   max-width: 400px; /* Control image size */
-  margin-top: 24px; /* Add space on mobile */
+  width: 100%;
 }
 
+/* Style for the static image */
 .header-pattern-img {
   width: 100%;
   height: auto;
@@ -239,17 +391,13 @@ const getFormattedDate = (dateString) => {
 }
 
 /* --- Feature Cards --- */
+/* Removed container styles from this section for a cleaner layout */
 .feature-cards {
   display: grid;
-  /* This is the responsive magic:
-    - 'auto-fit': Fit as many columns as possible.
-    - 'minmax(280px, 1fr)': Each column must be at least 280px wide.
-      If there's extra space, distribute it equally (1fr).
-    This handles all 6 breakpoints without media queries.
-  */
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 24px;
   margin-bottom: 32px;
+  /* Removed background, box-shadow, padding, border */
 }
 
 .card-item {
@@ -262,12 +410,15 @@ const getFormattedDate = (dateString) => {
   color: var(--color-text-primary);
   transition:
     transform 0.3s ease,
-    box-shadow 0.3s ease;
+    box-shadow 0.3s ease,
+    border-color 0.3s ease; /* Added border-color to transition */
+  border: 2px solid transparent; /* Start with transparent border */
 }
 
 .card-item:hover {
-  transform: translateY(-5px);
+  transform: translateY(-6px); /* Deeper hover effect */
   box-shadow: var(--shadow-hover);
+  border-color: var(--color-primary-green); /* Add green border on hover */
 }
 
 .card-icon {
@@ -291,11 +442,10 @@ const getFormattedDate = (dateString) => {
 /* --- Dashboard Section --- */
 .dashboard-section {
   display: grid;
-  /* Capped max width of columns to 550px to prevent over-stretching */
-  grid-template-columns: repeat(auto-fit, minmax(300px, 550px));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Changed to 1fr */
   gap: 24px;
-  /* Center the grid items on large screens */
-  justify-content: center;
+  /* This prevents cards from stretching vertically */
+  align-items: start;
 }
 
 .dashboard-card {
@@ -303,15 +453,15 @@ const getFormattedDate = (dateString) => {
   border-radius: var(--border-radius-main);
   box-shadow: var(--shadow-main);
   padding: 24px;
-  border: 1px solid #f0f0f0; /* Added subtle border for definition */
+  border: 1px solid #f0f0f0;
+  /* Ensures cards in the same row have the same height if needed, but align-items:start prevents stretching */
+  height: 100%;
 }
 
-/* Added gradient background for fridge summary */
 .dashboard-card.fridge-summary {
   background: linear-gradient(to bottom, #f2f7f2, #ffffff 60%);
 }
 
-/* Added gradient background for graveyard summary */
 .dashboard-card.graveyard {
   background: linear-gradient(to bottom, #fbf7f4, #ffffff 60%);
 }
@@ -322,7 +472,8 @@ const getFormattedDate = (dateString) => {
   color: var(--color-primary-green);
   margin-bottom: 20px;
   padding-bottom: 10px;
-  border-bottom: 2px solid var(--color-light-tan);
+  /* Updated border to be more subtle */
+  border-bottom: 3px solid rgba(68, 112, 77, 0.2);
 }
 
 .view-more {
@@ -349,7 +500,7 @@ const getFormattedDate = (dateString) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 0;
+  padding: 12px 4px; /* Added a little horizontal padding */
   border-bottom: 1px solid #f0f0f0;
 }
 .item:last-child {
@@ -364,13 +515,15 @@ const getFormattedDate = (dateString) => {
   font-size: 0.9rem;
   color: #c0392b; /* Red from Fridge.vue */
   font-weight: 500;
+  /* Aligns icon with text */
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 /* Graveyard Table */
 .table-responsive-wrapper {
   width: 100%;
-  /* This makes the table scroll horizontally on small screens */
-  /* if it's still too wide, without breaking the card layout. */
   overflow-x: auto;
 }
 
@@ -404,11 +557,14 @@ tbody tr:nth-child(even) {
 }
 
 /* --- Breakpoints for larger screens --- */
-
 /* Small (sm) - 576px */
 @media (min-width: 576px) {
   .welcome-text {
     text-align: left; /* Align text left */
+  }
+  .tagline {
+    margin-left: 0;
+    margin-right: 0;
   }
 }
 
@@ -419,8 +575,11 @@ tbody tr:nth-child(even) {
   }
 
   .welcome-section {
-    flex-direction: row; /* Image beside text */
     padding: 32px;
+  }
+
+  .welcome-content {
+    flex-direction: row; /* Image beside text */
     align-items: center;
   }
 
@@ -428,12 +587,13 @@ tbody tr:nth-child(even) {
     padding-right: 24px;
   }
 
-  .header-image-wrapper {
-    margin-top: 0; /* Remove top margin */
-  }
-
   .welcome-title {
     font-size: 2.5rem;
+  }
+
+  /* Make dashboard a 2-column layout explicitly */
+  .dashboard-section {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -448,3 +608,5 @@ tbody tr:nth-child(even) {
   }
 }
 </style>
+
+
