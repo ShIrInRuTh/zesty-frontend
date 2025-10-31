@@ -37,9 +37,9 @@
           <p class="card-subtitle">View your Cookbook</p>
         </RouterLink>
 
-        <RouterLink to="/settings" class="card-item">
-          <img src="/settings-icon.png" alt="Settings Icon" class="card-icon" />
-          <h3 class="card-title">Settings</h3>
+        <RouterLink to="/profile" class="card-item">
+          <img src="/profile-icon.png" alt="Profile Icon" class="card-icon" />
+          <h3 class="card-title">Your Profile</h3>
           <p class="card-subtitle">Manage your account</p>
         </RouterLink>
       </section>
@@ -102,7 +102,7 @@ const allFridgeItems = [
   { id: 5, name: 'Carrots', expiryDate: '2025-11-08' },
   { id: 6, name: 'Yogurt', expiryDate: '2025-11-04' },
   { id: 7, name: 'Old Bread', expiryDate: '2025-10-28' }, // Expired
-  { id: 8, name: 'Spinach', expiryDate: '2025-10-25' } // Expired
+  { id: 8, name: 'Spinach', expiryDate: '2025-10-25' }, // Expired
 ]
 
 const username = 'Foodie' // Dummy username
@@ -448,5 +448,3 @@ tbody tr:nth-child(even) {
   }
 }
 </style>
-
-
