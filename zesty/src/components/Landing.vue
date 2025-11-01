@@ -1,6 +1,5 @@
 <!-- TODO as of 12 Oct 2025
- Complete features' event cards
- Make the columns for event card dynamic -->
+ Complete the pop ups -->
 
 <script setup>
 import { RouterLink } from 'vue-router'
@@ -155,6 +154,7 @@ export default {
   color: black;
   background-color: white;
   margin: 0;
+  scroll-margin-top: 90px;
 }
 
 /* --- Fullscreen intro overlay --- */

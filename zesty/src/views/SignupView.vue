@@ -1,6 +1,5 @@
 <script setup>
-import Signup from '@/components/Signup.vue';
-
+import Signup from '@/components/Signup.vue'
 </script>
 
 <template>

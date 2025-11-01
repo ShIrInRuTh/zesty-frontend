@@ -1,9 +1,9 @@
 <script setup>
-import Login from '@/components/Login.vue'
+import Profile from '../components/Profile.vue'
 </script>
 
 <template>
   <main>
-    <Login />
+    <Profile />
   </main>
 </template>

@@ -1,160 +1,71 @@
-<script>
-export default {
-  data() {
-    return {
-      // Main Recipes
-      curated: [
-        {
-          title: 'Avocado Toast',
-          image: '../../public/reciepes_discover/avocado_toast.jpg',
-          meta: [
-            { icon: '⏲', text: '10m' },
-            { icon: '🍳', text: 'Western' },
-            { icon: '🥑', text: 'Vegan' },
-          ],
-          ingredients: '2/5 in fridge 🧺',
-          rating: 4.9,
-        },
-        {
-          title: 'Spicy Noodles',
-          image:
-            '../../public/noodles-spicy-frying-pans-with-ingredients-black-cement-surface-top-view.jpg',
-          meta: [
-            { icon: '⏲', text: '15m' },
-            { icon: '🍜', text: 'Asian' },
-            { icon: '🌶', text: 'Spicy' },
-          ],
-          ingredients: '3/7 in fridge 🍜',
-          rating: 4.7,
-        },
-        {
-          title: 'Berry Pancakes',
-          image: '../../public/reciepes_discover/berry_pancakes.jpg',
-          meta: [
-            { icon: '⏲', text: '20m' },
-            { icon: '🥞', text: 'Breakfast' },
-            { icon: '🍓', text: 'Vegetarian' },
-          ],
-          ingredients: '4/6 in fridge 🥞',
-          rating: 4.8,
-        },
-      ],
-      // Daily Picks
-      dailyPicks: [
-        {
-          title: 'Berry Smoothie',
-          image: '../../public/reciepes_discover/berry_smoothie.jpg',
-          meta: [
-            { icon: '⏲', text: '5m' },
-            { icon: '🌱', text: 'Healthy' },
-            { icon: '🥑', text: 'Vegan' },
-          ],
-          ingredients: 'n/a', // Replace with actual fridge info if available
-          rating: 4.8, // Example rating, adjust as needed
-        },
-        {
-          title: 'Greek Salad',
-          image: '../../public/reciepes_discover/greek_salad.jpg',
-          meta: [
-            { icon: '⏲', text: '8m' },
-            { icon: '🍽', text: 'Mediterranean' },
-            { icon: '🥗', text: 'Vegetarian' },
-          ],
-          ingredients: 'n/a',
-          rating: 4.6,
-        },
-        {
-          title: 'Peanut Butter Toast',
-          image: '../../public/reciepes_discover/peanutbutter_toast.jpg',
-          meta: [
-            { icon: '⏲', text: '6m' },
-            { icon: '🍞', text: 'Western' },
-            { icon: '🥑', text: 'Vegan' },
-          ],
-          ingredients: 'n/a',
-          rating: 4.5,
-        },
-      ],
-
-      lookBack: [
-        {
-          title: 'Ramen Bowl',
-          image: '../../public/reciepes_discover/ramen.jpg',
-          meta: [
-            { icon: '⏲', text: '30m' },
-            { icon: '🍜', text: 'Japanese' },
-            { icon: '🥩', text: 'Non-vegetarian' },
-          ],
-          ingredients: 'n/a',
-          rating: 4.7,
-        },
-        {
-          title: 'Chicken Wrap',
-          image: '../../public/reciepes_discover/chicken_wrap.jpg',
-          meta: [
-            { icon: '⏲', text: '15m' },
-            { icon: '🌯', text: 'Fusion' },
-            { icon: '🥩', text: 'Non-vegetarian' },
-          ],
-          ingredients: 'n/a',
-          rating: 4.5,
-        },
-        {
-          title: 'Mango Sticky Rice',
-          image: '../../public/reciepes_discover/mango_sticky_rice.jpg',
-          meta: [
-            { icon: '⏲', text: '20m' },
-            { icon: '🥭', text: 'Thai' },
-            { icon: '🥗', text: 'Vegetarian' },
-          ],
-          ingredients: 'n/a',
-          rating: 4.9,
-        },
-      ],
-    }
-  },
-}
-</script>
-
 <template>
-  <!-- Search Box -->
+  <section class="section">
+    <div class="section-title">🍑 Your Cooking History</div>
+    <div class="history-card-stack">
+      <transition-group name="slide-fade" tag="div">
+        <div v-for="item in lookBack" :key="item.title" class="wide-peach-card">
+          <div class="wide-card-content">
+            <div class="wide-img-wrap">
+              <img :src="item.image" :alt="item.title" class="wide-card-img" />
+            </div>
+            <div class="wide-details">
+              <div class="wide-title">{{ item.title }}</div>
+              <div class="wide-meta-row">
+                <span class="wide-meta" v-for="m in item.meta" :key="m.text">
+                  <span class="icon">{{ m.icon }}</span> {{ m.text }}
+                </span>
+              </div>
+              <div class="wide-rating">
+                <span class="icon">⭐</span> {{ item.rating }}
+                <span class="tried-on">• Tried on {{ item.triedOn }}</span>
+              </div>
+            </div>
+            <button class="wide-try-btn">Try Again</button>
+          </div>
+        </div>
+      </transition-group>
+    </div>
+  </section>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-const searchQuery = ref('')
+const lookBack = [
+  {
+    title: 'Ramen Bowl',
+    image: '../../public/reciepes_discover/ramen.jpg',
+    meta: [
+      { icon: '⏲', text: '30m' },
+      { icon: '🍜', text: 'Japanese' },
+      { icon: '🥩', text: 'Non-vegetarian' },
+    ],
+    rating: 4.7,
+  },
+  {
+    title: 'Chicken Wrap',
+    image: '../../public/reciepes_discover/chicken_wrap.jpg',
+    meta: [
+      { icon: '⏲', text: '15m' },
+      { icon: '🌯', text: 'Fusion' },
+      { icon: '🥩', text: 'Non-vegetarian' },
+    ],
+    rating: 4.5,
+  },
+  {
+    title: 'Mango Sticky Rice',
+    image: '../../public/reciepes_discover/mango_sticky_rice.jpg',
+    meta: [
+      { icon: '⏲', text: '20m' },
+      { icon: '🥭', text: 'Thai' },
+      { icon: '🥗', text: 'Vegetarian' },
+    ],
+    rating: 4.9,
+  },
+]
 </script>
 
 <style scoped>
-.search {
-  display: flex;
-  align-items: center;
-  background: #e6dcc7;
-  border-radius: 22px;
-  width: 80vw;
-  max-width: 500px;
-  margin: 0 auto 26px;
-  padding: 12px 20px;
-  box-sizing: border-box;
-  position: relative;
-}
-.search input {
-  background: transparent;
-  border: none;
-  font-size: 14px;
-  width: 100%;
-  padding: 8px 0;
-  outline: none;
-}
-.search-icon {
-  font-size: 22px;
-  color: #71644e;
-  cursor: pointer;
-}
 .section {
   width: 100vw;
-  padding-left: 3vw;
-  margin: auto;
   box-sizing: border-box;
 }
 .section-title {
@@ -162,236 +73,171 @@ const searchQuery = ref('')
   font-size: 2rem;
   font-family: 'Bricolage Grotesque', sans-serif;
   font-weight: bold;
-  margin: 26px 0 0 8px;
+  margin: 28px 0 0 10px;
   text-align: center;
 }
-.card-row {
-  display: flex;
-  gap: 24px;
-  margin-bottom: 32px;
-  margin-left: 8px;
-  width: 95vw;
-}
-.card {
-  background: #dbc09c;
-  border-radius: 23px;
-  width: 160px;
-  min-width: 120px;
-  height: 140px;
-  box-shadow: 0 2px 8px rgba(90, 60, 30, 0.07);
-}
-@media (max-width: 900px) {
-  .card {
-    width: 22vw;
-    min-width: 88px;
-  }
-  .tab-bar button {
-    max-width: none;
-    padding: 12px 0.6em;
-    font-size: 1rem;
-  }
-}
-@media (max-width: 600px) {
-  .section,
-  .card-row {
-    padding-left: 0;
-  }
-  .card-row {
-    justify-content: center;
-    gap: 12px;
-  }
-  .section {
-    width: 100vw;
-  }
-  .card {
-    width: 26vw;
-  }
-}
-.card-row {
-  display: flex;
-  flex-direction: row;
-  gap: 32px;
-  flex-wrap: wrap; /* Cards will wrap to next line on small screens */
-  padding: 12px 0;
-  justify-content: center;
-  align-items: stretch;
-  width: 100%;
-  overflow-x: auto; /* Optional: enables horizontal scroll on overflow */
-}
-
-.kitchen-card {
-  background: linear-gradient(135deg, #fff9ec 90%, #ead9c9 100%);
-  border: 2.3px solid #e6d1b1;
-  border-radius: 38px 42px 33px 44px/40px 36px 40px 38px;
-  width: 315px;
-  min-height: 340px;
-  margin: 40px 24px 0 0;
-  box-shadow: 0 8px 48px 3px rgba(210, 170, 110, 0.19);
+.history-card-stack {
   display: flex;
   flex-direction: column;
+  gap: 32px;
   align-items: center;
-  padding: 32px 20px 22px 20px;
-  font-family: 'Bricolage Grotesque', 'Comic Sans MS', Arial, sans-serif;
-  position: relative;
+  margin-top: 38px;
+  width: 100%;
+}
+.wide-peach-card {
+  width: 80vw;
+  max-width: 1050px;
+  min-width: 350px;
+  background: linear-gradient(105deg, #ffe0c2 80%, #ffd4b5 100%);
+  border: 2.5px solid #ffd0b7;
+  border-radius: 20px;
+  box-shadow: 0 8px 44px 6px rgba(240, 170, 120, 0.15);
   transition:
-    box-shadow 0.16s,
-    transform 0.16s;
-  width: 400px;
+    box-shadow 0.19s,
+    transform 0.14s;
+  margin-bottom: 20px;
 }
-.kitchen-card:hover {
-  /* Outer shadow removed */
-  box-shadow:
-    inset 0 0 40px 15px #ffebbc,
-    inset 0 0 60px 10px #daa86e;
+.wide-card-content {
+  display: flex;
+  align-items: center;
+  gap: 33px;
+  padding: 25px 38px 25px 38px;
 }
-
-.kc-image-wrap {
-  width: 142px;
-  height: 120px;
-  border-radius: 28px;
+.wide-img-wrap {
+  width: 69px;
+  height: 69px;
+  border-radius: 14px;
   overflow: hidden;
-  margin-bottom: 11px;
-  box-shadow: 0 2px 14px 0 rgba(230, 200, 140, 0.17);
-  background: #f9e7bb;
+  background: #ffe7cd;
+  box-shadow: 0 1.5px 12px rgba(230, 200, 140, 0.11);
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
-.kc-image {
+.wide-card-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 24px;
+  border-radius: 11px;
 }
-
-.kc-title {
+.wide-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+  gap: 12px;
+  min-width: 120px;
+}
+.wide-title {
   font-weight: 900;
-  font-size: 2rem;
-  color: #3b3926;
-  letter-spacing: 0.03em;
-  margin: 14px 0 8px 0;
-  text-align: center;
+  font-size: 1.13rem;
+  color: #ea563b;
+  letter-spacing: 0.02em;
   font-family: 'Bricolage Grotesque', 'Comic Sans MS', Arial, sans-serif;
 }
-
-.kc-meta-row {
+.wide-meta-row {
   display: flex;
-  gap: 12px;
-  justify-content: center;
-  margin-bottom: 12px;
+  gap: 13px;
+  flex-wrap: wrap;
 }
-.kc-meta {
-  background: #f4e3d4;
-  border-radius: 18px 16px 20px 15px/20px 22px 15px 18px;
-  font-size: 12px;
-  padding: 9px 19px;
-  color: #866a40;
-  font-weight: 600;
-  box-shadow: 0 1.5px 6px rgba(180, 120, 60, 0.07);
+.wide-meta {
+  background: #fff4ee;
+  border-radius: 11px 16px 14px 15px/14px 15px 13px 11px;
+  font-size: 13px;
+  padding: 7px 14px;
+  color: #c68465;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(210, 140, 80, 0.11);
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 5px;
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 .icon {
-  font-size: 1.2em;
-  margin-right: 5px;
+  font-size: 1.18em;
+  margin-right: 2px;
 }
-
-.kc-ingredients {
-  background: #e7f2de;
-  margin: 13px 0;
-  font-size: 12px;
-  color: #60805c;
-  font-weight: 700;
-  box-shadow: 0 1.5px 4px rgba(120, 170, 100, 0.08);
-  padding: 10px 18px;
+.wide-rating {
+  font-size: 1.05rem;
+  color: #ea563b;
+  font-weight: 900;
   display: flex;
-  gap: 6px;
   align-items: center;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  border-radius: 10px;
+  gap: 8px;
+}
+.tried-on {
+  background: #fff2ea;
+  color: #bc7e4e;
+  font-size: 0.97rem;
+  border-radius: 7px;
+  font-weight: 600;
+  padding: 4px 12px;
+  margin-left: 7px;
 }
 
-.kc-label-blobby {
-  font-weight: bold;
-  margin-right: 4px;
-  color: #637147;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-}
-
-.kc-fridge-amt {
-  font-weight: 700;
-  color: #3c7e49;
-}
-
-.kc-bottom-row {
-  margin-top: 18px;
-  display: flex;
-  width: 92%;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.kc-try-btn {
-  background: linear-gradient(96deg, #ead397 0%, #fff4d4 100%);
-  color: #3b4e2e;
+/* Try Again Button, far right */
+.wide-try-btn {
+  margin-left: auto;
+  background: #ea563b;
+  color: white;
   border: none;
-  border-radius: 18px;
-  font-size: 1.09rem;
+  border-radius: 14px;
+  font-size: 1.08rem;
   font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', Arial, sans-serif;
   font-weight: 700;
-  padding: 10px 28px;
+  padding: 13px 40px;
   box-shadow:
-    0 0 14px 2px #fff6cc,
-    0 2px 8px rgba(220, 200, 120, 0.09);
+    0 1px 13px #ffe7cb,
+    0 2px 9px rgba(242, 180, 120, 0.15);
   cursor: pointer;
-  margin: 0 18px;
-  position: relative;
-  transition:
-    box-shadow 0.16s,
-    transform 0.13s;
-}
-
-.kc-try-btn:hover {
-  background: #3b4e2e;
-  color: white;
-  box-shadow:
-    0 0 28px 7px #fbe6a7,
-    0 6px 14px rgba(220, 190, 110, 0.19);
-  transform: scale(1.07);
-}
-
-.kc-rating {
-  font-size: 1.17rem;
-  color: #4a693a;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
-
-.kc-like-btn {
-  border: none;
-  background: #ffe5e7;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  color: #e49e7b;
-  font-size: 1.3rem;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(235, 195, 140, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   transition:
     background 0.14s,
-    color 0.12s;
+    color 0.13s;
 }
-.kc-like-btn.liked {
-  background: #ffcad3;
-  color: #e44a5c;
+.wide-try-btn:hover {
+  background: #64190c;
+  color: rgb(255, 255, 255);
+  box-shadow:
+    0 0 22px 7px #ffd7ae,
+    0 4px 9px rgba(250, 210, 140, 0.14);
+  transform: scale(1.03) rotate(5deg);
+}
+
+/* Animation for prev card pop up */
+.slide-fade-enter-from {
+  opacity: 0;
+  transform: translateX(-60px);
+}
+.slide-fade-enter-active {
+  transition:
+    opacity 0.28s,
+    transform 0.33s;
+}
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateX(40px);
+}
+.slide-fade-leave-active {
+  transition:
+    opacity 0.14s,
+    transform 0.23s;
+}
+
+/* Responsive for mobile */
+@media (max-width: 800px) {
+  .wide-peach-card {
+    width: 96vw;
+    min-width: 92vw;
+  }
+  .wide-card-content {
+    padding: 17px 9vw 17px 7vw;
+    gap: 14px;
+  }
+  .wide-details {
+    gap: 7px;
+  }
+  .wide-try-btn {
+    padding: 10px 19px;
+    font-size: 1.01rem;
+  }
 }
 </style>

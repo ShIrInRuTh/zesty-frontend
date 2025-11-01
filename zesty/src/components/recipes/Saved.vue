@@ -1,441 +1,420 @@
-<script>
-export default {
-  data() {
-    return {
-      // Main Recipes
-      curated: [
-        {
-          title: 'Avocado Toast',
-          image: '../../public/reciepes_discover/avocado_toast.jpg',
-          meta: [
-            { icon: '⏲', text: '10m' },
-            { icon: '🍳', text: 'Western' },
-            { icon: '🥑', text: 'Vegan' },
-          ],
-          ingredients: '2/5 in fridge 🧺',
-          rating: 4.9,
-          liked: true,
-        },
-        {
-          title: 'Spicy Noodles',
-          image:
-            '../../public/noodles-spicy-frying-pans-with-ingredients-black-cement-surface-top-view.jpg',
-          meta: [
-            { icon: '⏲', text: '15m' },
-            { icon: '🍜', text: 'Asian' },
-            { icon: '🌶', text: 'Spicy' },
-          ],
-          ingredients: '3/7 in fridge 🍜',
-          rating: 4.7,
-          liked: false,
-        },
-        {
-          title: 'Berry Pancakes',
-          image: '../../public/reciepes_discover/berry_pancakes.jpg',
-          meta: [
-            { icon: '⏲', text: '20m' },
-            { icon: '🥞', text: 'Breakfast' },
-            { icon: '🍓', text: 'Vegetarian' },
-          ],
-          ingredients: '4/6 in fridge 🥞',
-          rating: 4.8,
-          liked: true,
-        },
-      ],
-      // Daily Picks
-      dailyPicks: [
-        {
-          title: 'Berry Smoothie',
-          image: '../../public/reciepes_discover/berry_smoothie.jpg',
-          meta: [
-            { icon: '⏲', text: '5m' },
-            { icon: '🌱', text: 'Healthy' },
-            { icon: '🥑', text: 'Vegan' },
-          ],
-          ingredients: 'n/a', // Replace with actual fridge info if available
-          rating: 4.8, // Example rating, adjust as needed
-          liked: false,
-        },
-        {
-          title: 'Greek Salad',
-          image: '../../public/reciepes_discover/greek_salad.jpg',
-          meta: [
-            { icon: '⏲', text: '8m' },
-            { icon: '🍽', text: 'Mediterranean' },
-            { icon: '🥗', text: 'Vegetarian' },
-          ],
-          ingredients: 'n/a',
-          rating: 4.6,
-          liked: false,
-        },
-        {
-          title: 'Peanut Butter Toast',
-          image: '../../public/reciepes_discover/peanutbutter_toast.jpg',
-          meta: [
-            { icon: '⏲', text: '6m' },
-            { icon: '🍞', text: 'Western' },
-            { icon: '🥑', text: 'Vegan' },
-          ],
-          ingredients: 'n/a',
-          rating: 4.5,
-          liked: false,
-        },
-      ],
-
-      lookBack: [
-        {
-          title: 'Ramen Bowl',
-          image: '../../public/reciepes_discover/ramen.jpg',
-          meta: [
-            { icon: '⏲', text: '30m' },
-            { icon: '🍜', text: 'Japanese' },
-            { icon: '🥩', text: 'Non-vegetarian' },
-          ],
-          ingredients: 'n/a',
-          rating: 4.7,
-          liked: true,
-        },
-        {
-          title: 'Chicken Wrap',
-          image: '../../public/reciepes_discover/chicken_wrap.jpg',
-          meta: [
-            { icon: '⏲', text: '15m' },
-            { icon: '🌯', text: 'Fusion' },
-            { icon: '🥩', text: 'Non-vegetarian' },
-          ],
-          ingredients: 'n/a',
-          rating: 4.5,
-          liked: false,
-        },
-        {
-          title: 'Mango Sticky Rice',
-          image: '../../public/reciepes_discover/mango_rice.jpg',
-          meta: [
-            { icon: '⏲', text: '20m' },
-            { icon: '🥭', text: 'Thai' },
-            { icon: '🥗', text: 'Vegetarian' },
-          ],
-          ingredients: 'n/a',
-          rating: 4.9,
-          liked: true,
-        },
-      ],
-    }
-  },
-  computed: {
-    likedRecipes() {
-      return [...this.curated, ...this.dailyPicks, ...this.lookBack].filter(
-        (recipe) => recipe.liked,
-      )
-    },
-  },
-}
-</script>
-
 <template>
-  <!-- Content Sections -->
-  <div class="section">
-    <h2 class="section-title">Saved</h2>
-    <div class="card-row">
-      <div class="kitchen-card" v-for="(recipe, idx) in likedRecipes" :key="'liked-' + idx">
-        <div class="kc-image-wrap">
-          <img class="kc-image" :src="recipe.image" alt="Recipe Photo" />
+  <div class="showpiece-carousel">
+    <!-- Previous faded small card -->
+    <div class="side-card prev-card" v-if="prevRecipeObj">
+      <img :src="prevRecipeObj.image" alt="Prev Recipe" class="side-img" />
+      <div class="side-title">{{ prevRecipeObj.title }}</div>
+    </div>
+
+    <!-- Main showpiece card -->
+    <div class="showpiece-card">
+      <img :src="currentRecipe.image" :alt="currentRecipe.title + ' Photo'" class="showpiece-img" />
+      <div class="showpiece-info">
+        <h2 class="showpiece-title">{{ currentRecipe.title }}</h2>
+        <div class="showpiece-meta">
+          <span v-for="meta in currentRecipe.meta" :key="meta.text" class="meta"
+            >{{ meta.icon }} {{ meta.text }}</span
+          >
         </div>
-        <div class="kc-title">{{ recipe.title }}</div>
-        <div class="kc-meta-row">
-          <span v-for="meta in recipe.meta" :key="meta.text" class="kc-meta">
-            <span class="icon">{{ meta.icon }}</span> {{ meta.text }}
-          </span>
+        <div class="showpiece-ingredients">
+          <span class="sp-label">Ingredients:</span>
+          <span class="sp-fridge">{{ currentRecipe.ingredients }}</span>
         </div>
-        <div class="kc-ingredients">
-          <span class="kc-label-blobby">Ingredients:</span>
-          <span class="kc-fridge-amt">{{ recipe.ingredients }}</span>
-        </div>
-        <div class="kc-bottom-row">
-          <span class="kc-rating"> <span class="icon">⭐</span> {{ recipe.rating }} </span>
-          <button class="kc-try-btn">Try Recipe</button>
-          <!-- like functionality can remain -->
-          <button class="kc-like-btn" :class="{ liked: recipe.liked }" @click="toggleLike">
+        <div class="showpiece-rating">
+          ⭐ {{ currentRecipe.rating }}
+          <button class="sp-try-btn">Try Recipe</button>
+          <button
+            class="like-btn"
+            :class="{ liked: currentRecipe.liked }"
+            @click="toggleLike(currentIdx)"
+          >
             ❤
           </button>
         </div>
       </div>
     </div>
+
+    <!-- Next faded small card -->
+    <div class="side-card next-card" v-if="nextRecipeObj">
+      <img :src="nextRecipeObj.image" alt="Next Recipe" class="side-img" />
+      <div class="side-title">{{ nextRecipeObj.title }}</div>
+    </div>
+  </div>
+
+  <!-- Navigation buttons -->
+  <div class="carousel-controls">
+    <button @click="prevRecipe" class="nav-btn left" aria-label="Previous Recipe">&lt;</button>
+    <button @click="nextRecipe" class="nav-btn right" aria-label="Next Recipe">&gt;</button>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-const searchQuery = ref('')
+import { ref, computed } from 'vue'
+
+const curated = ref([
+  {
+    title: 'Avocado Toast',
+    image: '../../public/reciepes_discover/avocado_toast.jpg',
+    meta: [
+      { icon: '⏲', text: '10m' },
+      { icon: '🍳', text: 'Western' },
+      { icon: '🥑', text: 'Vegan' },
+    ],
+    ingredients: '2/5 in fridge 🧺',
+    rating: 4.9,
+    liked: true,
+  },
+  {
+    title: 'Spicy Noodles',
+    image:
+      '../../public/noodles-spicy-frying-pans-with-ingredients-black-cement-surface-top-view.jpg',
+    meta: [
+      { icon: '⏲', text: '15m' },
+      { icon: '🍜', text: 'Asian' },
+      { icon: '🌶', text: 'Spicy' },
+    ],
+    ingredients: '3/7 in fridge 🍜',
+    rating: 4.7,
+    liked: false,
+  },
+  {
+    title: 'Berry Pancakes',
+    image: '../../public/reciepes_discover/berry_pancakes.jpg',
+    meta: [
+      { icon: '⏲', text: '20m' },
+      { icon: '🥞', text: 'Breakfast' },
+      { icon: '🍓', text: 'Vegetarian' },
+    ],
+    ingredients: '4/6 in fridge 🥞',
+    rating: 4.8,
+    liked: true,
+  },
+])
+const dailyPicks = ref([
+  {
+    title: 'Berry Smoothie',
+    image: '../../public/reciepes_discover/berry_smoothie.jpg',
+    meta: [
+      { icon: '⏲', text: '5m' },
+      { icon: '🌱', text: 'Healthy' },
+      { icon: '🥑', text: 'Vegan' },
+    ],
+    ingredients: 'n/a',
+    rating: 4.8,
+    liked: false,
+  },
+  {
+    title: 'Greek Salad',
+    image: '../../public/reciepes_discover/greek_salad.jpg',
+    meta: [
+      { icon: '⏲', text: '8m' },
+      { icon: '🍽', text: 'Mediterranean' },
+      { icon: '🥗', text: 'Vegetarian' },
+    ],
+    ingredients: 'n/a',
+    rating: 4.6,
+    liked: false,
+  },
+  {
+    title: 'Peanut Butter Toast',
+    image: '../../public/reciepes_discover/peanutbutter_toast.jpg',
+    meta: [
+      { icon: '⏲', text: '6m' },
+      { icon: '🍞', text: 'Western' },
+      { icon: '🥑', text: 'Vegan' },
+    ],
+    ingredients: 'n/a',
+    rating: 4.5,
+    liked: false,
+  },
+])
+const lookBack = ref([
+  {
+    title: 'Ramen Bowl',
+    image: '../../public/reciepes_discover/ramen.jpg',
+    meta: [
+      { icon: '⏲', text: '30m' },
+      { icon: '🍜', text: 'Japanese' },
+      { icon: '🥩', text: 'Non-vegetarian' },
+    ],
+    ingredients: 'n/a',
+    rating: 4.7,
+    liked: true,
+  },
+  {
+    title: 'Chicken Wrap',
+    image: '../../public/reciepes_discover/chicken_wrap.jpg',
+    meta: [
+      { icon: '⏲', text: '15m' },
+      { icon: '🌯', text: 'Fusion' },
+      { icon: '🥩', text: 'Non-vegetarian' },
+    ],
+    ingredients: 'n/a',
+    rating: 4.5,
+    liked: false,
+  },
+  {
+    title: 'Mango Sticky Rice',
+    image: '../../public/reciepes_discover/mango_rice.jpg',
+    meta: [
+      { icon: '⏲', text: '20m' },
+      { icon: '🥭', text: 'Thai' },
+      { icon: '🥗', text: 'Vegetarian' },
+    ],
+    ingredients: 'n/a',
+    rating: 4.9,
+    liked: true,
+  },
+])
+
+// Only use liked recipes
+const recipes = computed(() =>
+  [...curated.value, ...dailyPicks.value, ...lookBack.value].filter((r) => r.liked),
+)
+
+const idx = ref(0)
+const currentRecipe = computed(() => recipes.value[idx.value])
+const prevRecipeObj = computed(() =>
+  recipes.value.length > 1
+    ? recipes.value[(idx.value - 1 + recipes.value.length) % recipes.value.length]
+    : null,
+)
+const nextRecipeObj = computed(() =>
+  recipes.value.length > 1 ? recipes.value[(idx.value + 1) % recipes.value.length] : null,
+)
+
+function prevRecipe() {
+  idx.value = (idx.value - 1 + recipes.value.length) % recipes.value.length
+}
+function nextRecipe() {
+  idx.value = (idx.value + 1) % recipes.value.length
+}
 </script>
 
 <style scoped>
-.search {
+.showpiece-carousel {
   display: flex;
   align-items: center;
-  background: #e6dcc7;
-  border-radius: 22px;
-  width: 80vw;
-  max-width: 500px;
-  margin: 0 auto 26px;
-  padding: 12px 20px;
-  box-sizing: border-box;
-  position: relative;
-}
-.search input {
-  background: transparent;
-  border: none;
-  font-size: 14px;
-  width: 100%;
-  padding: 8px 0;
-  outline: none;
-}
-.search-icon {
-  font-size: 22px;
-  color: #71644e;
-  cursor: pointer;
-}
-.section {
-  width: 100vw;
-  padding-left: 3vw;
-  margin: auto;
-  box-sizing: border-box;
-}
-.section-title {
-  color: #ea563b;
-  font-size: 2rem;
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-weight: bold;
-  margin: 26px 0 0 8px;
-  text-align: center;
-}
-.card-row {
-  display: flex;
-  gap: 24px;
-  margin-bottom: 32px;
-  margin-left: 8px;
-  width: 95vw;
-}
-.card {
-  background: #dbc09c;
-  border-radius: 23px;
-  width: 160px;
-  min-width: 120px;
-  height: 140px;
-  box-shadow: 0 2px 8px rgba(90, 60, 30, 0.07);
-}
-@media (max-width: 900px) {
-  .card {
-    width: 22vw;
-    min-width: 88px;
-  }
-  .tab-bar button {
-    max-width: none;
-    padding: 12px 0.6em;
-    font-size: 1rem;
-  }
-}
-@media (max-width: 600px) {
-  .section,
-  .card-row {
-    padding-left: 0;
-  }
-  .card-row {
-    justify-content: center;
-    gap: 12px;
-  }
-  .section {
-    width: 100vw;
-  }
-  .card {
-    width: 26vw;
-  }
-}
-.card-row {
-  display: flex;
-  flex-direction: row;
-  gap: 32px;
-  flex-wrap: wrap; /* Cards will wrap to next line on small screens */
-  padding: 12px 0;
   justify-content: center;
-  align-items: stretch;
-  width: 100%;
-  overflow-x: auto; /* Optional: enables horizontal scroll on overflow */
+  margin: 54px 0 32px 0;
+  gap: 32px;
 }
-
-.kitchen-card {
-  background: linear-gradient(135deg, #fff9ec 90%, #ead9c9 100%);
-  border: 2.3px solid #e6d1b1;
-  border-radius: 38px 42px 33px 44px/40px 36px 40px 38px;
-  width: 315px;
-  min-height: 340px;
-  margin: 40px 24px 0 0;
-  box-shadow: 0 8px 48px 3px rgba(210, 170, 110, 0.19);
+.side-card {
+  width: 110px;
+  min-height: 130px;
+  background: #f5e9d5;
+  border-radius: 29px;
+  box-shadow: 0 2px 16px 0 #e1c99a;
+  opacity: 0.47;
+  filter: blur(0.5px) grayscale(0.18) brightness(1.06);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32px 20px 22px 20px;
-  font-family: 'Bricolage Grotesque', 'Comic Sans MS', Arial, sans-serif;
-  position: relative;
+  padding: 12px 7px;
+  transition:
+    opacity 0.21s,
+    box-shadow 0.21s,
+    filter 0.19s;
+}
+.side-img {
+  width: 96px;
+  height: 78px;
+  border-radius: 17px;
+  object-fit: cover;
+  margin-bottom: 6px;
+  box-shadow: 0 1px 6px 0 #fbe7a7;
+}
+.side-title {
+  font-size: 10px;
+  color: #826c58;
+  font-weight: 800;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
+/* Main showpiece card styles unchanged */
+.showpiece-card {
+  margin: 0 0.5vw;
+  background: linear-gradient(120deg, #fff9ec 96%, #ead9c9 100%);
+  border-radius: 42px 46px 37px 50px/50px 42px 48px 40px;
+  box-shadow: 0 8px 48px 9px rgba(210, 170, 110, 0.18);
+  width: 425px;
+  min-height: 410px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 32px 28px 32px;
   transition:
     box-shadow 0.16s,
     transform 0.16s;
-  width: 400px;
 }
-.kitchen-card:hover {
-  /* Outer shadow removed */
+.showpiece-card:hover {
   box-shadow:
     inset 0 0 40px 15px #ffebbc,
-    inset 0 0 60px 10px #daa86e;
+    inset 0 0 60px 10px #ff8012;
 }
-
-.kc-image-wrap {
-  width: 142px;
-  height: 120px;
-  border-radius: 28px;
-  overflow: hidden;
-  margin-bottom: 11px;
-  box-shadow: 0 2px 14px 0 rgba(230, 200, 140, 0.17);
-  background: #f9e7bb;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.kc-image {
-  width: 100%;
-  height: 100%;
+.showpiece-img {
+  width: 195px;
+  height: 148px;
   object-fit: cover;
-  border-radius: 24px;
+  border-radius: 27px;
+  margin-bottom: 24px;
+  box-shadow: 0 10px 28px 0 #ffeccb;
+  background: #f9e7bb;
 }
-
-.kc-title {
-  font-weight: 900;
-  font-size: 2rem;
-  color: #3b3926;
-  letter-spacing: 0.03em;
-  margin: 14px 0 8px 0;
+.showpiece-info {
   text-align: center;
-  font-family: 'Bricolage Grotesque', 'Comic Sans MS', Arial, sans-serif;
 }
-
-.kc-meta-row {
+.showpiece-title {
+  font-weight: 900;
+  font-size: 2.1rem;
+  color: #3b3926;
+  margin: 6px 0 12px 0;
+  font-family: 'Bricolage Grotesque', Arial, sans-serif;
+}
+.showpiece-meta {
+  margin: 10px 0 18px 0;
   display: flex;
-  gap: 12px;
+  gap: 14px;
   justify-content: center;
-  margin-bottom: 12px;
 }
-.kc-meta {
-  background: #f4e3d4;
-  border-radius: 18px 16px 20px 15px/20px 22px 15px 18px;
-  font-size: 12px;
-  padding: 9px 19px;
-  color: #866a40;
-  font-weight: 600;
-  box-shadow: 0 1.5px 6px rgba(180, 120, 60, 0.07);
+.like-btn {
+  border: none;
+  background: #ffd8e5;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  color: #e49e7b;
+  font-size: 1.48rem;
+  cursor: pointer;
+  box-shadow: 0 2.4px 8px rgba(235, 195, 140, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition:
+    background 0.16s,
+    color 0.14s;
 }
-.icon {
-  font-size: 1.2em;
-  margin-right: 5px;
+.like-btn.liked {
+  background: #ffd1db;
+  color: #da2d52;
 }
-
-.kc-ingredients {
-  background: #e7f2de;
-  margin: 13px 0;
-  font-size: 12px;
-  color: #60805c;
-  font-weight: 700;
-  box-shadow: 0 1.5px 4px rgba(120, 170, 100, 0.08);
-  padding: 10px 18px;
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  border-radius: 10px;
+.like-btn:hover {
+  background: #e44a5c;
+  color: white;
 }
-
-.kc-label-blobby {
-  font-weight: bold;
-  margin-right: 4px;
-  color: #637147;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-}
-
-.kc-fridge-amt {
-  font-weight: 700;
-  color: #3c7e49;
-}
-
-.kc-bottom-row {
+.carousel-controls {
   margin-top: 18px;
   display: flex;
-  width: 92%;
-  align-items: center;
-  justify-content: space-between;
+  gap: 10px;
+  justify-content: center;
 }
-
-.kc-try-btn {
+.meta {
+  background: #f6e8d8;
+  border-radius: 16px;
+  font-size: 14px;
+  padding: 7px 16px;
+  color: #866a40;
+  font-weight: 600;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.showpiece-ingredients {
+  background: #e7f2de;
+  margin: 10px 0 7px 0;
+  font-size: 13px;
+  color: #60805c;
+  font-weight: 700;
+  padding: 11px 17px;
+  border-radius: 13px;
+  display: inline-block;
+}
+.sp-label {
+  font-weight: 700;
+  margin-right: 5px;
+  color: #637147;
+}
+.sp-fridge {
+  color: #3c7e49;
+  font-weight: 900;
+}
+.showpiece-rating {
+  margin: 11px 0 15px 0;
+  font-size: 1.18rem;
+  color: #4a693a;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.sp-try-btn {
   background: linear-gradient(96deg, #ead397 0%, #fff4d4 100%);
   color: #3b4e2e;
   border: none;
-  border-radius: 18px;
-  font-size: 1.09rem;
-  font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', Arial, sans-serif;
+  border-radius: 17px;
+  font-size: 1.12rem;
+  font-family: 'Bricolage Grotesque', Arial, sans-serif;
   font-weight: 700;
-  padding: 10px 28px;
+  padding: 11px 27px;
   box-shadow:
-    0 0 14px 2px #fff6cc,
-    0 2px 8px rgba(220, 200, 120, 0.09);
+    0 0 16px 3px #fff6cc,
+    0 3px 12px rgba(220, 200, 120, 0.12);
   cursor: pointer;
-  margin: 0 18px;
-  position: relative;
+  margin: 0 10px;
   transition:
-    box-shadow 0.16s,
-    transform 0.13s;
+    box-shadow 0.18s,
+    transform 0.15s;
 }
-
-.kc-try-btn:hover {
+.sp-try-btn:hover {
   background: #3b4e2e;
   color: white;
+  transform: scale(1.08);
   box-shadow:
-    0 0 28px 7px #fbe6a7,
-    0 6px 14px rgba(220, 190, 110, 0.19);
-  transform: scale(1.07);
+    0 0 34px 11px #fee8b9,
+    0 6px 20px rgba(230, 200, 110, 0.18);
 }
-
-.kc-rating {
-  font-size: 1.17rem;
-  color: #4a693a;
-  font-weight: 800;
+.carousel-controls {
+  margin-top: 17px;
   display: flex;
-  align-items: center;
-  gap: 2px;
+  gap: 11px;
+  justify-content: center;
 }
-
-.kc-like-btn {
+.nav-btn {
+  background: #fbe7a7;
   border: none;
-  background: #ffe5e7;
+  font-size: 2.2rem;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  color: #e49e7b;
-  font-size: 1.3rem;
+  width: 46px;
+  height: 46px;
+  color: #c18e3b;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(235, 195, 140, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition:
-    background 0.14s,
-    color 0.12s;
+  box-shadow: 0 3px 11px #fdebc7;
 }
-.kc-like-btn.liked {
-  background: #ffcad3;
-  color: #e44a5c;
+.nav-btn:hover {
+  filter: brightness(0.92) contrast(1.13);
+}
+@media (max-width: 900px) {
+  .showpiece-card {
+    width: 96vw;
+  }
+}
+@media (max-width: 650px) {
+  .showpiece-carousel {
+    flex-direction: column;
+    gap: 14px;
+  }
+  .showpiece-card {
+    width: 95vw;
+    padding: 12vw 2vw 12vw 2vw;
+    min-height: 280px;
+  }
+  .side-card {
+    display: none;
+  }
 }
 </style>
