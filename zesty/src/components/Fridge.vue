@@ -1,10 +1,8 @@
-<!-- TODO as of 25/10/25
- Img recog feature
- clean up rest 
- expiry notif shit
- clean up fonts and background imgs
+<!-- TODO as of 2/11/25
  Add breakpoints for responsiveness
- profile page (extra)
+ fix card sizes for responsiveness
+ fix unknown category 
+ linnkage
  Pray it works -->
 
 <template>
@@ -91,12 +89,14 @@
               <label>Image Input:</label>
               <input type="file" @change="onImageChange($event, index)" class="form-control" />
             </div>
-            <div class="mb-2">
-              <label>Qty:</label>
-              <select v-model="item.qty" class="form-select">
-                <option v-for="opt in qtyOptions" :key="opt" :value="opt">{{ opt }}</option>
-              </select>
-            </div>
+            <div class="d-flex align-items-center">
+            <!-- Numeric Value -->
+            <input type="number" v-model.number="item.qtyValue" class="form-control me-2" min="0" placeholder="Value" style="max-width: 50%;" />
+
+            <!-- Quantity Type -->
+            <select v-model="item.qty" class="form-select" style="max-width: 50%;">
+              <option v-for="opt in qtyOptions" :key="opt" :value="opt">{{ opt }}</option>
+            </select></div>
 
 
             <div class="mb-2">
@@ -272,21 +272,31 @@
         </div>
       </div>
 
-      <!--Auto Img Confirmation Modal -->
-      <div v-if="showAiModal" class="modal fade">
+      <!-- Auto Img Confirmation Modal -->
+      <div v-if="showAiModal" class="modal fade show" style="display: block; background: rgba(0,0,0,0.5);">
         <div class="modal-dialog">
           <div class="modal-content p-4">
             <h5>AI Detected Ingredient</h5>
-            <p><strong>Name:</strong> {{ aiResult?.name }}</p>
-            <p><strong>Category:</strong> {{ aiResult?.category }}</p>
+
+            <div class="mb-2">
+              <label>Name:</label>
+              <input type="text" v-model="aiResult.name" class="form-control" />
+            </div>
+
+            <div class="mb-2">
+              <label>Category:</label>
+              <select v-model="aiResult.category" class="form-select">
+                <option v-for="cat in categories.slice(1)" :key="cat" :value="cat">{{ cat }}</option>
+              </select>
+            </div>
 
             <div class="d-flex justify-content-between mt-3">
-              <button class="btn btn-success" @click="confirmAiResult">Yes, Correct</button>
-              <button class="btn btn-secondary" @click="showAiModal = false">Try Again</button>
+              <button class="btn btn-success" @click="confirmAiResult">Confirm</button>
+              <button class="btn btn-secondary" @click="showAiModal = false">Cancel</button>
             </div>
           </div>
         </div>
-      </div>
+</div>
 
 
     </main>
@@ -308,12 +318,17 @@ const itemName = ref("")
 const itemCategory = ref("")
 
 const confirmAiResult = () => {
-  if (aiResult.value) {
-    itemName.value = aiResult.value.name
-    itemCategory.value = aiResult.value.category
-  }
-  showAiModal.value = false
-}
+  if (!aiResult.value || currentAiIndex.value === null) return;
+
+  // Update existing row instead of pushing a new one
+  const index = currentAiIndex.value;
+  addedItems.value[index].name = aiResult.value.name;
+  addedItems.value[index].category = aiResult.value.category;
+  addedItems.value[index].img = aiResult.value.img || '';
+
+  showAiModal.value = false;
+  currentAiIndex.value = null; // reset
+};
 
 
 // ======================================================================================================   <Tabbing wif number count>
@@ -403,6 +418,11 @@ function getCount(category) {
 }
 
 // ======================================================================================================
+// WTF am i doing , imma crash out this shit is not it , i wanna dieeeeeee
+const currentAiIndex = ref(null)
+
+
+
 
 // ======================================================================================================  <Sorting + Searching>
 
@@ -479,16 +499,11 @@ async function onImageChange(event, index) {
   const file = event.target.files[0];
   if (!file) return;
 
-  // Local preview first
   addedItems.value[index].img = URL.createObjectURL(file);
-
-  // Upload to Cloudinary
   const cloudUrl = await uploadToCloudinary(file);
   if (cloudUrl) {
     addedItems.value[index].img = cloudUrl;
-    // console.log("Uploaded Cloudinary URL:", cloudUrl);
-
-    //Trigger AI recognition here
+    currentAiIndex.value = index; // <-- track which row triggered AI
     await recognizeIngredient(cloudUrl);
   }
 }
@@ -747,6 +762,59 @@ async function manualFunc(formData) {
   }
 }
 // ======================================================================================================   
+async function autoFunc(formData) {
+  let cleanUrl = formData.img.replace(/\.jpg$/, '');
+  const fridgeId = sessionStorage.getItem("fridgeId");
+  if (!fridgeId) {
+    return showModalMessage("No fridge ID found in session.");
+  }
+
+  // Validate required fields
+  if (
+    !formData.name ||
+    !formData.qtyValue ||
+    formData.qtyValue <= 0 ||
+    !formData.qtyType ||
+    !formData.category ||
+    !formData.expiryDate
+  ) {
+    return showModalMessage("Please fill in all fields correctly.");
+  }
+
+  try {
+    const newItem = {
+      item_name: formData.name.trim(),
+      qty: parseFloat(formData.qtyValue),
+      qty_type: formData.qtyType || 'pcs', // default if missing
+      category: formData.category,
+      expiry_date: formData.expiryDate,
+      date_added: formData.dateAdded || new Date().toISOString(),
+      img_url: cleanUrl || '/images/missing/default.png',
+      fridge_id: fridgeId
+    };
+
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/fridge_items`, {
+      method: 'POST',
+      headers: {
+        apiKey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(newItem)
+    });
+
+    if (!res.ok) throw new Error('Failed to add automatic item.');
+
+    // Refresh fridge items in your app
+    await fetchFridgeItems();
+
+  } catch (err) {
+    console.error(err);
+    showModalMessage('Error adding automatic item: ' + err.message);
+  }
+}
+
 
 
 
@@ -793,24 +861,26 @@ const handleImageUpload = async (file) => {
   }
 }
 
+
 const recognizeIngredient = async (imgUrl) => {
   try {
     isRecognizing.value = true;
-    const response = await axios.post("http://localhost:8000/api/imgreco", { img: imgUrl });
-    console.log(response)
 
-    // The backend now returns a parsed object under 'item'
-    const aiData = response.data.item; 
-    
-    if (aiData && typeof aiData.name === 'string' && typeof aiData.category === 'string') {
-        aiResult.value = aiData;
-        showAiModal.value = true;
-    } else {
-        // Fallback if the backend response object is unexpected
-        aiResult.value = { name: "Unknown", category: "Unknown" };
-        showAiModal.value = true;
-        console.warn("Unexpected data structure from AI backend.");
-    }
+    const response = await axios.post("http://localhost:8000/api/imgreco", { img: imgUrl });
+    const aiData = response.data.item;
+
+    if (!aiData?.name) throw new Error("AI backend did not return an ingredient name.");
+
+    aiResult.value = {
+      name: aiData.name,
+      category: aiData.category && categories.includes(aiData.category) ? aiData.category : categories[1], // default to first real category
+      img: imgUrl
+    };
+
+    console.log(aiResult)
+
+    showAiModal.value = true;
+
   } catch (error) {
     console.error("AI recognition failed:", error.response?.data?.error || error.message);
     alert(`AI recognition failed: ${error.response?.data?.error || "Check console for details."}`);
@@ -818,6 +888,8 @@ const recognizeIngredient = async (imgUrl) => {
     isRecognizing.value = false;
   }
 };
+
+
 
 
 
