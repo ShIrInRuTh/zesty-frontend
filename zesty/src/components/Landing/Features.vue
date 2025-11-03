@@ -1,38 +1,40 @@
 <script>
 export default {
-  data() {
-    return {
-      // Features
-      features: [
-        {
-          title: 'My Recipes',
-          image: '../../public/reciepes_discover/avocado_toast.jpg',
-          subFeatures: [
-            { icon: '🔍', text: 'Discover' },
-            { icon: '💾', text: 'Saved' },
-            { icon: '📜', text: 'History' },
-          ],
-          summary: 'Find, save and rediscover your next favourite meal.',
-        },
-        {
-          title: 'My Fridge',
-          image:
-            '../../public/noodles-spicy-frying-pans-with-ingredients-black-cement-surface-top-view.jpg',
-          subFeatures: [
-            { icon: '⏰', text: 'Track' },
-            { icon: '🧺', text: 'Manage' },
-          ],
-          summary: 'Tracking and managing ingredients at home.',
-        },
-        {
-          title: 'My Food Graveyard',
-          image: '../../public/reciepes_discover/berry_pancakes.jpg',
-          subFeatures: [{ icon: '💀', text: 'Expired' }],
-          summary: 'Encouraging sustainable, zero-waste habits.',
-        },
-      ],
-    }
-  },
+    data() {
+        return {
+            // Features
+            features: [
+                {
+                    title: 'My Recipes',
+                    image: '/recipes-icon.png',
+                    subFeatures: [
+                        { icon: '🔍', text: 'Discover' },
+                        { icon: '💾', text: 'Saved' },
+                        { icon: '📜', text: 'History' },
+                    ],
+                    summary: 'Find, save and rediscover your next favourite meal.',
+                },
+                {
+                    title: 'My Fridge',
+                    image:
+                        '/fridge-icon.png',
+                    subFeatures: [
+                        { icon: '⏰', text: 'Track' },
+                        { icon: '🧺', text: 'Manage' },
+                    ],
+                    summary: 'Tracking and managing ingredients at home.',
+                },
+                {
+                    title: 'Your Kitchen Dashboard',
+                    image: '/kitchen-icon.png',
+                    subFeatures: [
+                        { icon: '💀', text: 'Expired' },
+                    ],
+                    summary: 'Encouraging sustainable, zero-waste habits.',
+                },
+            ],
+        }
+    },
 }
 </script>
 
@@ -225,10 +227,10 @@ const searchQuery = ref('')
 }
 
 .kc-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 24px;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    border-radius: 10px;
 }
 
 .kc-title {
