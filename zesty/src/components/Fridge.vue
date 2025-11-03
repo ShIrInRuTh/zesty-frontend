@@ -1,6 +1,5 @@
 <!-- TODO as of 2/11/25
  Add breakpoints for responsiveness
- fix card sizes for responsiveness
  fix unknown category 
  linnkage
  Pray it works -->
@@ -189,16 +188,16 @@
                         <div v-for="(item, index) in filteredFridgeItemsForRemove" :key="index" class="col">
                           <div class="card h-100 text-center">
 
-                            <img :src="getImageSrc(item)" class="card-img-top" :alt="item.name"
-                              @error="(event) => (event.target.src = getImageSrc({ category: item.category, item_name: item.name }))"
-                              style="height:120px; object-fit:contain;" />
+                          <img :src="getImageSrc(item)" class="card-img-top" :alt="item.name"
+                            @error="(event) => (event.target.src = getImageSrc({ category: item.category, item_name: item.name }))"
+                            style="padding: 30px"  width="206" height="206" />
                             <div class="card-body">
                               <h6 class="card-title">{{ item.name }}</h6>
                               <p class="card-text item-qty">Qty: {{ item.qty }}{{ item.qty_type }}</p>
                               <p class="card-text small mb-1">{{ item.category }}</p>
                               <p class="card-text item-expiry" :style="{ color: getExpiryColor(item.expiryDate) }">
                               <p v-if="new Date(item.expiryDate) < new Date()" class="text-danger fw-bold">⚠️ Expired</p>
-                                Expiry: {{ item.expiryDate }}
+                                {{ item.expiryDate }}
                               </p>
                               <button class="btn btn-outline-danger btn-sm" @click="askRemove(item)">❌ Remove</button>
                             </div>
@@ -238,7 +237,7 @@
               <!-- IMAGE HANDLER incase no img -->
               <img :src="getImageSrc(item)" class="card-img-top" :alt="item.name"
                 @error="(event) => (event.target.src = getImageSrc({ category: item.category, item_name: item.name }))"
-                style="padding: 30px" />
+                style="padding: 30px"  width="206" height="206" />
               <div class="card-body text-center">
                 <h5 class="card-title item-name">{{ item.name }}</h5>
                 <p class="kc-meta">Qty: {{ item.qty }}{{ item.qty_type }}</p>
@@ -246,7 +245,7 @@
                 <p class="kc-meta" :style="{ color: getExpiryColor(item.expiryDate) }">
                 <p v-if="new Date(item.expiryDate) < new Date()" class="text-danger fw-bold">⚠️ Expired</p>
 
-                  Expiry: {{ item.expiryDate }}
+                  {{ item.expiryDate }}
                 </p>
                 <span class="badge bg-secondary text-capitalize">{{ item.category }}</span>
               </div>
