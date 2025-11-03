@@ -1,194 +1,213 @@
 <template>
-  <div class="showpiece-carousel">
-    <!-- Previous faded small card -->
-    <div class="side-card prev-card" v-if="prevRecipeObj">
-      <img :src="prevRecipeObj.image" alt="Prev Recipe" class="side-img" />
-      <div class="side-title">{{ prevRecipeObj.title }}</div>
+  <div>
+    <!-- Loading state -->
+    <div v-if="loading" class="carousel-loading">
+      <div class="loading-icon">🍰</div>
+      <p class="loading-text">
+        {{
+          loadingPhase === 'coming'
+            ? 'Fetching your favourite recipes…'
+            : 'Almost there! Sweet treats incoming ✨'
+        }}
+      </p>
     </div>
 
-    <!-- Main showpiece card -->
-    <div class="showpiece-card">
-      <img :src="currentRecipe.image" :alt="currentRecipe.title + ' Photo'" class="showpiece-img" />
-      <div class="showpiece-info">
-        <h2 class="showpiece-title">{{ currentRecipe.title }}</h2>
-        <div class="showpiece-meta">
-          <span v-for="meta in currentRecipe.meta" :key="meta.text" class="meta"
-            >{{ meta.icon }} {{ meta.text }}</span
-          >
+    <!-- Empty state -->
+    <div v-else-if="recipes.length === 0" class="carousel-loading">
+      <div class="loading-icon">😢</div>
+      <p class="loading-text">
+        You don’t have any liked recipes yet.<br />
+        Start exploring and add some favourites!
+      </p>
+    </div>
+
+    <!-- Carousel only renders when loading is done and recipes exist -->
+    <div v-else class="showpiece-carousel">
+      <!-- Previous faded small card -->
+      <div class="side-card prev-card" v-if="prevRecipeObj">
+        <img :src="prevRecipeObj.image_url" alt="Prev Recipe" class="side-img" />
+        <div class="side-title">{{ prevRecipeObj.title }}</div>
+      </div>
+
+      <!-- Main showpiece card -->
+      <div class="showpiece-card clean-card">
+        <img
+          class="showpiece-img"
+          :src="
+            currentRecipe?.image_url ||
+            'https://images.unsplash.com/photo-1504674900247-0877df9cc836'
+          "
+          :alt="currentRecipe?.title || 'Untitled Recipe'"
+        />
+
+        <div class="showpiece-info">
+          <h2 class="showpiece-title">{{ currentRecipe?.title || 'Untitled Recipe' }}</h2>
+
+          <div class="showpiece-meta">
+            <span class="meta">⏲ {{ currentRecipe?.cook_time || '-' }}</span>
+            <span class="meta">🔥 {{ currentRecipe?.total_calories || '-' }} kcal</span>
+          </div>
+
+          <div class="showpiece-ingredients">
+            <div class="sp-label">Ingredients Summary:</div>
+            <div class="sp-fridge">🧊 {{ currentRecipe?.inFridgeCount || 0 }} in fridge</div>
+            <div v-if="currentRecipe?.expiringSoonCount > 0" class="sp-expiring">
+              ⏳ {{ currentRecipe?.expiringSoonCount }} expiring soon:
+              <div class="sp-expiring-chips">
+                <span
+                  v-for="(item, idx) in currentRecipe?.expiringSoonMatchedNames"
+                  :key="idx"
+                  class="expiring-chip"
+                >
+                  {{ item }}
+                </span>
+              </div>
+            </div>
+            <div v-else class="sp-fresh">🌿 All good — nothing expiring soon!</div>
+          </div>
+
+          <div class="showpiece-rating">
+            <button :class="buttonClass">{{ buttonText }}</button>
+            <button
+              class="like-btn"
+              :class="{ liked: currentRecipe?.liked }"
+              @click="toggleLike(currentRecipe)"
+            >
+              ❤
+            </button>
+          </div>
         </div>
-        <div class="showpiece-ingredients">
-          <span class="sp-label">Ingredients:</span>
-          <span class="sp-fridge">{{ currentRecipe.ingredients }}</span>
-        </div>
-        <div class="showpiece-rating">
-          ⭐ {{ currentRecipe.rating }}
-          <button class="sp-try-btn">Try Recipe</button>
-          <button
-            class="like-btn"
-            :class="{ liked: currentRecipe.liked }"
-            @click="toggleLike(currentIdx)"
-          >
-            ❤
-          </button>
-        </div>
+      </div>
+
+      <!-- Next faded small card -->
+      <div class="side-card next-card" v-if="nextRecipeObj">
+        <img :src="nextRecipeObj.image_url" alt="Next Recipe" class="side-img" />
+        <div class="side-title">{{ nextRecipeObj.title }}</div>
       </div>
     </div>
 
-    <!-- Next faded small card -->
-    <div class="side-card next-card" v-if="nextRecipeObj">
-      <img :src="nextRecipeObj.image" alt="Next Recipe" class="side-img" />
-      <div class="side-title">{{ nextRecipeObj.title }}</div>
+    <!-- Navigation buttons -->
+    <div v-if="!loading && recipes.length > 0" class="carousel-controls">
+      <button @click="prevRecipe" class="nav-btn left" aria-label="Previous Recipe">&lt;</button>
+      <button @click="nextRecipe" class="nav-btn right" aria-label="Next Recipe">&gt;</button>
     </div>
-  </div>
-
-  <!-- Navigation buttons -->
-  <div class="carousel-controls">
-    <button @click="prevRecipe" class="nav-btn left" aria-label="Previous Recipe">&lt;</button>
-    <button @click="nextRecipe" class="nav-btn right" aria-label="Next Recipe">&gt;</button>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import axios from 'axios'
 
-const curated = ref([
-  {
-    title: 'Avocado Toast',
-    image: '../../public/reciepes_discover/avocado_toast.jpg',
-    meta: [
-      { icon: '⏲', text: '10m' },
-      { icon: '🍳', text: 'Western' },
-      { icon: '🥑', text: 'Vegan' },
-    ],
-    ingredients: '2/5 in fridge 🧺',
-    rating: 4.9,
-    liked: true,
-  },
-  {
-    title: 'Spicy Noodles',
-    image:
-      '../../public/noodles-spicy-frying-pans-with-ingredients-black-cement-surface-top-view.jpg',
-    meta: [
-      { icon: '⏲', text: '15m' },
-      { icon: '🍜', text: 'Asian' },
-      { icon: '🌶', text: 'Spicy' },
-    ],
-    ingredients: '3/7 in fridge 🍜',
-    rating: 4.7,
-    liked: false,
-  },
-  {
-    title: 'Berry Pancakes',
-    image: '../../public/reciepes_discover/berry_pancakes.jpg',
-    meta: [
-      { icon: '⏲', text: '20m' },
-      { icon: '🥞', text: 'Breakfast' },
-      { icon: '🍓', text: 'Vegetarian' },
-    ],
-    ingredients: '4/6 in fridge 🥞',
-    rating: 4.8,
-    liked: true,
-  },
-])
-const dailyPicks = ref([
-  {
-    title: 'Berry Smoothie',
-    image: '../../public/reciepes_discover/berry_smoothie.jpg',
-    meta: [
-      { icon: '⏲', text: '5m' },
-      { icon: '🌱', text: 'Healthy' },
-      { icon: '🥑', text: 'Vegan' },
-    ],
-    ingredients: 'n/a',
-    rating: 4.8,
-    liked: false,
-  },
-  {
-    title: 'Greek Salad',
-    image: '../../public/reciepes_discover/greek_salad.jpg',
-    meta: [
-      { icon: '⏲', text: '8m' },
-      { icon: '🍽', text: 'Mediterranean' },
-      { icon: '🥗', text: 'Vegetarian' },
-    ],
-    ingredients: 'n/a',
-    rating: 4.6,
-    liked: false,
-  },
-  {
-    title: 'Peanut Butter Toast',
-    image: '../../public/reciepes_discover/peanutbutter_toast.jpg',
-    meta: [
-      { icon: '⏲', text: '6m' },
-      { icon: '🍞', text: 'Western' },
-      { icon: '🥑', text: 'Vegan' },
-    ],
-    ingredients: 'n/a',
-    rating: 4.5,
-    liked: false,
-  },
-])
-const lookBack = ref([
-  {
-    title: 'Ramen Bowl',
-    image: '../../public/reciepes_discover/ramen.jpg',
-    meta: [
-      { icon: '⏲', text: '30m' },
-      { icon: '🍜', text: 'Japanese' },
-      { icon: '🥩', text: 'Non-vegetarian' },
-    ],
-    ingredients: 'n/a',
-    rating: 4.7,
-    liked: true,
-  },
-  {
-    title: 'Chicken Wrap',
-    image: '../../public/reciepes_discover/chicken_wrap.jpg',
-    meta: [
-      { icon: '⏲', text: '15m' },
-      { icon: '🌯', text: 'Fusion' },
-      { icon: '🥩', text: 'Non-vegetarian' },
-    ],
-    ingredients: 'n/a',
-    rating: 4.5,
-    liked: false,
-  },
-  {
-    title: 'Mango Sticky Rice',
-    image: '../../public/reciepes_discover/mango_rice.jpg',
-    meta: [
-      { icon: '⏲', text: '20m' },
-      { icon: '🥭', text: 'Thai' },
-      { icon: '🥗', text: 'Vegetarian' },
-    ],
-    ingredients: 'n/a',
-    rating: 4.9,
-    liked: true,
-  },
-])
-
-// Only use liked recipes
-const recipes = computed(() =>
-  [...curated.value, ...dailyPicks.value, ...lookBack.value].filter((r) => r.liked),
-)
-
+const fridgeId = sessionStorage.getItem('fridgeId')
+const user_id = sessionStorage.getItem('user_id')
+const recipes = ref([])
 const idx = ref(0)
-const currentRecipe = computed(() => recipes.value[idx.value])
-const prevRecipeObj = computed(() =>
-  recipes.value.length > 1
-    ? recipes.value[(idx.value - 1 + recipes.value.length) % recipes.value.length]
-    : null,
-)
-const nextRecipeObj = computed(() =>
-  recipes.value.length > 1 ? recipes.value[(idx.value + 1) % recipes.value.length] : null,
-)
+const loading = ref(true)
+const loadingPhase = ref('coming') // 'coming' | 'almost'
+
+const savedRecipes = async () => {
+  loading.value = true
+  loadingPhase.value = 'coming'
+
+  // Optional “almost ready” switch
+  setTimeout(() => {
+    if (loading.value) loadingPhase.value = 'almost'
+  }, 6000)
+
+  try {
+    const response = await axios.get(
+      `http://localhost:8000/api/recipe/like/${user_id}/${fridgeId}`,
+      { headers: { 'Content-Type': 'application/json' } },
+    )
+
+    console.log('✅ API response:', response.data)
+
+    if (response.status === 200 && Array.isArray(response.data.data)) {
+      recipes.value = response.data.data
+      console.log('✅ Recipes ref updated:', recipes.value)
+    } else {
+      console.warn('⚠️ Unexpected response format:', response.data)
+      recipes.value = []
+    }
+  } catch (error) {
+    console.error('❌ Error fetching recipes:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(() => {
+  savedRecipes()
+})
+
+const currentRecipe = computed(() => recipes.value[idx.value] || null)
+
+// 🌀 Dynamic behaviour — depends on number of recipes
+const prevRecipeObj = computed(() => {
+  const len = recipes.value.length
+  if (len <= 2) {
+    // 🔹 No looping
+    return idx.value > 0 ? recipes.value[idx.value - 1] : null
+  }
+  // 🔁 Looping carousel
+  return recipes.value[(idx.value - 1 + len) % len]
+})
+
+const nextRecipeObj = computed(() => {
+  const len = recipes.value.length
+  if (len <= 2) {
+    // 🔹 No looping
+    return idx.value < len - 1 ? recipes.value[idx.value + 1] : null
+  }
+  // 🔁 Looping carousel
+  return recipes.value[(idx.value + 1) % len]
+})
 
 function prevRecipe() {
-  idx.value = (idx.value - 1 + recipes.value.length) % recipes.value.length
+  const len = recipes.value.length
+  if (len <= 2) {
+    if (idx.value > 0) idx.value--
+  } else {
+    idx.value = (idx.value - 1 + len) % len
+  }
 }
+
 function nextRecipe() {
-  idx.value = (idx.value + 1) % recipes.value.length
+  const len = recipes.value.length
+  if (len <= 2) {
+    if (idx.value < len - 1) idx.value++
+  } else {
+    idx.value = (idx.value + 1) % len
+  }
 }
+
+async function toggleLike(recipe) {
+  const data = {
+    user_id,
+    name: recipe.title,
+  }
+  const response = await axios.put('http://localhost:8000/api/recipe/like', data, {
+    headers: { 'Content-Type': 'application/json' },
+  })
+  if (response.status == 200) {
+    savedRecipes()
+  }
+}
+
+// 🟢 Button text + class logic
+const buttonText = computed(() => {
+  const status = currentRecipe.value?.status
+  if (status === 'in progress') return 'Continue Recipe'
+  if (status === 'completed') return 'Try Again'
+  return 'Try Recipe'
+})
+
+const buttonClass = computed(() => {
+  const status = currentRecipe.value?.status
+  if (status === 'in progress') return 'sp-try-btn in-progress'
+  if (status === 'completed') return 'sp-try-btn completed'
+  return 'sp-try-btn'
+})
 </script>
 
 <style scoped>
@@ -375,6 +394,41 @@ function nextRecipe() {
     0 0 34px 11px #fee8b9,
     0 6px 20px rgba(230, 200, 110, 0.18);
 }
+
+/* 🟠 In-progress (orange) */
+.sp-try-btn.in-progress {
+  background: linear-gradient(96deg, #ffae42 0%, #ffd699 100%);
+  color: #4b2800;
+  box-shadow:
+    0 0 16px 3px #ffe6b3,
+    0 3px 12px rgba(255, 180, 90, 0.2);
+}
+.sp-try-btn.in-progress:hover {
+  background: #e68600;
+  color: white;
+  transform: scale(1.08);
+  box-shadow:
+    0 0 34px 11px #ffcf7f,
+    0 6px 20px rgba(255, 150, 50, 0.18);
+}
+
+/* 🟢 Completed (green) */
+.sp-try-btn.completed {
+  background: linear-gradient(96deg, #7acb6f 0%, #d8f7a8 100%);
+  color: #203b1a;
+  box-shadow:
+    0 0 16px 3px #eaffb0,
+    0 3px 12px rgba(100, 180, 90, 0.2);
+}
+.sp-try-btn.completed:hover {
+  background: #dbb20e;
+  color: #1b1a1a;
+  transform: scale(1.08);
+  box-shadow:
+    0 0 34px 11px #f6ffba,
+    0 6px 20px rgba(130, 180, 80, 0.18);
+}
+
 .carousel-controls {
   margin-top: 17px;
   display: flex;
@@ -415,6 +469,88 @@ function nextRecipe() {
   }
   .side-card {
     display: none;
+  }
+}
+
+.sp-label {
+  font-weight: 700;
+  margin-right: 5px;
+  color: #637147;
+  font-size: 14px;
+}
+
+.sp-fridge {
+  margin-top: 4px;
+  font-size: 14px;
+  color: #3c7e49;
+  font-weight: 700;
+}
+
+.sp-expiring {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #b45f2a;
+  font-weight: 700;
+}
+
+.sp-expiring-chips {
+  margin-top: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.expiring-chip {
+  background: linear-gradient(135deg, #ffefdf 0%, #ffd6b3 100%);
+  color: #a14600;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(250, 160, 80, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.expiring-chip:hover {
+  transform: scale(1.08);
+  box-shadow: 0 3px 8px rgba(255, 140, 0, 0.28);
+}
+
+.sp-fresh {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #5e7841;
+  font-style: italic;
+  font-weight: 600;
+}
+.carousel-loading {
+  text-align: center;
+  margin: 60px 0;
+  color: #bc7e4e;
+  font-family: 'Bricolage Grotesque', sans-serif;
+}
+
+.carousel-loading .loading-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+  animation: bounce 1s infinite alternate;
+}
+
+.carousel-loading .loading-text {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+  100% {
+    transform: translateY(0);
   }
 }
 </style>
