@@ -797,6 +797,7 @@ const recognizeIngredient = async (imgUrl) => {
   try {
     isRecognizing.value = true;
     const response = await axios.post("http://localhost:8000/api/imgreco", { img: imgUrl });
+    console.log(response)
 
     // The backend now returns a parsed object under 'item'
     const aiData = response.data.item; 
