@@ -133,34 +133,42 @@ export default {
   </div>
 
   <!-- Content Sections -->
+  <!-- Curated Recipes Section -->
   <div class="section">
     <h2 class="section-title">Curated for you</h2>
     <div class="card-row">
       <div class="kitchen-card" v-for="(recipe, idx) in curated" :key="'recipe-' + idx">
         <div class="kc-image-wrap">
+          <!-- Adjust the image path as needed -->
           <img class="kc-image" :src="recipe.image" alt="Recipe Photo" />
         </div>
         <div class="kc-title">{{ recipe.title }}</div>
         <div class="kc-meta-row">
-          <span v-for="meta in recipe.meta" :key="meta.text" class="kc-meta">
-            <span class="icon">{{ meta.icon }}</span> {{ meta.text }}
-          </span>
+          <!-- Example: Display key meta info like yields, prepTime (you can customize) -->
+          <span class="kc-meta"><span class="icon">⏲</span> {{ recipe.prepTime }}</span>
+          <!-- Add more meta info as needed -->
         </div>
         <div class="kc-ingredients">
           <span class="kc-label-blobby">Ingredients:</span>
-          <span class="kc-fridge-amt">{{ recipe.ingredients }}</span>
+          <span class="kc-fridge-amt">
+            <!-- Concatenate ingredients list -->
+            <template v-for="(ingredient, index) in recipe.ingredients_list" :key="ingredient.name">
+              {{ ingredient.name }}: {{ ingredient.portion
+              }}<span v-if="index < recipe.ingredients_list.length - 1">, </span>
+            </template>
+          </span>
         </div>
         <div class="kc-bottom-row">
-          <span class="kc-rating"> <span class="icon">⭐</span> {{ recipe.rating }} </span>
+          <span class="kc-rating"><span class="icon">⭐</span> {{ recipe.total_calories }}</span>
           <button class="kc-try-btn">Try Recipe</button>
-          <!-- like functionality can remain -->
-          <button class="kc-like-btn" :class="{ liked: recipe.liked }" @click="toggleLike">
+          <button class="kc-like-btn" :class="{ liked: recipe.liked }" @click="toggleLike(recipe)">
             ❤
           </button>
         </div>
       </div>
     </div>
   </div>
+
   <div class="section">
     <h2 class="section-title">Spice up your taste</h2>
     <div class="card-row">
@@ -180,7 +188,7 @@ export default {
         </div>
         <div class="kc-bottom-row">
           <span class="kc-rating"> <span class="icon">⭐</span> {{ recipe.rating }} </span>
-          <button class="kc-try-btn">Try Recipe</button>
+          <button class="kc-try-btn" @click="tryReciepe">Try Recipe</button>
           <!-- like functionality can remain -->
           <button class="kc-like-btn" :class="{ liked: recipe.liked }" @click="toggleLike">
             ❤
@@ -220,8 +228,45 @@ export default {
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+
 const searchQuery = ref('')
+const curated = ref([]) // to store fetched curated recipes
+const dailyPicks = ref([]) // store daily picks
+const lookBack = ref([]) // store lookBack recipes
+
+const curatedRecipes = async () => {
+  try {
+    const response = await axios.post(
+      'http://localhost:8000/api/recipe',
+      {
+        numRecipe: 10,
+        serving: 1,
+        ingredientArr: [],
+        mealType: 'Any',
+        cookingMethod: 'Any',
+        vegan: null,
+        halal: null,
+        allergy: 'None',
+        instructions: 'Discover interesting recipes matching general preferences.',
+      },
+      { headers: { 'Content-Type': 'application/json' } },
+    )
+
+    // Assuming response data has curated, dailyPicks, lookBack arrays
+    console.log(response.data)
+    curated.value = response.data || []
+    dailyPicks.value = response.data.dailyPicks || []
+    lookBack.value = response.data.lookBack || []
+  } catch (error) {
+    console.error('Error fetching discover recipes:', error)
+  }
+}
+
+onMounted(() => {
+  curatedRecipes()
+})
 </script>
 
 <style scoped>
@@ -266,10 +311,13 @@ const searchQuery = ref('')
 }
 .card-row {
   display: flex;
+  flex-direction: row;
   gap: 24px;
-  margin-bottom: 32px;
-  margin-left: 8px;
-  width: 95vw;
+  overflow-x: auto; /* Enables horizontal scroll */
+  scroll-snap-type: x mandatory; /* Enables snap */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  padding-bottom: 10px; /* Space for scrollbar */
+  width: 95vw; /* Ensure proper width */
 }
 .card {
   background: #dbc09c;
@@ -336,6 +384,10 @@ const searchQuery = ref('')
     box-shadow 0.16s,
     transform 0.16s;
   width: 400px;
+  flex: 0 0 320px; /* Fixed card width, adjust as needed */
+  scroll-snap-align: start; /* Snap starts at the card */
+  user-select: none; /* Optional: disable text selection on drag */
+  margin: 0; /* Reset margin to avoid extra gaps */
 }
 .kitchen-card:hover {
   /* Outer shadow removed */
