@@ -60,6 +60,7 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import axios from 'axios'
 
 const router = useRouter()
 
@@ -85,7 +86,7 @@ function checkPasswordStrength() {
   passwordStrength.value = getPasswordStrength(password.value)
 }
 
-function handleSignup() {
+const handleSignup = async () => {
   errors.name = ''
   errors.email = ''
   errors.password = ''
@@ -99,8 +100,19 @@ function handleSignup() {
   }
 
   if (!errors.name && !errors.email && !errors.password) {
-    alert(`Account created!\nName: ${name.value}\nEmail: ${email.value}`)
-    setTimeout(() => router.push('/home'), 1000)
+    const signupBody = {
+      name: name.value,
+      email: email.value,
+      password: password.value,
+    }
+
+    const response = await axios.post('http://localhost:8000/api/auth/signup', signupBody, {
+      headers: { 'Content-Type': 'application/json' },
+    })
+
+    if (response.status === 201) {
+      setTimeout(() => router.push('/login'), 1000)
+    }
   }
 }
 </script>
