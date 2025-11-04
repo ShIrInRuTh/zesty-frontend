@@ -170,47 +170,83 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import Header from './common/Header.vue'
 import Footer from './common/Footer.vue' // <-- Fixed typo 'commonf' to 'common'
+import axios from 'axios'
+import api from '../API/supabaseAPI'
 
-// Dummy data - replace with your actual data store (e.g., Pinia)
-const allFridgeItems = [
-  { id: 1, name: 'Milk', expiryDate: '2025-11-02' },
-  { id: 2, name: 'Eggs', expiryDate: '2025-11-05' },
-  { id: 3, name: 'Cheese', expiryDate: '2025-11-10' },
-  { id: 4, name: 'Chicken Breast', expiryDate: '2025-11-01' },
-  { id: 5, name: 'Carrots', expiryDate: '2025-11-08' },
-  { id: 6, name: 'Yogurt', expiryDate: '2025-11-04' },
-  { id: 7, name: 'Old Bread', expiryDate: '2025-10-28' }, // Expired
-  { id: 8, name: 'Spinach', expiryDate: '2025-10-25' }, // Expired
-]
+// --- Welcome username ---
+const usernameRef = ref('User')
+const currentUsername = computed(() => usernameRef.value || 'User')
 
-const username = 'Foodie' // Dummy username
+// --- Raw items fetched from backend ---
+const allFridgeItems = ref([])
 
-const currentUsername = computed(() => {
-  // Replace with logic to get logged-in user's name
-  return username || 'User'
-})
+// Fetch username from Supabase REST and items from backend
+async function loadUserAndItems() {
+  const userId = sessionStorage.getItem('user_id')
+  const fridgeId = sessionStorage.getItem('fridgeId')
+  if (!userId || !fridgeId) {
+    console.warn('Missing session: user_id or fridgeId')
+    return
+  }
+
+  try {
+    // Username via Supabase REST
+    const { data: userRows } = await api.get('/users', {
+      params: { select: 'username', user_id: `eq.${userId}` },
+    })
+    usernameRef.value = userRows?.[0]?.username || 'User'
+  } catch (e) {
+    console.error('Failed to load username', e)
+  }
+
+  try {
+    // Fridge items via backend route already used in Fridge.vue
+    const res = await axios.post(`http://localhost:8000/api/fridge/${fridgeId}`, { cat: '' })
+    const result = res.data?.message || []
+    allFridgeItems.value = result.map((item) => ({
+      id: item.item_id,
+      name: item.item_name,
+      expiryDate: item.expiry_date ? new Date(item.expiry_date).toISOString().split('T')[0] : '',
+    }))
+  } catch (e) {
+    console.error('Failed to load fridge items', e)
+  }
+}
+
+onMounted(loadUserAndItems)
 
 // Sort items by expiry date (soonest first)
 const sortedItems = computed(() => {
-  return [...allFridgeItems].sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate))
+  return [...allFridgeItems.value].sort(
+    (a, b) => new Date(a.expiryDate) - new Date(b.expiryDate)
+  )
 })
 
-// Get top 5 items expiring soon (but not yet expired)
+// Top 5 expiring within next 14 days (and not expired)
 const fridgeItems = computed(() => {
-  const today = new Date().toISOString().split('T')[0]
-  return sortedItems.value.filter((item) => item.expiryDate >= today).slice(0, 5)
+  const today = new Date()
+  const in14 = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
+  return sortedItems.value
+    .filter((item) => {
+      const d = new Date(item.expiryDate)
+      return !isNaN(d) && d >= today && d <= in14
+    })
+    .slice(0, 5)
 })
 
-// Get top 5 recently expired items
+// Top 5 recently expired
 const expiredItems = computed(() => {
-  const today = new Date().toISOString().split('T')[0]
-  return sortedItems.value
-    .filter((item) => item.expiryDate < today)
-    .reverse() // Show most recently expired first
+  const today = new Date()
+  return [...sortedItems.value]
+    .filter((item) => {
+      const d = new Date(item.expiryDate)
+      return !isNaN(d) && d < today
+    })
+    .reverse()
     .slice(0, 5)
 })
 

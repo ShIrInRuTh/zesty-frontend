@@ -28,11 +28,7 @@
         <!-- Left Side: Profile Picture Card -->
         <aside class="profile-card">
           <div class="profile-picture-wrapper">
-            <img
-              :src="profilePicPreview"
-              alt="Profile Picture"
-              class="profile-picture"
-            />
+            <img :src="profilePicPreview" alt="Profile Picture" class="profile-picture" />
             <label for="profile-pic-upload" class="upload-btn">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -83,25 +79,13 @@
             <form @submit.prevent="updateProfile">
               <div class="form-group">
                 <label for="name">Full Name</label>
-                <input
-                  id="name"
-                  type="text"
-                  class="form-input"
-                  v-model="name"
-                />
+                <input id="name" type="text" class="form-input" v-model="name" />
               </div>
               <div class="form-group">
                 <label for="email">Email Address</label>
-                <input
-                  id="email"
-                  type="email"
-                  class="form-input"
-                  v-model="email"
-                />
+                <input id="email" type="email" class="form-input" v-model="email" />
               </div>
-              <button type="submit" class="btn btn-primary">
-                Save Changes
-              </button>
+              <button type="submit" class="btn btn-primary">Save Changes</button>
             </form>
           </div>
 
@@ -120,12 +104,7 @@
               </div>
               <div class="form-group">
                 <label for="new-password">New Password</label>
-                <input
-                  id="new-password"
-                  type="password"
-                  class="form-input"
-                  v-model="newPassword"
-                />
+                <input id="new-password" type="password" class="form-input" v-model="newPassword" />
               </div>
               <div class="form-group">
                 <label for="confirm-password">Confirm New Password</label>
@@ -136,18 +115,13 @@
                   v-model="confirmPassword"
                 />
               </div>
-              <button type="submit" class="btn btn-primary">
-                Update Password
-              </button>
+              <button type="submit" class="btn btn-primary">Update Password</button>
             </form>
 
             <!-- Delete Account Section -->
             <div class="danger-zone">
               <h4 class="form-subtitle">Delete Account</h4>
-              <p>
-                Once you delete your account, there is no going back. Please
-                be certain.
-              </p>
+              <p>Once you delete your account, there is no going back. Please be certain.</p>
               <button class="btn btn-danger" @click="showDeleteConfirmation">
                 Delete My Account
               </button>
@@ -237,7 +211,7 @@ function updatePassword() {
 function showDeleteConfirmation() {
   // In a real app, show a confirmation modal
   const confirmed = confirm(
-    'Are you absolutely sure you want to delete your account? This cannot be undone.'
+    'Are you absolutely sure you want to delete your account? This cannot be undone.',
   )
   if (confirmed) {
     console.log('Deleting account...')
