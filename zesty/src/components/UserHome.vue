@@ -221,9 +221,7 @@ onMounted(loadUserAndItems)
 
 // Sort items by expiry date (soonest first)
 const sortedItems = computed(() => {
-  return [...allFridgeItems.value].sort(
-    (a, b) => new Date(a.expiryDate) - new Date(b.expiryDate)
-  )
+  return [...allFridgeItems.value].sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate))
 })
 
 // Top 5 expiring within next 14 days (and not expired)

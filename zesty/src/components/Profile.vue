@@ -137,23 +137,26 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import axios from 'axios'
+import { useRouter } from 'vue-router'
 import Header from './common/Header.vue'
 import Footer from './common/Footer.vue'
 
 // --- Reactive Data ---
 
-// Dummy user data (replace with your auth store)
+// User state populated from backend/session
 const user = ref({
-  name: 'Foodie',
-  email: 'foodie@example.com',
-  profilePic: '/profile-icon.png', // Default pic
-  joined: '2024-01-15',
+  id: null,
+  name: '',
+  email: '',
+  profilePic: '/profile-icon.png',
+  joined: new Date().toISOString(),
 })
 
 // Form fields
-const name = ref(user.value.name)
-const email = ref(user.value.email)
+const name = ref('')
+const email = ref('')
 const currentPassword = ref('')
 const newPassword = ref('')
 const confirmPassword = ref('')
@@ -161,6 +164,8 @@ const confirmPassword = ref('')
 // UI state
 const activeTab = ref('profile') // 'profile' or 'security'
 const profilePicPreview = ref(user.value.profilePic)
+const isBusy = ref(false)
+const router = useRouter()
 
 // --- Computed Properties ---
 
@@ -171,53 +176,137 @@ const joinedDate = computed(() => {
 
 // --- Methods ---
 
-function handleProfilePicUpload(event) {
+// Cloudinary config (align with Fridge.vue)
+const CLOUD_NAME = 'dld2rfhyu'
+const UPLOAD_PRESET = 'fridge_preset'
+
+async function uploadToCloudinary(file) {
+  const form = new FormData()
+  form.append('file', file)
+  form.append('upload_preset', UPLOAD_PRESET)
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`, {
+    method: 'POST',
+    body: form,
+  })
+  if (!res.ok) throw new Error('Upload failed')
+  const data = await res.json()
+  return data.secure_url
+}
+
+async function handleProfilePicUpload(event) {
   const file = event.target.files[0]
-  if (file) {
-    // Create a temporary URL to preview the image
+  if (!file) return
+  try {
+    isBusy.value = true
+    // Local preview first
     profilePicPreview.value = URL.createObjectURL(file)
-    // In a real app, you would upload this file to your server
-    console.log('File selected for upload:', file.name)
+    const imageUrl = await uploadToCloudinary(file)
+
+    const user_id = user.value.id || sessionStorage.getItem('user_id')
+    await axios.put('http://localhost:8000/api/user/avatar', { user_id, image_url: imageUrl }, {
+      headers: { 'Content-Type': 'application/json' },
+    })
+
+    user.value.profilePic = imageUrl
+    profilePicPreview.value = imageUrl
+  } catch (e) {
+    console.error(e)
+    alert('Failed to update profile picture')
+  } finally {
+    isBusy.value = false
   }
 }
 
-function updateProfile() {
-  // In a real app, send this to your backend
-  console.log('Updating profile with:', {
-    name: name.value,
-    email: email.value,
-  })
-  // Update local user ref on success
-  user.value.name = name.value
-  user.value.email = email.value
-  // Show a success message
-  alert('Profile updated!') // Replace with a proper toast notification
+async function updateProfile() {
+  try {
+    isBusy.value = true
+    const user_id = user.value.id || sessionStorage.getItem('user_id')
+    const body = { user_id, name: name.value, email: email.value }
+    const res = await axios.put('http://localhost:8000/api/user/profile', body, {
+      headers: { 'Content-Type': 'application/json' },
+    })
+    if (res.status === 200) {
+      user.value.name = name.value
+      user.value.email = email.value
+      alert('Profile updated!')
+    }
+  } catch (e) {
+    console.error(e)
+    alert('Failed to update profile')
+  } finally {
+    isBusy.value = false
+  }
 }
 
-function updatePassword() {
+async function updatePassword() {
   if (newPassword.value !== confirmPassword.value) {
-    alert('New passwords do not match!') // Replace with proper validation
+    alert('New passwords do not match!')
     return
   }
-  // In a real app, send this to your backend
-  console.log('Updating password...')
-  // Clear fields on success
-  currentPassword.value = ''
-  newPassword.value = ''
-  confirmPassword.value = ''
-  alert('Password updated!') // Replace with a proper toast notification
-}
-
-function showDeleteConfirmation() {
-  // In a real app, show a confirmation modal
-  const confirmed = confirm(
-    'Are you absolutely sure you want to delete your account? This cannot be undone.',
-  )
-  if (confirmed) {
-    console.log('Deleting account...')
-    // Call backend API to delete account
+  try {
+    isBusy.value = true
+    const user_id = user.value.id || sessionStorage.getItem('user_id')
+    const body = { user_id, current_password: currentPassword.value, new_password: newPassword.value }
+    const res = await axios.put('http://localhost:8000/api/user/password', body, {
+      headers: { 'Content-Type': 'application/json' },
+    })
+    if (res.status === 200) {
+      currentPassword.value = ''
+      newPassword.value = ''
+      confirmPassword.value = ''
+      alert('Password updated!')
+    }
+  } catch (e) {
+    console.error(e)
+    alert('Failed to update password')
+  } finally {
+    isBusy.value = false
   }
 }
+
+async function showDeleteConfirmation() {
+  const confirmed = confirm('Delete your account permanently? This cannot be undone.')
+  if (!confirmed) return
+  try {
+    isBusy.value = true
+    const user_id = user.value.id || sessionStorage.getItem('user_id')
+    const res = await axios.delete(`http://localhost:8000/api/user/${user_id}`)
+    if (res.status === 200) {
+      sessionStorage.clear()
+      alert('Account deleted')
+      router.push('/')
+    }
+  } catch (e) {
+    console.error(e)
+    alert('Failed to delete account')
+  } finally {
+    isBusy.value = false
+  }
+}
+
+// Load current user on mount
+onMounted(async () => {
+  try {
+    const user_id = sessionStorage.getItem('user_id')
+    if (!user_id) return
+    const res = await axios.get(`http://localhost:8000/api/user/${user_id}`)
+    if (res.status === 200 && res.data) {
+      const u = res.data
+      user.value = {
+        id: u.user_id || u.id || user_id,
+        name: u.username || u.name || '',
+        email: u.email || '',
+        profilePic: u.image_url || '/profile-icon.png',
+        joined: u.created_at || new Date().toISOString(),
+      }
+      name.value = user.value.name
+      email.value = user.value.email
+      profilePicPreview.value = user.value.profilePic
+    }
+  } catch (e) {
+    console.warn('Could not load user profile', e)
+  }
+})
 </script>
 
 <style scoped>
