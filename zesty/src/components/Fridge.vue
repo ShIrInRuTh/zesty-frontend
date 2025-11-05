@@ -123,7 +123,7 @@
           <li class="nav-item" v-for="category in categories" :key="category"
             style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: bold;">
 
-            <button class="nav-link"
+            <button class="nav-link text-truncate"
             :class="{ active: activeCategory === category }"
             role="tab"
             @click="switchCategory(category)">
@@ -156,17 +156,18 @@
         </div>
       </div>
 
-      <!-- bscards in con -->
-      <div class="container my-5" v-if="fridgeItems.length > 0">
-        <div class="row">
-          <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" v-for="(item, index) in filteredAndSortedItems" :key="index">
-            <div class="kitchen-card" style="border-radius: 20px">
-              <!-- REMOVE BUTTON -->
-              <button v-if="removeMode" class="btn btn-danger position-absolute"
-                style="top: 5px; right: 5px; border-radius: 50%; width: 30px; height: 30px; padding: 0;"
-                @click="confirmRemove(item, index)">
-                X
-              </button>
+      <!-- None  <576px, sm  ≥576px, md  ≥768px, lg  ≥992px, xl  ≥1200px, xxl  ≥1400px -->
+        <!-- bscards in con -->
+        <div class="container my-5" v-if="fridgeItems.length > 0">
+          <div class="row">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 col-xxl-3 d-flex align-items-stretch" v-for="(item, index) in filteredAndSortedItems" :key="index">
+              <div class="kitchen-card card w-100" style="border-radius: 20px">
+                <!-- REMOVE BUTTON -->
+                <button v-if="removeMode" class="btn btn-danger position-absolute"
+                  style="top: 5px; right: 5px; border-radius: 50%; width: 30px; height: 30px; padding: 0;"
+                  @click="confirmRemove(item, index)">
+                  X
+                </button>
 
               <!-- Remove Modal -->
               <div class="modal fade" id="removeModal" tabindex="-1" aria-labelledby="removeModalLabel"
@@ -184,7 +185,7 @@
                           placeholder="Search items..." />
                       </div>
 
-                      <div class="row row-cols-1 row-cols-md-3 g-3">
+                      <div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-lg-3">
                         <div v-for="(item, index) in filteredFridgeItemsForRemove" :key="index" class="col">
                           <div class="card h-100 text-center">
 
@@ -1006,4 +1007,5 @@ main.fridge-main p {
     transform 0.16s;
   width: 250px;
 }
+
 </style>
