@@ -1,218 +1,73 @@
-<script>
-export default {
-  data() {
-    return {
-      // Main Recipes
-      curated: [
-        {
-          title: 'Avocado Toast',
-          image: '../../public/reciepes_discover/avocado_toast.jpg',
-          meta: [
-            { icon: '⏲', text: '10m' },
-            { icon: '🍳', text: 'Western' },
-            { icon: '🥑', text: 'Vegan' },
-          ],
-          ingredients: '2/5 in fridge 🧺',
-          rating: 4.9,
-          liked: true,
-        },
-        {
-          title: 'Spicy Noodles',
-          image:
-            '../../public/noodles-spicy-frying-pans-with-ingredients-black-cement-surface-top-view.jpg',
-          meta: [
-            { icon: '⏲', text: '15m' },
-            { icon: '🍜', text: 'Asian' },
-            { icon: '🌶', text: 'Spicy' },
-          ],
-          ingredients: '3/7 in fridge 🍜',
-          rating: 4.7,
-          liked: false,
-        },
-        {
-          title: 'Berry Pancakes',
-          image: '../../public/reciepes_discover/berry_pancakes.jpg',
-          meta: [
-            { icon: '⏲', text: '20m' },
-            { icon: '🥞', text: 'Breakfast' },
-            { icon: '🍓', text: 'Vegetarian' },
-          ],
-          ingredients: '4/6 in fridge 🥞',
-          rating: 4.8,
-          liked: true,
-        },
-      ],
-      // Daily Picks
-      dailyPicks: [
-        {
-          title: 'Berry Smoothie',
-          image: '../../public/reciepes_discover/berry_smoothie.jpg',
-          meta: [
-            { icon: '⏲', text: '5m' },
-            { icon: '🌱', text: 'Healthy' },
-            { icon: '🥑', text: 'Vegan' },
-          ],
-          ingredients: 'n/a', // Replace with actual fridge info if available
-          rating: 4.8, // Example rating, adjust as needed
-          liked: false,
-        },
-        {
-          title: 'Greek Salad',
-          image: '../../public/reciepes_discover/greek_salad.jpg',
-          meta: [
-            { icon: '⏲', text: '8m' },
-            { icon: '🍽', text: 'Mediterranean' },
-            { icon: '🥗', text: 'Vegetarian' },
-          ],
-          ingredients: 'n/a',
-          rating: 4.6,
-          liked: false,
-        },
-        {
-          title: 'Peanut Butter Toast',
-          image: '../../public/reciepes_discover/peanutbutter_toast.jpg',
-          meta: [
-            { icon: '⏲', text: '6m' },
-            { icon: '🍞', text: 'Western' },
-            { icon: '🥑', text: 'Vegan' },
-          ],
-          ingredients: 'n/a',
-          rating: 4.5,
-          liked: false,
-        },
-      ],
-
-      lookBack: [
-        {
-          title: 'Ramen Bowl',
-          image: '../../public/reciepes_discover/ramen.jpg',
-          meta: [
-            { icon: '⏲', text: '30m' },
-            { icon: '🍜', text: 'Japanese' },
-            { icon: '🥩', text: 'Non-vegetarian' },
-          ],
-          ingredients: 'n/a',
-          rating: 4.7,
-          liked: true,
-        },
-        {
-          title: 'Chicken Wrap',
-          image: '../../public/reciepes_discover/chicken_wrap.jpg',
-          meta: [
-            { icon: '⏲', text: '15m' },
-            { icon: '🌯', text: 'Fusion' },
-            { icon: '🥩', text: 'Non-vegetarian' },
-          ],
-          ingredients: 'n/a',
-          rating: 4.5,
-          liked: false,
-        },
-        {
-          title: 'Mango Sticky Rice',
-          image: '../../public/reciepes_discover/mango_rice.jpg',
-          meta: [
-            { icon: '⏲', text: '20m' },
-            { icon: '🥭', text: 'Thai' },
-            { icon: '🥗', text: 'Vegetarian' },
-          ],
-          ingredients: 'n/a',
-          rating: 4.9,
-          liked: true,
-        },
-      ],
-    }
-  },
-}
-</script>
-
 <template>
   <!-- Search Box -->
   <div class="search">
     <input type="text" placeholder="Look for recipes" v-model="searchQuery" />
     <span class="search-icon">🔍</span>
   </div>
-
-  <!-- Content Sections -->
-  <div class="section">
+  <div class="section container-fluid">
     <h2 class="section-title">Curated for you</h2>
-    <div class="card-row">
-      <div class="kitchen-card" v-for="(recipe, idx) in curated" :key="'recipe-' + idx">
-        <div class="kc-image-wrap">
-          <img class="kc-image" :src="recipe.image" alt="Recipe Photo" />
-        </div>
-        <div class="kc-title">{{ recipe.title }}</div>
-        <div class="kc-meta-row">
-          <span v-for="meta in recipe.meta" :key="meta.text" class="kc-meta">
-            <span class="icon">{{ meta.icon }}</span> {{ meta.text }}
-          </span>
-        </div>
-        <div class="kc-ingredients">
-          <span class="kc-label-blobby">Ingredients:</span>
-          <span class="kc-fridge-amt">{{ recipe.ingredients }}</span>
-        </div>
-        <div class="kc-bottom-row">
-          <span class="kc-rating"> <span class="icon">⭐</span> {{ recipe.rating }} </span>
-          <button class="kc-try-btn">Try Recipe</button>
-          <!-- like functionality can remain -->
-          <button class="kc-like-btn" :class="{ liked: recipe.liked }" @click="toggleLike">
-            ❤
-          </button>
-        </div>
-      </div>
+    <!-- Loading State -->
+    <div v-if="loading" class="loading-state">
+      <div class="loading-icon">🍳</div>
+      <p class="loading-text">
+        {{
+          loadingPhase === 'coming'
+            ? 'Your recipe is coming…'
+            : 'Almost ready! Just a pinch of magic ✨'
+        }}
+      </p>
     </div>
-  </div>
-  <div class="section">
-    <h2 class="section-title">Spice up your taste</h2>
-    <div class="card-row">
-      <div class="kitchen-card" v-for="(recipe, idx) in lookBack" :key="'recipe-' + idx">
-        <div class="kc-image-wrap">
-          <img class="kc-image" :src="recipe.image" alt="Recipe Photo" />
-        </div>
-        <div class="kc-title">{{ recipe.title }}</div>
-        <div class="kc-meta-row">
-          <span v-for="meta in recipe.meta" :key="meta.text" class="kc-meta">
-            <span class="icon">{{ meta.icon }}</span> {{ meta.text }}
-          </span>
-        </div>
-        <div class="kc-ingredients">
-          <span class="kc-label-blobby">Ingredients:</span>
-          <span class="kc-fridge-amt">{{ recipe.ingredients }}</span>
-        </div>
-        <div class="kc-bottom-row">
-          <span class="kc-rating"> <span class="icon">⭐</span> {{ recipe.rating }} </span>
-          <button class="kc-try-btn">Try Recipe</button>
-          <!-- like functionality can remain -->
-          <button class="kc-like-btn" :class="{ liked: recipe.liked }" @click="toggleLike">
-            ❤
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="section">
-    <h2 class="section-title">Daily Top Picks</h2>
-    <div class="card-row">
-      <div class="kitchen-card" v-for="(recipe, idx) in dailyPicks" :key="'recipe-' + idx">
-        <div class="kc-image-wrap">
-          <img class="kc-image" :src="recipe.image" alt="Recipe Photo" />
-        </div>
-        <div class="kc-title">{{ recipe.title }}</div>
-        <div class="kc-meta-row">
-          <span v-for="meta in recipe.meta" :key="meta.text" class="kc-meta">
-            <span class="icon">{{ meta.icon }}</span> {{ meta.text }}
-          </span>
-        </div>
-        <div class="kc-ingredients">
-          <span class="kc-label-blobby">Ingredients:</span>
-          <span class="kc-fridge-amt">{{ recipe.ingredients }}</span>
-        </div>
-        <div class="kc-bottom-row">
-          <span class="kc-rating"> <span class="icon">⭐</span> {{ recipe.rating }} </span>
-          <button class="kc-try-btn">Try Recipe</button>
-          <!-- like functionality can remain -->
-          <button class="kc-like-btn" :class="{ liked: recipe.liked }" @click="toggleLike">
-            ❤
-          </button>
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-6 col-md-4 mb-4" v-for="(recipe, index) in curated" :key="index">
+        <div class="showpiece-card clean-card">
+          <!-- Recipe Image -->
+          <img
+            class="showpiece-img"
+            :src="
+              recipe.image_url || 'https://images.unsplash.com/photo-1504674900247-0877df9cc836'
+            "
+            :alt="recipe.title"
+          />
+
+          <div class="showpiece-info">
+            <!-- Recipe Title -->
+            <h2 class="showpiece-title">{{ recipe.title || 'Untitled Recipe' }}</h2>
+
+            <!-- Meta Row -->
+            <div class="showpiece-meta">
+              <span class="meta">⏲ {{ recipe.prepTime || '-' }}</span>
+              <span class="meta">🔥 {{ recipe.total_calories || '-' }} kcal</span>
+            </div>
+
+            <!-- Ingredients List -->
+            <!-- Ingredients List -->
+            <div class="showpiece-ingredients">
+              <span class="sp-label">Ingredients (expiring soon):</span>
+
+              <div v-if="recipe.expiring_ingredients_used?.length" class="sp-expiring-chips">
+                <span
+                  v-for="(item, idx) in recipe.expiring_ingredients_used"
+                  :key="idx"
+                  class="expiring-chip"
+                >
+                  {{ item }}
+                </span>
+              </div>
+              <div v-else class="sp-fresh">🌿 Nothing expiring soon!</div>
+
+              <small v-if="recipe.expiring_ingredients_used?.length" class="kc-fridge-amt">
+                Expiring in ~2 weeks
+              </small>
+            </div>
+
+            <!-- Rating / Buttons -->
+            <div class="showpiece-rating">
+              <button class="sp-try-btn">Try Recipe</button>
+              <button class="like-btn" :class="{ liked: recipe.liked }" @click="toggleLike(recipe)">
+                ❤
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -220,11 +75,87 @@ export default {
 </template>
 
 <script setup>
-import { ref } from 'vue'
-const searchQuery = ref('')
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+
+const curated = ref([])
+const fridgeId = sessionStorage.getItem('fridgeId')
+const user_id = sessionStorage.getItem('user_id')
+const loading = ref(true) // overall loading
+const loadingPhase = ref('coming') // 'coming' | 'almost'
+
+const curatedRecipes = async () => {
+  try {
+    loading.value = true
+    loadingPhase.value = 'coming'
+
+    // Simulate first loading message
+    setTimeout(() => {
+      if (loading.value) loadingPhase.value = 'almost'
+    }, 6000)
+
+    const response = await axios.post(
+      'http://localhost:8000/api/recipe',
+      {
+        numRecipe: 10,
+        serving: 1,
+        ingredientArr: [],
+        mealType: 'Any',
+        cookingMethod: 'Any',
+        vegan: null,
+        halal: null,
+        allergy: 'None',
+        instructions: 'Discover interesting recipes matching general preferences.',
+        fridgeId: fridgeId,
+      },
+      { headers: { 'Content-Type': 'application/json' } },
+    )
+    curated.value = response.data || []
+  } catch (error) {
+    console.error(error)
+  } finally {
+    // ✅ Hide loading once recipes are generated
+    loading.value = false
+  }
+}
+
+onMounted(() => curatedRecipes())
+
+async function toggleLike(recipe) {
+  if (recipe.liked) {
+    const data = {
+      user_id,
+      name: recipe.title,
+    }
+    const response = await axios.put('http://localhost:8000/api/recipe/like', data, {
+      headers: { 'Content-Type': 'application/json' },
+    })
+    if (response.status == 200) {
+      recipe.liked = !recipe.liked
+    }
+  } else {
+    recipe.liked = !recipe.liked
+    const data = {
+      user_id,
+      title: recipe.title,
+      serving_size: recipe.yields,
+      prep_time: recipe.prepTime,
+      cook_time: recipe.cookTime,
+      total_calories: recipe.total_calories,
+      ingredients_list: recipe.ingredients_list,
+      instructions: recipe.instructions,
+      notes: recipe.notes,
+      image_url: recipe.image_url,
+    }
+    const response = await axios.post('http://localhost:8000/api/recipe/like', data, {
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
+}
 </script>
 
 <style scoped>
+/* Reuse showpiece aesthetic */
 .search {
   display: flex;
   align-items: center;
@@ -261,241 +192,195 @@ const searchQuery = ref('')
   font-size: 2rem;
   font-family: 'Bricolage Grotesque', sans-serif;
   font-weight: bold;
-  margin: 26px 0 0 8px;
+  margin: 26px 0 26px 8px;
   text-align: center;
 }
-.card-row {
-  display: flex;
-  gap: 24px;
-  margin-bottom: 32px;
-  margin-left: 8px;
-  width: 95vw;
-}
-.card {
-  background: #dbc09c;
-  border-radius: 23px;
-  width: 160px;
-  min-width: 120px;
-  height: 140px;
-  box-shadow: 0 2px 8px rgba(90, 60, 30, 0.07);
-}
-@media (max-width: 900px) {
-  .card {
-    width: 22vw;
-    min-width: 88px;
-  }
-  .tab-bar button {
-    max-width: none;
-    padding: 12px 0.6em;
-    font-size: 1rem;
-  }
-}
-@media (max-width: 600px) {
-  .section,
-  .card-row {
-    padding-left: 0;
-  }
-  .card-row {
-    justify-content: center;
-    gap: 12px;
-  }
-  .section {
-    width: 100vw;
-  }
-  .card {
-    width: 26vw;
-  }
-}
-.card-row {
-  display: flex;
-  flex-direction: row;
-  gap: 32px;
-  flex-wrap: wrap; /* Cards will wrap to next line on small screens */
-  padding: 12px 0;
-  justify-content: center;
-  align-items: stretch;
-  width: 100%;
-  overflow-x: auto; /* Optional: enables horizontal scroll on overflow */
-}
-
-.kitchen-card {
-  background: linear-gradient(135deg, #fff9ec 90%, #ead9c9 100%);
-  border: 2.3px solid #e6d1b1;
-  border-radius: 38px 42px 33px 44px/40px 36px 40px 38px;
-  width: 315px;
-  min-height: 340px;
-  margin: 40px 24px 0 0;
-  box-shadow: 0 8px 48px 3px rgba(210, 170, 110, 0.19);
+.clean-card {
+  background: linear-gradient(120deg, #fff9ec 96%, #ead9c9 100%);
+  border-radius: 42px 46px 37px 50px/50px 42px 48px 40px;
+  box-shadow: 0 8px 48px 9px rgba(210, 170, 110, 0.18);
+  padding: 32px 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32px 20px 22px 20px;
-  font-family: 'Bricolage Grotesque', 'Comic Sans MS', Arial, sans-serif;
-  position: relative;
   transition:
     box-shadow 0.16s,
     transform 0.16s;
-  width: 400px;
+  width: 90%;
 }
-.kitchen-card:hover {
-  /* Outer shadow removed */
+.clean-card:hover {
   box-shadow:
     inset 0 0 40px 15px #ffebbc,
     inset 0 0 60px 10px #ff8012;
 }
 
-.kc-image-wrap {
-  width: 142px;
-  height: 120px;
-  border-radius: 28px;
-  overflow: hidden;
-  margin-bottom: 11px;
-  box-shadow: 0 2px 14px 0 rgba(230, 200, 140, 0.17);
-  background: #f9e7bb;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.kc-image {
+.showpiece-img {
   width: 100%;
-  height: 100%;
+  height: 180px;
   object-fit: cover;
-  border-radius: 24px;
+  border-radius: 27px;
+  margin-bottom: 24px;
+  box-shadow: 0 10px 28px 0 #ffeccb;
+  background: #f9e7bb;
 }
 
-.kc-title {
-  font-weight: 900;
-  font-size: 2rem;
-  color: #3b3926;
-  letter-spacing: 0.03em;
-  margin: 14px 0 8px 0;
+.showpiece-info {
   text-align: center;
-  font-family: 'Bricolage Grotesque', 'Comic Sans MS', Arial, sans-serif;
+  width: 100%;
 }
 
-.kc-meta-row {
+.showpiece-title {
+  font-weight: 900;
+  font-size: 1.5rem;
+  color: #3b3926;
+  margin-bottom: 16px;
+  font-family: 'Bricolage Grotesque', Arial, sans-serif;
+}
+
+.showpiece-meta {
   display: flex;
-  gap: 12px;
   justify-content: center;
+  gap: 12px;
   margin-bottom: 12px;
 }
-.kc-meta {
-  background: #f4e3d4;
-  border-radius: 18px 16px 20px 15px/20px 22px 15px 18px;
-  font-size: 12px;
-  padding: 9px 19px;
+.meta {
+  background: #f6e8d8;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  padding: 6px 12px;
   color: #866a40;
   font-weight: 600;
-  box-shadow: 0 1.5px 6px rgba(180, 120, 60, 0.07);
+}
+
+.showpiece-ingredients {
+  background: #e7f2de;
+  padding: 8px 14px;
+  width: 50%;
+  border-radius: 13px;
+  font-weight: 700;
+  color: #3c7e49;
+  font-size: 10px;
+  margin: auto auto 16px auto;
+}
+.sp-label {
+  font-weight: 700;
+  margin-right: 6px;
+}
+.sp-ingredient-list {
+  list-style-type: disc;
+  padding-left: 18px;
+  text-align: left;
+  margin: 4px 0;
+}
+.kc-fridge-amt {
+  display: block;
+  font-size: 8px;
+  font-weight: 600;
+  color: #60805c;
+  margin-top: 4px;
+}
+
+.showpiece-rating {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  gap: 12px;
 }
-.icon {
-  font-size: 1.2em;
-  margin-right: 5px;
-}
-
-.kc-ingredients {
-  background: #e7f2de;
-  margin: 13px 0;
-  font-size: 12px;
-  color: #60805c;
-  font-weight: 700;
-  box-shadow: 0 1.5px 4px rgba(120, 170, 100, 0.08);
-  padding: 10px 18px;
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  border-radius: 10px;
-}
-
-.kc-label-blobby {
-  font-weight: bold;
-  margin-right: 4px;
-  color: #637147;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-}
-
-.kc-fridge-amt {
-  font-weight: 700;
-  color: #3c7e49;
-}
-
-.kc-bottom-row {
-  margin-top: 18px;
-  display: flex;
-  width: 92%;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.kc-try-btn {
+.sp-try-btn {
   background: linear-gradient(96deg, #ead397 0%, #fff4d4 100%);
   color: #3b4e2e;
   border: none;
-  border-radius: 18px;
-  font-size: 1.09rem;
-  font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', Arial, sans-serif;
+  border-radius: 17px;
+  font-size: 1rem;
   font-weight: 700;
-  padding: 10px 28px;
-  box-shadow:
-    0 0 14px 2px #fff6cc,
-    0 2px 8px rgba(220, 200, 120, 0.09);
+  padding: 8px 22px;
   cursor: pointer;
-  margin: 0 18px;
-  position: relative;
-  transition:
-    box-shadow 0.16s,
-    transform 0.13s;
+  transition: all 0.15s;
+  font-family: 'Bricolage Grotesque', Arial, sans-serif;
 }
-
-.kc-try-btn:hover {
+.sp-try-btn:hover {
   background: #3b4e2e;
   color: white;
-  box-shadow:
-    0 0 28px 7px #fbe6a7,
-    0 6px 14px rgba(220, 190, 110, 0.19);
-  transform: scale(1.07);
+  transform: scale(1.08);
 }
 
-.kc-rating {
-  font-size: 1.17rem;
-  color: #4a693a;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
-
-.kc-like-btn {
+.like-btn {
   border: none;
-  background: #ffe5e7;
+  background: #ffd8e5;
   border-radius: 50%;
   width: 40px;
   height: 40px;
   color: #e49e7b;
   font-size: 1.3rem;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(235, 195, 140, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    background 0.14s,
-    color 0.12s;
 }
-.kc-like-btn.liked {
-  background: #ffcad3;
-  color: #e44a5c;
+.like-btn.liked {
+  background: #ffd1db;
+  color: #da2d52;
 }
-
-.kc-like-btn:hover {
+.like-btn:hover {
   background: #e44a5c;
   color: white;
+}
+
+.sp-expiring-chips {
+  margin-top: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.expiring-chip {
+  background: linear-gradient(135deg, #ffefdf 0%, #ffd6b3 100%);
+  color: #a14600;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(250, 160, 80, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.expiring-chip:hover {
+  transform: scale(1.08);
+  box-shadow: 0 3px 8px rgba(255, 140, 0, 0.28);
+}
+
+.sp-fresh {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #5e7841;
+  font-style: italic;
+  font-weight: 600;
+  text-align: center;
+}
+
+.loading-state {
+  text-align: center;
+  margin: 60px 0;
+  color: #bc7e4e;
+  font-family: 'Bricolage Grotesque', sans-serif;
+}
+.loading-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+  animation: bounce 1s infinite alternate;
+}
+.loading-text {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 </style>

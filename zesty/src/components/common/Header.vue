@@ -100,7 +100,7 @@ import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
 const router = useRouter()
 const menuOpen = ref(false)
-const user = ref(sessionStorage.getItem('username'))
+const user = ref(sessionStorage.getItem('user_id'))
 
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value
@@ -123,8 +123,9 @@ const isActive = (target) => {
 }
 
 const handleLogout = () => {
-  sessionStorage.removeItem('username')
-  sessionStorage.removeItem('password')
+  sessionStorage.removeItem('authToken')
+  sessionStorage.removeItem('user_id')
+  sessionStorage.removeItem('fridgeId')
   user.value = null
   menuOpen.value = false
   router.push('/')
@@ -207,7 +208,7 @@ nav a.active {
   border: none;
   padding: 1rem;
   border-radius: 1rem;
-  background-color: #44704d;
+  background-color: #ff4524;
   color: white;
   box-shadow: 2px 2px #af9e8b;
   text-decoration: none;
@@ -219,8 +220,8 @@ nav a.active {
 
 .logout-btn:hover,
 .login-btn:hover {
-  background-color: white;
-  color: #44704d;
+  background-color: #ff7700;
+  color: #ffffff;
 }
 
 .mobile-logout-btn {
