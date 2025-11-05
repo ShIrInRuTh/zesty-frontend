@@ -863,31 +863,58 @@ const handleImageUpload = async (file) => {
 
 
 const recognizeIngredient = async (imgUrl) => {
+  if (!imgUrl) {
+    alert("No image URL provided.");
+    return;
+  }
+
   try {
     isRecognizing.value = true;
 
-    const response = await axios.post("http://localhost:8000/api/imgreco", { img: imgUrl });
-    const aiData = response.data.item;
+    const urlLower = imgUrl.toLowerCase();
+    let mimeType = 'image/jpeg'; 
+    
+    if (urlLower.endsWith('.png')) {
+      mimeType = 'image/png';
+    } else if (urlLower.endsWith('.webp')) {
+      mimeType = 'image/webp';
+    } 
 
+    const response = await axios.post(
+      "http://localhost:8000/api/imgreco", 
+      { 
+        imageUrl: imgUrl,     
+        mimeType: mimeType    
+      } 
+    );
+
+    const aiData = response.data.item;
     if (!aiData?.name) throw new Error("AI backend did not return an ingredient name.");
+    console.log(aiData.category)
 
     aiResult.value = {
       name: aiData.name,
-      category: aiData.category && categories.includes(aiData.category) ? aiData.category : categories[1], // default to first real category
-      img: imgUrl
+      category: aiData.category && categories.includes(aiData.category)
+        ? aiData.category
+        : categories[1],
+      img: imgUrl,
     };
 
-    console.log(aiResult)
-
+    console.log("✅ AI Recognition Result:", aiResult.value);
     showAiModal.value = true;
 
   } catch (error) {
     console.error("AI recognition failed:", error.response?.data?.error || error.message);
-    alert(`AI recognition failed: ${error.response?.data?.error || "Check console for details."}`);
+    alert(`AI recognition failed: ${error.response?.data?.error || error.message}`);
   } finally {
     isRecognizing.value = false;
   }
 };
+
+
+
+
+
 
 
 
