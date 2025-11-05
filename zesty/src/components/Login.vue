@@ -56,6 +56,7 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import axios from 'axios'
 
 const router = useRouter()
 
@@ -69,10 +70,12 @@ function validateEmail(email) {
   return re.test(email)
 }
 
-function handleLogin() {
+async function handleLogin() {
+  // reset errors
   errors.email = ''
   errors.password = ''
 
+  // client-side validation
   if (!validateEmail(email.value)) {
     errors.email = 'Please enter a valid email'
   }
@@ -81,9 +84,57 @@ function handleLogin() {
   }
 
   if (!errors.email && !errors.password) {
-    sessionStorage.setItem('username', email.value)
-    sessionStorage.setItem('password', password.value)
-    setTimeout(() => router.push('/userhome'), 1000)
+    try {
+      const loginBody = {
+        email: email.value,
+        password: password.value,
+      }
+
+      const response = await axios.post('http://localhost:8000/api/auth/login', loginBody, {
+        headers: { 'Content-Type': 'application/json' },
+      })
+
+      if (response.status === 200) {
+        const { token, user } = response.data
+
+        if (!user || !token) {
+          throw new Error('Invalid server response: missing user or token')
+        }
+
+        // Save token + user info
+        sessionStorage.setItem('authToken', token)
+        sessionStorage.setItem('user_id', user.id)
+        sessionStorage.setItem('fridgeId', user.fridge_id)
+
+        console.log('✅ Login successful:', user)
+
+        // redirect after a short delay
+        setTimeout(() => router.push('/userhome'), 1000)
+      }
+    } catch (err) {
+      console.error('❌ Login failed:', err)
+
+      // Axios error handling
+      if (err.response) {
+        const status = err.response.status
+        const msg = err.response.data?.message || ''
+
+        if (status === 404) {
+          errors.email = 'No account found with this email'
+        } else if (status === 401) {
+          errors.password = 'Incorrect password'
+        } else if (status === 400) {
+          errors.email = msg || 'Invalid request'
+        } else if (status >= 500) {
+          errors.email = 'Server error, please try again later'
+        } else {
+          errors.password = 'Login failed, please check your credentials'
+        }
+      } else {
+        // No response from server
+        errors.email = 'Unable to connect to server. Please try again later.'
+      }
+    }
   }
 }
 

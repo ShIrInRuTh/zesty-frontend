@@ -1,50 +1,51 @@
 <script>
 export default {
-    props: { key: {type: Number, required: true} }
+  props: { idx: { type: Number, required: true } },
 }
 </script>
 
-
 <template>
-    <div class="popup-overlay">
-        <div class="popup-box">
-            <button class="close-btn" @click.self="$emit('close')">
-                ❌
-            </button>
-            <!-- test if key is passed -->
-            <div>idx = {{ key }}</div>
+  <div class="popup-overlay">
+    <div class="popup-box">
+      <button class="close-btn" @click.self="$emit('close')">❌</button>
+      <!-- test if key is passed -->
+      <div>idx = {{ idx }}</div>
 
-            <!-- Different content depending on idx -->
-            <template v-if="key === 0">
-                <h2>🍳 My Recipes — Full Feature Overview</h2>
-                <p>Here you can find, save, and rediscover recipes that fit your ingredients.</p>
-                <ul>
-                    <li>Discover: Smart recommendations</li>
-                    <li>Saved: Favorite recipes anytime</li>
-                    <li>History: View recently tried meals</li>
-                </ul>
-            </template>
+      <!-- Different content depending on idx -->
+      <template v-if="idx === 0">
+        <h2>🍳 My Recipes — Full Feature Overview</h2>
+        <p>Here you can find, save, and rediscover recipes that fit your ingredients.</p>
+        <ul>
+          <li>Discover: Smart recommendations</li>
+          <li>Saved: Favorite recipes anytime</li>
+          <li>History: View recently tried meals</li>
+        </ul>
+      </template>
 
-            <template v-else-if="key === 1">
-                <h2>🧊 My Fridge — Smart Ingredient Tracker</h2>
-                <p>Manage your groceries, auto-categorize by type, and get alerts for expiring items.</p>
-            </template>
+      <template v-else-if="idx === 1">
+        <h2>🧊 My Fridge — Smart Ingredient Tracker</h2>
+        <p>Manage your groceries, auto-categorize by type, and get alerts for expiring items.</p>
+      </template>
 
-            <template v-else-if="key === 2">
-                <h2>💀 Food Graveyard — Waste Awareness</h2>
-                <p>See what expired and learn how to shop smarter and reduce waste.</p>
-            </template>
-        </div>
+      <template v-else-if="idx === 2">
+        <h2>💀 Food Graveyard — Waste Awareness</h2>
+        <p>See what expired and learn how to shop smarter and reduce waste.</p>
+      </template>
     </div>
+  </div>
 </template>
 
 <style scoped>
 .popup-overlay {
   position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   background: rgba(0, 0, 0, 0.45);
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   z-index: 9999;
 }
 .popup-box {
@@ -58,7 +59,13 @@ export default {
 }
 
 @keyframes fadeIn {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 </style>
