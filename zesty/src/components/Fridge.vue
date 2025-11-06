@@ -1,10 +1,7 @@
-<!-- TODO as of 25/10/25
- Img recog feature
- clean up rest 
- expiry notif shit
- clean up fonts and background imgs
+<!-- TODO as of 2/11/25
  Add breakpoints for responsiveness
- profile page (extra)
+ fix unknown category 
+ linnkage
  Pray it works -->
 
 <template>
@@ -91,12 +88,14 @@
               <label>Image Input:</label>
               <input type="file" @change="onImageChange($event, index)" class="form-control" />
             </div>
-            <div class="mb-2">
-              <label>Qty:</label>
-              <select v-model="item.qty" class="form-select">
-                <option v-for="opt in qtyOptions" :key="opt" :value="opt">{{ opt }}</option>
-              </select>
-            </div>
+            <div class="d-flex align-items-center">
+            <!-- Numeric Value -->
+            <input type="number" v-model.number="item.qtyValue" class="form-control me-2" min="0" placeholder="Value" style="max-width: 50%;" />
+
+            <!-- Quantity Type -->
+            <select v-model="item.qty" class="form-select" style="max-width: 50%;">
+              <option v-for="opt in qtyOptions" :key="opt" :value="opt">{{ opt }}</option>
+            </select></div>
 
 
             <div class="mb-2">
@@ -124,7 +123,7 @@
           <li class="nav-item" v-for="category in categories" :key="category"
             style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: bold;">
 
-            <button class="nav-link"
+            <button class="nav-link text-truncate"
             :class="{ active: activeCategory === category }"
             role="tab"
             @click="switchCategory(category)">
@@ -157,17 +156,18 @@
         </div>
       </div>
 
-      <!-- bscards in con -->
-      <div class="container my-5" v-if="fridgeItems.length > 0">
-        <div class="row">
-          <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" v-for="(item, index) in filteredAndSortedItems" :key="index">
-            <div class="kitchen-card" style="border-radius: 20px">
-              <!-- REMOVE BUTTON -->
-              <button v-if="removeMode" class="btn btn-danger position-absolute"
-                style="top: 5px; right: 5px; border-radius: 50%; width: 30px; height: 30px; padding: 0;"
-                @click="confirmRemove(item, index)">
-                X
-              </button>
+      <!-- None  <576px, sm  ≥576px, md  ≥768px, lg  ≥992px, xl  ≥1200px, xxl  ≥1400px -->
+        <!-- bscards in con -->
+        <div class="container my-5" v-if="fridgeItems.length > 0">
+          <div class="row">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 col-xxl-3 d-flex align-items-stretch" v-for="(item, index) in filteredAndSortedItems" :key="index">
+              <div class="kitchen-card card w-100" style="border-radius: 20px">
+                <!-- REMOVE BUTTON -->
+                <button v-if="removeMode" class="btn btn-danger position-absolute"
+                  style="top: 5px; right: 5px; border-radius: 50%; width: 30px; height: 30px; padding: 0;"
+                  @click="confirmRemove(item, index)">
+                  X
+                </button>
 
               <!-- Remove Modal -->
               <div class="modal fade" id="removeModal" tabindex="-1" aria-labelledby="removeModalLabel"
@@ -185,20 +185,20 @@
                           placeholder="Search items..." />
                       </div>
 
-                      <div class="row row-cols-1 row-cols-md-3 g-3">
+                      <div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-lg-3">
                         <div v-for="(item, index) in filteredFridgeItemsForRemove" :key="index" class="col">
                           <div class="card h-100 text-center">
 
-                            <img :src="getImageSrc(item)" class="card-img-top" :alt="item.name"
-                              @error="(event) => (event.target.src = getImageSrc({ category: item.category, item_name: item.name }))"
-                              style="height:120px; object-fit:contain;" />
+                          <img :src="getImageSrc(item)" class="card-img-top" :alt="item.name"
+                            @error="(event) => (event.target.src = getImageSrc({ category: item.category, item_name: item.name }))"
+                            style="padding: 30px"  width="206" height="206" />
                             <div class="card-body">
                               <h6 class="card-title">{{ item.name }}</h6>
                               <p class="card-text item-qty">Qty: {{ item.qty }}{{ item.qty_type }}</p>
                               <p class="card-text small mb-1">{{ item.category }}</p>
                               <p class="card-text item-expiry" :style="{ color: getExpiryColor(item.expiryDate) }">
                               <p v-if="new Date(item.expiryDate) < new Date()" class="text-danger fw-bold">⚠️ Expired</p>
-                                Expiry: {{ item.expiryDate }}
+                                {{ item.expiryDate }}
                               </p>
                               <button class="btn btn-outline-danger btn-sm" @click="askRemove(item)">❌ Remove</button>
                             </div>
@@ -238,7 +238,7 @@
               <!-- IMAGE HANDLER incase no img -->
               <img :src="getImageSrc(item)" class="card-img-top" :alt="item.name"
                 @error="(event) => (event.target.src = getImageSrc({ category: item.category, item_name: item.name }))"
-                style="padding: 30px" />
+                style="padding: 30px"  width="206" height="206" />
               <div class="card-body text-center">
                 <h5 class="card-title item-name">{{ item.name }}</h5>
                 <p class="kc-meta">Qty: {{ item.qty }}{{ item.qty_type }}</p>
@@ -246,7 +246,7 @@
                 <p class="kc-meta" :style="{ color: getExpiryColor(item.expiryDate) }">
                 <p v-if="new Date(item.expiryDate) < new Date()" class="text-danger fw-bold">⚠️ Expired</p>
 
-                  Expiry: {{ item.expiryDate }}
+                  {{ item.expiryDate }}
                 </p>
                 <span class="badge bg-secondary text-capitalize">{{ item.category }}</span>
               </div>
@@ -272,21 +272,31 @@
         </div>
       </div>
 
-      <!--Auto Img Confirmation Modal -->
-      <div v-if="showAiModal" class="modal fade">
+      <!-- Auto Img Confirmation Modal -->
+      <div v-if="showAiModal" class="modal fade show" style="display: block; background: rgba(0,0,0,0.5);">
         <div class="modal-dialog">
           <div class="modal-content p-4">
             <h5>AI Detected Ingredient</h5>
-            <p><strong>Name:</strong> {{ aiResult?.name }}</p>
-            <p><strong>Category:</strong> {{ aiResult?.category }}</p>
+
+            <div class="mb-2">
+              <label>Name:</label>
+              <input type="text" v-model="aiResult.name" class="form-control" />
+            </div>
+
+            <div class="mb-2">
+              <label>Category:</label>
+              <select v-model="aiResult.category" class="form-select">
+                <option v-for="cat in categories.slice(1)" :key="cat" :value="cat">{{ cat }}</option>
+              </select>
+            </div>
 
             <div class="d-flex justify-content-between mt-3">
-              <button class="btn btn-success" @click="confirmAiResult">Yes, Correct</button>
-              <button class="btn btn-secondary" @click="showAiModal = false">Try Again</button>
+              <button class="btn btn-success" @click="confirmAiResult">Confirm</button>
+              <button class="btn btn-secondary" @click="showAiModal = false">Cancel</button>
             </div>
           </div>
         </div>
-      </div>
+</div>
 
 
     </main>
@@ -308,12 +318,17 @@ const itemName = ref("")
 const itemCategory = ref("")
 
 const confirmAiResult = () => {
-  if (aiResult.value) {
-    itemName.value = aiResult.value.name
-    itemCategory.value = aiResult.value.category
-  }
-  showAiModal.value = false
-}
+  if (!aiResult.value || currentAiIndex.value === null) return;
+
+  // Update existing row instead of pushing a new one
+  const index = currentAiIndex.value;
+  addedItems.value[index].name = aiResult.value.name;
+  addedItems.value[index].category = aiResult.value.category;
+  addedItems.value[index].img = aiResult.value.img || '';
+
+  showAiModal.value = false;
+  currentAiIndex.value = null; // reset
+};
 
 
 // ======================================================================================================   <Tabbing wif number count>
@@ -403,6 +418,11 @@ function getCount(category) {
 }
 
 // ======================================================================================================
+// WTF am i doing , imma crash out this shit is not it , i wanna dieeeeeee
+const currentAiIndex = ref(null)
+
+
+
 
 // ======================================================================================================  <Sorting + Searching>
 
@@ -479,16 +499,11 @@ async function onImageChange(event, index) {
   const file = event.target.files[0];
   if (!file) return;
 
-  // Local preview first
   addedItems.value[index].img = URL.createObjectURL(file);
-
-  // Upload to Cloudinary
   const cloudUrl = await uploadToCloudinary(file);
   if (cloudUrl) {
     addedItems.value[index].img = cloudUrl;
-    // console.log("Uploaded Cloudinary URL:", cloudUrl);
-
-    //Trigger AI recognition here
+    currentAiIndex.value = index; // <-- track which row triggered AI
     await recognizeIngredient(cloudUrl);
   }
 }
@@ -747,6 +762,59 @@ async function manualFunc(formData) {
   }
 }
 // ======================================================================================================   
+async function autoFunc(formData) {
+  let cleanUrl = formData.img.replace(/\.jpg$/, '');
+  const fridgeId = sessionStorage.getItem("fridgeId");
+  if (!fridgeId) {
+    return showModalMessage("No fridge ID found in session.");
+  }
+
+  // Validate required fields
+  if (
+    !formData.name ||
+    !formData.qtyValue ||
+    formData.qtyValue <= 0 ||
+    !formData.qtyType ||
+    !formData.category ||
+    !formData.expiryDate
+  ) {
+    return showModalMessage("Please fill in all fields correctly.");
+  }
+
+  try {
+    const newItem = {
+      item_name: formData.name.trim(),
+      qty: parseFloat(formData.qtyValue),
+      qty_type: formData.qtyType || 'pcs', // default if missing
+      category: formData.category,
+      expiry_date: formData.expiryDate,
+      date_added: formData.dateAdded || new Date().toISOString(),
+      img_url: cleanUrl || '/images/missing/default.png',
+      fridge_id: fridgeId
+    };
+
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/fridge_items`, {
+      method: 'POST',
+      headers: {
+        apiKey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(newItem)
+    });
+
+    if (!res.ok) throw new Error('Failed to add automatic item.');
+
+    // Refresh fridge items in your app
+    await fetchFridgeItems();
+
+  } catch (err) {
+    console.error(err);
+    showModalMessage('Error adding automatic item: ' + err.message);
+  }
+}
+
 
 
 
@@ -793,31 +861,62 @@ const handleImageUpload = async (file) => {
   }
 }
 
+
 const recognizeIngredient = async (imgUrl) => {
+  if (!imgUrl) {
+    alert("No image URL provided.");
+    return;
+  }
+
   try {
     isRecognizing.value = true;
-    const response = await axios.post("http://localhost:8000/api/imgreco", { img: imgUrl });
-    console.log(response)
 
-    // The backend now returns a parsed object under 'item'
-    const aiData = response.data.item; 
+    const urlLower = imgUrl.toLowerCase();
+    let mimeType = 'image/jpeg'; 
     
-    if (aiData && typeof aiData.name === 'string' && typeof aiData.category === 'string') {
-        aiResult.value = aiData;
-        showAiModal.value = true;
-    } else {
-        // Fallback if the backend response object is unexpected
-        aiResult.value = { name: "Unknown", category: "Unknown" };
-        showAiModal.value = true;
-        console.warn("Unexpected data structure from AI backend.");
-    }
+    if (urlLower.endsWith('.png')) {
+      mimeType = 'image/png';
+    } else if (urlLower.endsWith('.webp')) {
+      mimeType = 'image/webp';
+    } 
+
+    const response = await axios.post(
+      "http://localhost:8000/api/imgreco", 
+      { 
+        imageUrl: imgUrl,     
+        mimeType: mimeType    
+      } 
+    );
+
+    const aiData = response.data.item;
+    if (!aiData?.name) throw new Error("AI backend did not return an ingredient name.");
+    console.log(aiData.category)
+
+    aiResult.value = {
+      name: aiData.name,
+      category: aiData.category && categories.includes(aiData.category)
+        ? aiData.category
+        : categories[1],
+      img: imgUrl,
+    };
+
+    console.log("✅ AI Recognition Result:", aiResult.value);
+    showAiModal.value = true;
+
   } catch (error) {
     console.error("AI recognition failed:", error.response?.data?.error || error.message);
-    alert(`AI recognition failed: ${error.response?.data?.error || "Check console for details."}`);
+    alert(`AI recognition failed: ${error.response?.data?.error || error.message}`);
   } finally {
     isRecognizing.value = false;
   }
 };
+
+
+
+
+
+
+
 
 
 
@@ -935,4 +1034,5 @@ main.fridge-main p {
     transform 0.16s;
   width: 250px;
 }
+
 </style>
