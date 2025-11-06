@@ -149,6 +149,7 @@ onMounted(() => {
 window.addEventListener('storage', () => {
   user.value = localStorage.getItem('username')
 })
+
 </script>
 
 <style scoped>
