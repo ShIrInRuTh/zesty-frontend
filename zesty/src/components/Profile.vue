@@ -203,9 +203,13 @@ async function handleProfilePicUpload(event) {
     const imageUrl = await uploadToCloudinary(file)
 
     const user_id = user.value.id || sessionStorage.getItem('user_id')
-    await axios.put('http://localhost:8000/api/user/avatar', { user_id, image_url: imageUrl }, {
-      headers: { 'Content-Type': 'application/json' },
-    })
+    await axios.put(
+      'http://localhost:8000/api/user/avatar',
+      { user_id, image_url: imageUrl },
+      {
+        headers: { 'Content-Type': 'application/json' },
+      },
+    )
 
     user.value.profilePic = imageUrl
     profilePicPreview.value = imageUrl
@@ -246,7 +250,11 @@ async function updatePassword() {
   try {
     isBusy.value = true
     const user_id = user.value.id || sessionStorage.getItem('user_id')
-    const body = { user_id, current_password: currentPassword.value, new_password: newPassword.value }
+    const body = {
+      user_id,
+      current_password: currentPassword.value,
+      new_password: newPassword.value,
+    }
     const res = await axios.put('http://localhost:8000/api/user/password', body, {
       headers: { 'Content-Type': 'application/json' },
     })

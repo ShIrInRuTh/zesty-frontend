@@ -288,7 +288,7 @@ const getFormattedDate = (dateString) => {
   flex-direction: column;
   min-height: 100vh;
   min-width: 100vw; /* <-- Added for consistency with your other pages */
-  background-color: var(--color-bg);
+  background-color: white;
   font-family: var(--font-body);
   color: var(--color-text-primary);
 }
