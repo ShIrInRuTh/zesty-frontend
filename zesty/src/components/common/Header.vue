@@ -33,16 +33,8 @@
         <button @click="handleLogout" class="login-btn logout-btn">Logout</button>
         <div class="nav-icons">
           <RouterLink to="/profile" class="profile-circle">
-            <img src="../../../public/profile.jpeg" alt="Profile" />
-            <!-- Or use initials as fallback -->
-            <!-- <span>JD</span> -->
+            <img :src="pfp" alt="Profile" />
           </RouterLink>
-          <button class="icon-btn notification-btn">
-            <i class="fas fa-bell"></i>
-            <!-- Font Awesome icon -->
-            <!-- Optional notification badge -->
-            <span class="notification-badge">3</span>
-          </button>
         </div>
       </template>
     </nav>
@@ -101,6 +93,8 @@ const route = useRoute()
 const router = useRouter()
 const menuOpen = ref(false)
 const user = ref(sessionStorage.getItem('user_id'))
+const pfp = sessionStorage.getItem('profile_pic')
+console.log('pfp', pfp)
 
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value

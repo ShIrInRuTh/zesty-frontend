@@ -1,3 +1,30 @@
+// --- PATCH: command whitelist and helpers ---
+export const KNOWN_COMMAND_PATTERNS = [
+  /\b(next|continue)\b/i,
+  /\b(pause|resume)\b/i,
+  /\b(repeat)\b/i,
+  /\b(end|stop)\b/i,
+  // jump variants like "jump to 3", "go to step five"
+  /\b(jump|go)\s+(to\s+)?(step\s+)?(\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty)\b/i,
+]
+
+export function isKnownCommand(text) {
+  if (!text) return false
+  return KNOWN_COMMAND_PATTERNS.some((rx) => rx.test(text))
+}
+
+// Optional: normalize a command into an action for UI logs, etc.
+export function normalizeCommand(text) {
+  const t = (text || '').toLowerCase()
+  if (/\b(next|continue)\b/.test(t)) return 'next'
+  if (/\brepeat\b/.test(t)) return 'repeat'
+  if (/\bpause\b/.test(t)) return 'pause'
+  if (/\bresume\b/.test(t)) return 'continue'
+  if (/\b(end|stop)\b/.test(t)) return 'end'
+  if (/\b(jump|go)\b/.test(t)) return 'jump'
+  return 'unknown'
+}
+
 export const numberWords = {
   one: 1,
   two: 2,
@@ -40,6 +67,7 @@ export function speak(
   lang = 'en-US',
 ) {
   return new Promise((resolve) => {
+    console.log('I come in here too')
     setTranscript((prev) => [...prev, { speaker: 'Olivia', text }])
     const utter = new window.SpeechSynthesisUtterance(text)
     utter.voice = selectedVoice.value
