@@ -34,9 +34,9 @@ export default {
 
   methods: {
     openPopUp(idx) {
-      console.log('Feature index:', idx)
+      // console.log('Feature index:', idx)
       this.activeFeatureIndex = idx
-      console.log('activeFeatureIndex:', this.activeFeatureIndex)
+      // console.log('activeFeatureIndex:', this.activeFeatureIndex)
     },
   },
 
@@ -76,7 +76,7 @@ export default {
             <div class="mx-auto box">
               <!-- HERO OVERLAY -->
               <div class="hero-overlay">
-                <h2>{{ randomTagline }}</h2>
+                <h2 class="section-title">{{ randomTagline }}</h2>
                 <p>
                   Discover bold flavours, creative recipes, and a pinch of sass. Zesty is your
                   ultimate cooking companion.
@@ -260,6 +260,15 @@ export default {
   height: 200px;
   filter: brightness(1.04) saturate(1.08);
   animation: fadeOut 5s ease-in-out forwards;
+}
+
+.section-title {
+    color: white;
+    font-size: 2rem;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: bold;
+    margin: 26px 0 0 8px;
+    text-align: center;
 }
 
 @keyframes fadeOut {
