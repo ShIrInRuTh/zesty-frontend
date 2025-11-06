@@ -1,40 +1,37 @@
 <script>
 export default {
-    data() {
-        return {
-            // Features
-            features: [
-                {
-                    title: 'My Recipes',
-                    image: '/recipes-icon.png',
-                    subFeatures: [
-                        { icon: '🔍', text: 'Discover' },
-                        { icon: '💾', text: 'Saved' },
-                        { icon: '📜', text: 'History' },
-                    ],
-                    summary: 'Find, save and rediscover your next favourite meal.',
-                },
-                {
-                    title: 'My Fridge',
-                    image:
-                        '/fridge-icon.png',
-                    subFeatures: [
-                        { icon: '⏰', text: 'Track' },
-                        { icon: '🧺', text: 'Manage' },
-                    ],
-                    summary: 'Tracking and managing ingredients at home.',
-                },
-                {
-                    title: 'Your Kitchen Dashboard',
-                    image: '/kitchen-icon.png',
-                    subFeatures: [
-                        { icon: '💀', text: 'Expired' },
-                    ],
-                    summary: 'Encouraging sustainable, zero-waste habits.',
-                },
-            ],
-        }
-    },
+  data() {
+    return {
+      // Features
+      features: [
+        {
+          title: 'My Recipes',
+          image: '/recipes-icon.png',
+          subFeatures: [
+            { icon: '🔍', text: 'Discover' },
+            { icon: '💾', text: 'Saved' },
+            { icon: '📜', text: 'History' },
+          ],
+          summary: 'Find, save and rediscover your next favourite meal.',
+        },
+        {
+          title: 'My Fridge',
+          image: '/fridge-icon.png',
+          subFeatures: [
+            { icon: '⏰', text: 'Track' },
+            { icon: '🧺', text: 'Manage' },
+          ],
+          summary: 'Tracking and managing ingredients at home.',
+        },
+        {
+          title: 'Your Kitchen Dashboard',
+          image: '/kitchen-icon.png',
+          subFeatures: [{ icon: '💀', text: 'Expired' }],
+          summary: 'Encouraging sustainable, zero-waste habits.',
+        },
+      ],
+    }
+  },
 }
 </script>
 
@@ -224,10 +221,10 @@ const searchQuery = ref('')
 }
 
 .kc-image {
-    width: 100%;
-    height: 100%;
-    object-fit: fill;
-    border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  border-radius: 10px;
 }
 
 .kc-title {
