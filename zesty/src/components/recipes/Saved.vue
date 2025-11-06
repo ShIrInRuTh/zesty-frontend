@@ -41,6 +41,9 @@
         />
 
         <div class="showpiece-info">
+          <!-- 🟢 Added recipe number tag -->
+          <div class="recipe-number-tag">Recipe {{ idx + 1 }} of {{ recipes.length }}</div>
+
           <h2 class="showpiece-title">{{ currentRecipe?.title || 'Untitled Recipe' }}</h2>
 
           <div class="showpiece-meta">
@@ -67,7 +70,10 @@
           </div>
 
           <div class="showpiece-rating">
-            <button :class="buttonClass">{{ buttonText }}</button>
+            <button :class="buttonClass" @click="showDetails(currentRecipe)">
+              {{ buttonText }}
+            </button>
+
             <button
               class="like-btn"
               :class="{ liked: currentRecipe?.liked }"
@@ -97,6 +103,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
+import { useRouter } from 'vue-router'
 
 const fridgeId = sessionStorage.getItem('fridgeId')
 const user_id = sessionStorage.getItem('user_id')
@@ -104,6 +111,7 @@ const recipes = ref([])
 const idx = ref(0)
 const loading = ref(true)
 const loadingPhase = ref('coming') // 'coming' | 'almost'
+const router = useRouter()
 
 const savedRecipes = async () => {
   loading.value = true
@@ -141,25 +149,14 @@ onMounted(() => {
 })
 
 const currentRecipe = computed(() => recipes.value[idx.value] || null)
-
-// 🌀 Dynamic behaviour — depends on number of recipes
 const prevRecipeObj = computed(() => {
   const len = recipes.value.length
-  if (len <= 2) {
-    // 🔹 No looping
-    return idx.value > 0 ? recipes.value[idx.value - 1] : null
-  }
-  // 🔁 Looping carousel
+  if (len <= 2) return idx.value > 0 ? recipes.value[idx.value - 1] : null
   return recipes.value[(idx.value - 1 + len) % len]
 })
-
 const nextRecipeObj = computed(() => {
   const len = recipes.value.length
-  if (len <= 2) {
-    // 🔹 No looping
-    return idx.value < len - 1 ? recipes.value[idx.value + 1] : null
-  }
-  // 🔁 Looping carousel
+  if (len <= 2) return idx.value < len - 1 ? recipes.value[idx.value + 1] : null
   return recipes.value[(idx.value + 1) % len]
 })
 
@@ -182,35 +179,73 @@ function nextRecipe() {
 }
 
 async function toggleLike(recipe) {
-  const data = {
-    user_id,
-    name: recipe.title,
-  }
+  const data = { user_id, name: recipe.title }
   const response = await axios.put('http://localhost:8000/api/recipe/like', data, {
     headers: { 'Content-Type': 'application/json' },
   })
-  if (response.status == 200) {
-    savedRecipes()
-  }
+  if (response.status == 200) savedRecipes()
 }
 
-// 🟢 Button text + class logic
 const buttonText = computed(() => {
   const status = currentRecipe.value?.status
   if (status === 'in progress') return 'Continue Recipe'
   if (status === 'completed') return 'Try Again'
   return 'Try Recipe'
 })
-
 const buttonClass = computed(() => {
   const status = currentRecipe.value?.status
   if (status === 'in progress') return 'sp-try-btn in-progress'
   if (status === 'completed') return 'sp-try-btn completed'
   return 'sp-try-btn'
 })
+
+const showDetails = async (recipe) => {
+  try {
+    console.log('📖 Viewing recipe:', recipe.title)
+
+    const response = await axios.post(
+      'http://localhost:8000/api/recipe/new',
+      {
+        recipe: {
+          user_id,
+          title: recipe.title,
+          serving_size: recipe.serving_size,
+          prep_time: recipe.prep_time,
+          cook_time: recipe.cook_time,
+          total_calories: recipe.total_calories,
+          ingredients_list: recipe.ingredients_list,
+          instructions: recipe.instructions,
+          notes: recipe.notes,
+          image_url: recipe.image_url,
+        },
+      },
+      {
+        headers: { 'Content-Type': 'application/json' },
+      },
+    )
+
+    console.log('✅ Details response:', response.data, response.data.data[0].id)
+    router.push(`/recipeDetails/${response.data.data[0].id}`)
+  } catch (error) {
+    console.error('❌ Error showing details:', error)
+  }
+}
 </script>
 
 <style scoped>
+/* 🟢 Added styling for recipe number */
+.recipe-number-tag {
+  background: #fceccf;
+  color: #7a5a32;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 16px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px rgba(200, 150, 90, 0.15);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  display: inline-block;
+}
 .showpiece-carousel {
   display: flex;
   align-items: center;

@@ -105,8 +105,7 @@ async function handleLogin() {
         sessionStorage.setItem('authToken', token)
         sessionStorage.setItem('user_id', user.id)
         sessionStorage.setItem('fridgeId', user.fridge_id)
-
-        console.log('✅ Login successful:', user)
+        sessionStorage.setItem('profile_pic', user.profile_pic || '../public/profile-icon.png')
 
         // redirect after a short delay
         setTimeout(() => router.push('/userhome'), 1000)

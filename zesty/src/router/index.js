@@ -53,9 +53,10 @@ const router = createRouter({
     },
 
     {
-      path: '/recipeDetails',
-      name: 'Recipe Details',
+      path: '/recipeDetails/:id', // <-- :id is dynamic
+      name: 'RecipeDetails',
       component: () => import('../views/RecipeDetailsView.vue'),
+      props: true, // optional but handy to pass id as prop
     },
 
     {
