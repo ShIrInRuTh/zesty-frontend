@@ -31,8 +31,8 @@ export default {
             </template>
 
             <template v-else-if="idx === 2">
-                <h2>💀 Food Graveyard — Waste Awareness</h2>
-                <p>See what expired and learn how to shop smarter and reduce waste.</p>
+                <h2>📋 Kitchen Dashboard — Waste Awareness</h2>
+                <p>See what expired and what's about to expire. Learn how to shop smarter and reduce waste.</p>
             </template>
         </div>
     </div>
